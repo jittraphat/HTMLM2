@@ -387,6 +387,7 @@ details.acc summary{cursor:pointer;padding:10px 0;font-weight:600}
 .vprev{margin-top:12px;border:2px solid var(--edge);border-radius:12px;padding:8px 14px;background:#fff;color:var(--fgc);font:500 1.1rem/1.5 var(--f-display);text-align:center}
 .act-cta{display:flex;flex-wrap:wrap;gap:12px;margin:1rem 0}
 .fnote{margin:.2rem 0 0;color:var(--ink-2);font-size:.95rem}
+.muted-note{margin:.2rem 0 1rem;color:var(--ink-2);font-size:.92rem}
 .qblock{margin:1rem 0;background:var(--surface);border:2px solid var(--edge);border-left:8px solid var(--u);border-radius:14px;padding:10px 20px 14px}
 .qblock figcaption{font:600 .88rem var(--f-code);color:var(--u);margin-bottom:2px}
 .qblock p{margin:.2em 0}
@@ -1675,21 +1676,51 @@ Mali       95
     <h1>การใส่ไฟล์เสียงและวิดีโอ</h1>
     <p class="lead">ผลการเรียนรู้ข้อ 8 ของรายวิชา: อธิบายคำสั่งและใส่ไฟล์มัลติมีเดียลงในเว็บเพจได้</p>
   </div>
-  <div class="callout extra"><span class="lb">เกี่ยวกับบทนี้</span>สไลด์ทั้ง 3 หน่วยยังไม่มีเนื้อหาเรื่องการใส่ไฟล์เสียงและวิดีโอ ทั้งที่เป็นผลการเรียนรู้ข้อ 8 ของหน่วยที่ 3 บทนี้จึงเขียนเพิ่มให้ครบ ครูผู้สอนปรับหรือตัดออกได้ตามแผนการสอน</div>
+  <div class="callout extra"><span class="lb">เกี่ยวกับบทนี้</span>เนื้อหาเรื่องไฟล์เสียงมาจากสไลด์ของวิชา ส่วนเรื่องวิดีโอเป็นเนื้อหาเสริมที่เขียนเพิ่มให้ครบผลการเรียนรู้ข้อ 8 ของหน่วยที่ 3</div>
 
   <h2>มัลติมีเดียในเว็บเพจ</h2>
   <p><span class="hl">มัลติมีเดีย</span> คือสื่อที่ไม่ใช่ข้อความอย่างเดียว เช่น เสียงและวิดีโอ ในบทเรียนก่อนหน้านี้เรามีข้อความเคลื่อนไหวด้วย <code>&lt;marquee&gt;</code> และภาพเคลื่อนไหวชนิด GIF มาแล้ว บทนี้เพิ่มไฟล์เสียงและวิดีโอ</p>
   <p>เหมือนการแทรกรูปภาพ <b>ไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML</b> หรือระบุโฟลเดอร์ใน src ให้ถูกต้อง ชนิดไฟล์ที่เบราว์เซอร์เล่นได้ดีคือเสียง <code>.mp3</code> และวิดีโอ <code>.mp4</code></p>
 
-  <h2>ไฟล์เสียง <code>&lt;audio&gt;</code></h2>
+  <h2>การแทรกไฟล์เสียงในเว็บเพจ</h2>
+  <p>การเล่นไฟล์เสียงในเว็บเพจมี <b>2 วิธี</b> คือ</p>
+  <div class="cards">
+    <div class="card u3 u"><h3>เสียงแบ็คกราวน์</h3><p>การนำไฟล์เสียงมาเล่นเป็นเสียงแบ็คกราวน์ ไม่มีอะไรปรากฏบนเว็บเพจนอกจากเสียงเพลง</p></div>
+    <div class="card u3 u"><h3>การนำไฟล์เสียงแทรกเข้าไป</h3><p>แทรกไฟล์เสียงเข้าไปในเว็บเพจ ซึ่งจะทำให้ปรากฏชุดควบคุมการเล่นไฟล์เสียงขึ้นมาบนเว็บเพจ</p></div>
+  </div>
+  <p>ไฟล์รูปแบบของเสียงประกอบที่สนับสนุน ได้แก่ <code>mid</code> <code>au</code> <code>ram</code> <code>wav</code> และ <code>mp3</code> เป็นต้น</p>
+
+  <h3>เสียงแบ็คกราวน์ (background sound) <code>&lt;bgsound&gt;</code></h3>
+  <p>การนำไฟล์เสียงมาเล่นเป็นเสียงแบ็คกราวน์ เป็นการใส่เสียงเพลงทำเป็น background และถือว่าเป็นสิ่งที่สร้างความน่าสนใจอย่างหนึ่งให้กับเว็บเพจ</p>
   <dl class="spec">
-    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;audio src="ชื่อไฟล์เสียง" controls&gt;&lt;/audio&gt;</code></dd>
-    <dt>controls</dt><dd>แสดงปุ่มเล่น หยุด และปรับเสียง ถ้าไม่ใส่จะไม่เห็นตัวควบคุม</dd>
-    <dt>loop</dt><dd>เล่นวนซ้ำ</dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;bgsound src="ชื่อไฟล์เสียงตามรูปแบบ" loop="จำนวนรอบ"&gt;</code></dd>
+    <dt>src</dt><dd>ชื่อไฟล์เสียง</dd>
+    <dt>loop</dt><dd>จำนวนรอบที่เล่น ถ้าใส่ <code>infinite</code> จะเล่นวนซ้ำไม่จบ</dd>
   </dl>
-  <script type="text/x-code" class="ex" data-title="ตัวเล่นเสียง (ใช้เสียง beep.wav ที่มีให้)" data-h="90">
-<audio src="beep.wav" controls></audio>
+  <script type="text/x-code" class="ex" data-title="เล่นเสียงวนซ้ำไม่จบ" data-nores="1">
+<bgsound src="sound.wav" loop="infinite">
   </script>
+  <div class="callout warn"><span class="lb">ใช้ได้กับ IE เท่านั้น</span>แท็ก <code>&lt;bgsound&gt;</code> สามารถใช้กับเว็บบราวเซอร์ IE เท่านั้น เบราว์เซอร์อื่นจะไม่เล่นเสียง ถ้าลองในห้องทดลองแล้วไม่มีเสียง ไม่ได้แปลว่าเขียนโค้ดผิด</div>
+
+  <h3>การนำไฟล์เสียงแทรกเข้าไปในเว็บเพจ <code>&lt;embed&gt;</code></h3>
+  <p>เมื่อต้องการให้ปรากฏชุดควบคุมการเล่นไฟล์เสียงบนเว็บเพจ ใช้แท็ก <code>&lt;embed&gt;</code></p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;embed src="ชื่อไฟล์เสียง" width="ความกว้าง" height="ความสูง"&gt;</code></dd>
+    <dt>width, height</dt><dd>ขนาดของชุดควบคุมการเล่นเสียง หน่วยเป็นพิกเซล</dd>
+    <dt><code>&lt;noembed&gt;</code></dt><dd>ใส่ข้อความหรือรูปภาพไว้ในแท็กนี้ เพื่อแสดงแทนเมื่อเบราว์เซอร์เล่นไฟล์ไม่ได้</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="แทรกเสียงเพลง พร้อมรูปที่แสดงแทนเมื่อไม่รองรับ" data-nores="1">
+<embed src="รักเธอประเทศไทย.mp3" width="80" height="70">
+<noembed><img src="nosupport.gif" ></noembed>
+</embed>
+  </script>
+  <script type="text/x-code" class="ex" data-title="ตัวอย่างการใช้: เสียงนิทานเรื่องหมากับเงา" data-nores="1">
+<embed src="เสียงนิทานเรื่องหมากับเงา.wav" width="300" height="30">
+  </script>
+  <script type="text/x-code" class="ex" data-title="ลองเล่น (ใช้เสียง beep.wav ที่มีให้)" data-h="90">
+<embed src="beep.wav" width="300" height="30">
+  </script>
+  <p class="muted-note">ช่องผลลัพธ์ของเว็บนี้แสดงตัวเล่นเสียงแบบพื้นฐาน เมื่อเปิดไฟล์ HTML บนเครื่องของนักเรียน หน้าตาตัวเล่นอาจต่างออกไปตามเบราว์เซอร์</p>
 
   <h2>ไฟล์วิดีโอ <code>&lt;video&gt;</code></h2>
   <dl class="spec">
@@ -1968,7 +1999,7 @@ const ACTS = [
   variants:[
    {who:'เลขที่คี่', story:'เด็กเลี้ยงแกะกับหมาป่า', pic:'เด็กเลี้ยงแกะ', w:400, h:300, text:'#6C3428'},
    {who:'เลขที่คู่', story:'หมากับเงา', pic:'หมากับเงา', w:300, h:300, text:'#213555'}],
-  tags:['<title>','<h1>','<marquee>','<font size>','<font face>','<body background>','<body text>','<img width height>','<img border>','<img align hspace vspace>','<b>','<i>','<u>','<s>','<center>','<audio>'],
+  tags:['<title>','<h1>','<marquee>','<font size>','<font face>','<body background>','<body text>','<img width height>','<img border>','<img align hspace vspace>','<b>','<i>','<u>','<s>','<center>','<embed>'],
   tasks:[
    'ให้นักเรียนนำเรื่องนิทานอีสปมาแทรกภาพพร้อมเสียง ตามเรื่องของเลขที่ตัวเอง (ดูเรื่อง ขนาดภาพ และสีตัวอักษรในกล่องด้านบน) โดยมีรายละเอียดต่อไปนี้',
    'คัดลอกเนื้อเรื่องจากอินเทอร์เน็ตได้',
@@ -1984,7 +2015,7 @@ const ACTS = [
    'การจัดตำแหน่งข้อความอยู่กึ่งกลาง ([[<center>]]) และการเว้นระยะห่างของภาพและข้อความ ([[hspace]] [[vspace]])',
    'ใส่เสียงเล่านิทานตามนิทานที่ตนเองได้รับ',
    'บันทึกเป็นไฟล์ชื่อ <b>HTML106-เลขที่ห้อง.html</b> เช่น <b>HTML106-20204.html</b>'],
-  hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่แท็ก [[<body>]] เช่น [[<body text="รหัสสี">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ให้หัวข้อเคลื่อนไหว ใช้ [[<marquee>]] ครอบข้อความของ [[<h1>]] และปิดแท็กให้ครบ','เขียนชื่อฟอนต์ JasmineUPC ติดกัน ไม่มีเว้นวรรค ฟอนต์นี้ต้องมีอยู่ในเครื่องที่เปิดดู ถ้าไม่มี เบราว์เซอร์จะใช้ฟอนต์อื่นแทน ขนาดกับชนิดตัวอักษรเขียนรวมในแท็กเดียวได้ เช่น [[<font size="5" face="JasmineUPC">]] และต้องปิด [[</font>]] ทุกครั้ง','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] แล้วเว้นระยะด้วย [[hspace]] [[vspace]]','เสียงใช้ [[<audio src="ชื่อไฟล์เสียง" controls>]]']},
+  hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่แท็ก [[<body>]] เช่น [[<body text="รหัสสี">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ให้หัวข้อเคลื่อนไหว ใช้ [[<marquee>]] ครอบข้อความของ [[<h1>]] และปิดแท็กให้ครบ','เขียนชื่อฟอนต์ JasmineUPC ติดกัน ไม่มีเว้นวรรค ฟอนต์นี้ต้องมีอยู่ในเครื่องที่เปิดดู ถ้าไม่มี เบราว์เซอร์จะใช้ฟอนต์อื่นแทน ขนาดกับชนิดตัวอักษรเขียนรวมในแท็กเดียวได้ เช่น [[<font size="5" face="JasmineUPC">]] และต้องปิด [[</font>]] ทุกครั้ง','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] แล้วเว้นระยะด้วย [[hspace]] [[vspace]]','ใส่เสียงด้วย [[<embed src="ชื่อไฟล์เสียง" width="300" height="30">]] เช่น [[<embed src="เสียงนิทานเรื่องหมากับเงา.wav" width="300" height="30">]] ไฟล์เสียงต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML']},
 
  {id:'107', label:'HTML 107', u:3, home:'u3-2', lessons:['u3-1','u3-2','u2-2'], title:'การใส่ภาพและใส่สีในตาราง',
   goal:'สร้างตารางข้อมูลนักเรียนจากการสำรวจเพื่อน 5 คน แล้วใส่ภาพและสีในตาราง',
@@ -2063,7 +2094,7 @@ const QUIZ = {
   {q:'ต้องการให้ลิงก์เปิดในหน้าต่างหรือแท็บใหม่ ต้องใส่อะไรในแท็ก <a>',o:['target="_blank"','target="_self"','open="new"','window="blank"'],a:0,w:'target="_blank" เปิดในหน้าต่างใหม่ ส่วน _self เปิดในหน้าเดิม'},
   {q:'<body link="red" vlink="green" alink="blue"> ค่า vlink คือสีของลิงก์แบบใด',o:['ลิงก์ที่ยังไม่เคยคลิก','ลิงก์ที่เคยคลิกไปแล้ว','ลิงก์ที่กำลังถูกคลิก','ลิงก์ที่เสีย'],a:1,w:'link คือยังไม่คลิก vlink (visited) คือเคยคลิกแล้ว alink (active) คือกำลังคลิก'},
   {q:'ต้องการให้ผู้ใช้คลิกที่รูปภาพเพื่อไปยังอีกหน้า ควรเขียนอย่างไร',o:['<img href="page1.html">','<a href="page1.html"><img src="pic.svg"></a>','<img><a>page1.html</a>','<a src="pic.svg" href="page1.html">'],a:1,w:'ใส่ <img> ไว้ระหว่าง <a> และ </a> แทนข้อความ ผู้ใช้จะคลิกที่รูปได้'},
-  {q:'เหตุใดจึงต้องใส่ controls ใน <audio src="..." controls>',o:['เพื่อให้แสดงปุ่มเล่น หยุด และปรับเสียง','เพื่อให้เล่นวนซ้ำ','เพื่อให้เสียงดังขึ้น','เพื่อแปลงไฟล์เป็น mp3'],a:0,w:'ถ้าไม่ใส่ controls จะไม่เห็นตัวควบคุมการเล่น ส่วนเล่นวนซ้ำใช้ loop'}
+  {q:'ต้องการให้ปรากฏชุดควบคุมการเล่นไฟล์เสียงบนเว็บเพจ ควรใช้แท็กใด',o:['<bgsound src="sound.wav">','<embed src="sound.wav" width="300" height="30">','<sound src="sound.wav" controls>','<img src="sound.wav">'],a:1,w:'<embed> แทรกไฟล์เสียงพร้อมชุดควบคุมการเล่น ส่วน <bgsound> เล่นเป็นเสียงแบ็คกราวน์โดยไม่แสดงอะไรบนหน้าเว็บ และใช้ได้กับ IE เท่านั้น'}
  ]
 };
 
@@ -2125,7 +2156,9 @@ const TAGS = [
  ['target','ที่เปิดลิงก์: _blank, _self, _parent, _top','<a href="…" target="_blank">',3,'u3-3'],
  ['<a><img></a>','ใช้รูปภาพเป็นลิงก์','<a href="page1.html"><img src="…"></a>',3,'u3-3'],
  ['link, vlink, alink','สีลิงก์ปกติ / เคยคลิก / กำลังคลิก','<body link="red" vlink="green" alink="blue">',3,'u3-3',true],
- ['<audio>','ตัวเล่นเสียง (controls แสดงปุ่มเล่น)','<audio src="beep.wav" controls>',3,'u3-4'],
+ ['<bgsound>','เสียงแบ็คกราวน์ ไม่แสดงอะไรบนหน้าเว็บ (ใช้ได้กับ IE เท่านั้น)','<bgsound src="sound.wav" loop="infinite">',3,'u3-4',true],
+ ['<embed>','แทรกไฟล์เสียงพร้อมชุดควบคุมการเล่น','<embed src="beep.wav" width="300" height="30">',3,'u3-4'],
+ ['<noembed>','ข้อความหรือรูปที่แสดงแทนเมื่อเบราว์เซอร์เล่นไฟล์ไม่ได้','<noembed><img src="nosupport.gif"></noembed>',3,'u3-4',true],
  ['<video>','ตัวเล่นวิดีโอ','<video src="a.mp4" controls>',3,'u3-4']
 ];
 
@@ -2482,8 +2515,18 @@ function inlineAssets(s, assets){
   }
   return s;
 }
+/* The preview frame is sandboxed, and browsers do not show <embed> media inside a sandbox,
+   so an <embed> that points at an audio file is shown as a plain player of the same size. */
+function embedPreview(s){
+  return s.replace(/<embed\b[^>]*>/gi, tag => {
+    const m = tag.match(/\bsrc\s*=\s*(["'])(data:audio\/[^"']*)\1/i);
+    if(!m) return tag;
+    const dim = k => { const d = tag.match(new RegExp('\\b' + k + '\\s*=\\s*["\']?(\\d+)', 'i')); return d ? k + ':' + d[1] + 'px;' : ''; };
+    return '<audio controls src="' + m[2] + '" style="' + dim('width') + dim('height') + '"></audio>';
+  });
+}
 function buildDoc(src, assets, y){
-  let s = inlineAssets(src, assets || allAssets());
+  let s = embedPreview(inlineAssets(src, assets || allAssets()));
   const head = baseHead(y);
   if(/<html[\s>]/i.test(s)){
     if(/<head(\s[^>]*)?>/i.test(s)) s = s.replace(/<head(\s[^>]*)?>/i, m => m + head);
