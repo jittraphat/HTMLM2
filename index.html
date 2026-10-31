@@ -365,6 +365,16 @@ details.acc summary{cursor:pointer;padding:10px 0;font-weight:600}
 }
 
 /* ---------- one activity: note, text boxes, outside worksheet ---------- */
+.sample{margin:1rem 0}
+.sample figcaption{margin-top:8px;color:var(--ink-2);font-size:.92rem}
+.sample-page{background:#fff;color:#16193a;border:2px solid var(--edge);border-radius:16px;padding:16px 18px 20px;box-shadow:4px 4px 0 var(--edge-shadow)}
+.sample-page h3{margin:0 0 12px;text-align:center;font:600 1.15rem/1.4 var(--f-body);color:#16193a}
+.sample-scroll{overflow-x:auto}
+.sample-page table{border-collapse:collapse;margin:0 auto;font-size:.88rem;line-height:1.4}
+.sample-page th,.sample-page td{border:1px solid #9AA0BF;padding:4px 10px;text-align:center}
+.sample-page th{background:#EEF0FA;font-weight:600}
+.sample-page td:nth-child(3){text-align:left;white-space:nowrap}
+.sample-page img{display:block;margin:0 auto;width:44px;height:44px}
 .vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:1rem 0}
 .vcard{background:var(--surface);border:2px solid var(--edge);border-radius:18px;overflow:hidden;box-shadow:4px 4px 0 var(--edge-shadow);min-width:0}
 .vcard .vh{background:var(--u);color:#fff;padding:6px 16px;font:600 .92rem/1.5 var(--f-body)}
@@ -1976,18 +1986,29 @@ const ACTS = [
    'บันทึกเป็นไฟล์ชื่อ <b>HTML106-เลขที่ห้อง.html</b> เช่น <b>HTML106-20204.html</b>'],
   hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่แท็ก [[<body>]] เช่น [[<body text="รหัสสี">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ให้หัวข้อเคลื่อนไหว ใช้ [[<marquee>]] ครอบข้อความของ [[<h1>]] และปิดแท็กให้ครบ','เขียนชื่อฟอนต์ JasmineUPC ติดกัน ไม่มีเว้นวรรค ฟอนต์นี้ต้องมีอยู่ในเครื่องที่เปิดดู ถ้าไม่มี เบราว์เซอร์จะใช้ฟอนต์อื่นแทน ขนาดกับชนิดตัวอักษรเขียนรวมในแท็กเดียวได้ เช่น [[<font size="5" face="JasmineUPC">]] และต้องปิด [[</font>]] ทุกครั้ง','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] แล้วเว้นระยะด้วย [[hspace]] [[vspace]]','เสียงใช้ [[<audio src="ชื่อไฟล์เสียง" controls>]]']},
 
- {id:'107', label:'HTML 107', u:3, home:'u3-2', lessons:['u3-1','u3-2'], title:'การใส่ภาพและใส่สีในตาราง',
+ {id:'107', label:'HTML 107', u:3, home:'u3-2', lessons:['u3-1','u3-2','u2-2'], title:'การใส่ภาพและใส่สีในตาราง',
   goal:'สร้างตารางข้อมูลนักเรียนจากการสำรวจเพื่อน 5 คน แล้วใส่ภาพและสีในตาราง',
-  file:'html107-เลขที่ห้อง.html',
-  tags:['<table border>','<caption>','<tr>','<th>','<td>','<img>','<td bgcolor>'],
+  file:'HTML107-เลขที่ห้อง.html', fileExample:'HTML107-20204.html',
+  tags:['<title>','<h2>','<font face>','<table border width>','<tr>','<th>','<td>','<img>','<td bgcolor>'],
   tasks:[
-   'สร้างตารางแสดงข้อมูลนักเรียนที่มี 5 คอลัมน์ ได้แก่ <b>ลำดับ</b> <b>รูปภาพ</b> <b>ชื่อ-นามสกุล</b> <b>ระดับชั้น</b> <b>สีที่ชอบ</b>',
-   'สำรวจข้อมูลโดยสอบถามเพื่อน <b>5 คน</b> (ผู้ชาย 4 หญิง 1 หรือ ผู้ชาย 3 หญิง 2)',
-   'นำข้อมูลมาลงในตารางให้ครบถ้วน (หัวตาราง 1 แถว + ข้อมูล 5 แถว)',
-   'ใส่ภาพของเพื่อนแต่ละคนด้วย [[<img>]] (ใช้ avatar1–5 ในเว็บนี้ หรือรูปจากเครื่อง)',
-   'ลงสีช่อง <b>สีที่ชอบ</b> ด้วย [[bgcolor]] ให้เป็นสีตามที่เพื่อนชอบ',
-   'บันทึกเป็นไฟล์ชื่อ <b>html107-เลขที่ห้อง.html</b>'],
-  hints:['เขียนทีละแถว: เปิด [[<tr>]] ใส่ช่อง [[<td>]] ให้ครบทุกคอลัมน์ แล้วปิด [[</tr>]]','ถ้าตารางไม่มีเส้น แสดงว่าลืม [[border="1"]] ที่ [[<table>]]','กำหนด [[width]] ของรูปให้เท่ากันทุกรูป ตารางจะเรียบร้อย และถ้าสีพื้นเข้มมาก ให้เปลี่ยนสีตัวอักษรด้วย [[<font color>]]']},
+   'Title bar ให้ตั้งชื่อว่า <b>ตารางข้อมูลนักเรียน</b>',
+   'ให้นักเรียนสำรวจข้อมูลโดยสอบถามเพื่อน <b>5 คน</b> (ผู้ชาย 4 หญิง 1 / ผู้ชาย 3 หญิง 2)',
+   'นำมาเป็นข้อมูลลงในตารางให้ครบถ้วน (คอลัมน์ตามตัวอย่างด้านล่าง: ลำดับ รูปภาพ ชื่อ-นามสกุล ระดับชั้น สีที่ชอบ)',
+   'ใส่ภาพและสีของตารางด้วย',
+   'ตารางขอบหนา และกว้าง [[<table border="1" width="400">]]',
+   'กำหนดขนาดหัวข้อให้มีขนาด [[<h2>]]',
+   'กำหนดให้รูปแบบตัวอักษร [[<font face="JasmineUPC">]]',
+   'บันทึกเป็นไฟล์ชื่อ <b>HTML107-เลขที่ห้อง.html</b> เช่น <b>HTML107-20204.html</b>'],
+  sample:{title:'ตัวอย่างผลลัพธ์ของตาราง', heading:'ตารางแสดงข้อมูลนักเรียน',
+   head:['ลำดับ','รูปภาพ','ชื่อ-นามสกุล','ระดับชั้น','สีที่ชอบ'],
+   rows:[
+    ['1','avatar1.svg','เด็กชายรักเรียน ใจดี','ม.2/2','สีดำ','#2A2A2A','#FFFFFF'],
+    ['2','avatar2.svg','เด็กหญิงตั้งใจ เรียนดี','ม.2/2','สีฟ้า','#5DA2C0','#101638'],
+    ['3','avatar3.svg','เด็กชายพากเพียร เขียนอ่าน','ม.2/4','สีชมพู','#EC84C6','#101638'],
+    ['4','avatar4.svg','เด็กหญิงใจดี มีน้ำใจ','ม.2/4','สีเขียว','#4E8C6A','#FFFFFF'],
+    ['5','avatar5.svg','เด็กชายซื่อสัตย์ สุจริต','ม.2/9','สีขาว','#FBF2DD','#101638']],
+   note:'ชื่อ ระดับชั้น และสีในตัวอย่างเป็นข้อมูลสมมติ ให้ใส่ข้อมูลเพื่อนที่สำรวจจริง'},
+  hints:['เขียนทีละแถว: เปิด [[<tr>]] ใส่ช่อง [[<td>]] ให้ครบทุกคอลัมน์ แล้วปิด [[</tr>]] แถวหัวตารางใช้ [[<th>]]','หัวข้อตารางเป็น [[<h2>]] เขียนไว้เหนือแท็ก [[<table>]] ถ้าตารางไม่มีเส้น แสดงว่าลืม [[border="1"]] ที่ [[<table>]]','ใส่ภาพในช่องด้วย [[<img src="ชื่อไฟล์รูป" width="60">]] กำหนด [[width]] ให้เท่ากันทุกรูป ตารางจะเรียบร้อย ในห้องทดลองใช้ avatar1.svg ถึง avatar5.svg หรือกด “เพิ่มรูปหรือไฟล์จากเครื่อง”','สีของช่องกำหนดที่ [[<td bgcolor="ชื่อสีหรือรหัสสี">]] ถ้าสีเข้มมาก ตัวอักษรจะอ่านยาก ให้เปลี่ยนสีตัวอักษรด้วย [[<font color>]]']},
 
  {id:'final', label:'FINAL', u:3, home:'u3-3', lessons:['u3-3'], title:'เว็บไซต์ 3 หน้าพร้อมลิงก์',
   goal:'สร้างเว็บไซต์เล็กๆ 3 หน้า ที่เชื่อมโยงถึงกันและเชื่อมไปเว็บโรงเรียน',
@@ -2316,6 +2337,10 @@ function actHTML(a){
       '<p class="vsw"><i class="sw2"></i><span>สีตัวอักษร</span>'+mk('[[text="'+v.text+'"]]')+'</p>' +
       '<div class="vprev" aria-hidden="true">ตัวอย่างสีตัวอักษร</div></div></div>').join('') + '</div>' : '') +
     '<h2>โจทย์</h2><ol class="task-list">' + a.tasks.map(t => '<li><span>'+mk(t)+'</span></li>').join('') + '</ol>' +
+    (a.sample ? '<h2>'+esc(a.sample.title)+'</h2><figure class="sample"><div class="sample-page"><h3>'+esc(a.sample.heading)+'</h3><div class="sample-scroll"><table><thead><tr>' +
+      a.sample.head.map(x => '<th>'+esc(x)+'</th>').join('') + '</tr></thead><tbody>' +
+      a.sample.rows.map(r => '<tr><td>'+esc(r[0])+'</td><td><img src="'+(ASSETS[r[1]] || '')+'" alt="" width="44" height="44"></td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td style="background:'+r[5]+';color:'+r[6]+'">'+esc(r[4])+'</td></tr>').join('') +
+      '</tbody></table></div></div><figcaption>'+esc(a.sample.note)+'</figcaption></figure>' : '') +
     (a.blocks || []).map(b => '<figure class="qblock '+b.kind+'"><figcaption>'+esc(b.title)+'</figcaption><div>' + b.lines.map(l => '<p>'+esc(l)+'</p>').join('') + '</div></figure>').join('') +
     (a.file ? '<h2>ไฟล์ที่ต้องส่ง</h2><p>' + a.file.split(', ').map(f => '<span class="fname">'+esc(f)+'</span>').join(' ') + '</p>' +
       (/เลขที่ห้อง/.test(a.file) ? '<p class="fnote">ให้แทนคำว่า “เลขที่ห้อง” ด้วยเลขที่และห้องของตัวเองตามที่ครูกำหนด'+(a.fileExample ? ' เช่น <span class="mono">'+esc(a.fileExample)+'</span>' : '')+'</p>'
