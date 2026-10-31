@@ -46,6 +46,7 @@
 :root[data-theme="dark"] .outcomes .n,
 :root[data-theme="dark"] .acard .code-id,
 :root[data-theme="dark"] .tact .code-id,
+:root[data-theme="dark"] .vcard .vh,
 :root[data-theme="dark"] .trail .no,
 :root[data-theme="dark"] .toc a.ls[aria-current="page"] .no{color:#0A0F2C}
 *,*::before,*::after{box-sizing:border-box}
@@ -364,6 +365,16 @@ details.acc summary{cursor:pointer;padding:10px 0;font-weight:600}
 }
 
 /* ---------- one activity: note, text boxes, outside worksheet ---------- */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:1rem 0}
+.vcard{background:var(--surface);border:2px solid var(--edge);border-radius:18px;overflow:hidden;box-shadow:4px 4px 0 var(--edge-shadow);min-width:0}
+.vcard .vh{background:var(--u);color:#fff;padding:6px 16px;font:600 .92rem/1.5 var(--f-body)}
+.vcard .vb{padding:12px 16px 16px}
+.vcard .vb>b{display:block;font:500 1.15rem/1.45 var(--f-display)}
+.vsw{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:.5rem 0 0}
+.vsw i{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--edge)}
+.vsw .sw2{background:var(--fgc)}
+.vsw span{flex:none;color:var(--ink-2);font-size:.95rem}
+.vprev{margin-top:12px;border:2px solid var(--edge);border-radius:12px;padding:8px 14px;background:#fff;color:var(--fgc);font:500 1.1rem/1.5 var(--f-display);text-align:center}
 .act-cta{display:flex;flex-wrap:wrap;gap:12px;margin:1rem 0}
 .fnote{margin:.2rem 0 0;color:var(--ink-2);font-size:.95rem}
 .qblock{margin:1rem 0;background:var(--surface);border:2px solid var(--edge);border-left:8px solid var(--u);border-radius:14px;padding:10px 20px 14px}
@@ -1940,20 +1951,30 @@ const ACTS = [
    'บันทึกเป็นไฟล์ชื่อ <b>html105-เลขที่ห้อง.html</b>'],
   hints:['ตัวอักษรสีขาวจะมองไม่เห็นบนพื้นสีขาว จึงต้องเลือกสีพื้นหลังที่ตัดกับสีของธง','เขียน [[<br>]] คั่นแต่ละบรรทัด และเปิด [[<marquee>]] ครอบทั้งหมด','จะกำหนดสีด้วยชื่อสี เช่น red หรือรหัสสี เช่น #FF0000 ก็ได้']},
 
- {id:'106', label:'HTML 106', u:2, home:'u2-5', lessons:['u2-4','u2-5','u3-4'], title:'แทรกภาพ',
-  goal:'นำนิทานอีสปที่ได้รับมาแทรกภาพ ใส่พื้นหลัง จัดตำแหน่ง และใส่เสียงเล่านิทาน',
-  file:'html106-เลขที่ห้อง.html',
-  tags:['<img src>','<img width height>','<img border>','<img align hspace vspace>','<body text>','<body background>','<audio>'],
+ {id:'106', label:'HTML 106', u:2, home:'u2-5', lessons:['u2-1','u2-2','u2-3','u2-4','u2-5','u3-4'], title:'การใส่รูปภาพและเสียงมัลติมีเดีย',
+  goal:'นำนิทานอีสปมาแทรกภาพพร้อมเสียง ตามเรื่องของเลขที่ตัวเอง โดยกำหนดหัวข้อ ตัวอักษร สี กรอบรูป และการจัดวางตามที่โจทย์กำหนด',
+  file:'HTML106-เลขที่ห้อง.html', fileExample:'HTML106-20204.html',
+  variantsTitle:'เรื่อง ขนาดภาพ และสีตัวอักษร ตามเลขที่ของตัวเอง',
+  variants:[
+   {who:'เลขที่คี่', story:'เด็กเลี้ยงแกะกับหมาป่า', pic:'เด็กเลี้ยงแกะ', w:400, h:300, text:'#6C3428'},
+   {who:'เลขที่คู่', story:'หมากับเงา', pic:'หมากับเงา', w:300, h:300, text:'#213555'}],
+  tags:['<title>','<h1>','<marquee>','<font size>','<font face>','<body background>','<body text>','<img width height>','<img border>','<img align hspace vspace>','<b>','<i>','<u>','<s>','<center>','<audio>'],
   tasks:[
-   'ให้นักเรียนนำเรื่องนิทานอีสปที่ใช้สอบ (หมากับเงา หรือ เด็กเลี้ยงแกะ ตามเรื่องที่ตนเองได้รับ) มาแทรกภาพ โดยมีรายละเอียดต่อไปนี้',
-   'ภาพ <b>หมากับเงา</b> กำหนดขนาด [[width="300" height="300"]] และสีตัวอักษร [[text="#213555"]]',
-   'ภาพ <b>เด็กเลี้ยงแกะ</b> กำหนดขนาด [[width="400" height="300"]] และสีตัวอักษร [[text="#6C3428"]]',
-   'ใส่ขอบรูปภาพ [[border="30"]]',
+   'ให้นักเรียนนำเรื่องนิทานอีสปมาแทรกภาพพร้อมเสียง ตามเรื่องของเลขที่ตัวเอง (ดูเรื่อง ขนาดภาพ และสีตัวอักษรในกล่องด้านบน) โดยมีรายละเอียดต่อไปนี้',
+   'คัดลอกเนื้อเรื่องจากอินเทอร์เน็ตได้',
+   'ต้องมีข้อคิดของนิทาน',
+   'Title bar ให้ตั้งชื่อตามนิทานอีสป โดยแสดงข้อความว่า <b>นิทานอีสป เรื่อง</b> ตามด้วยชื่อเรื่องของตัวเอง',
+   'กำหนดขนาดหัวข้อให้มีขนาด [[<h1>]] และเคลื่อนไหวได้ (ใช้ [[<marquee>]])',
+   'กำหนดขนาดฟอนต์ให้มีขนาด [[<font size="5">]]',
+   'กำหนดให้รูปแบบตัวอักษร [[<font face="JasmineUPC">]]',
    'ใส่พื้นหลังตามที่กำหนดให้',
-   'จัดตำแหน่งของภาพและข้อความ และเว้นระยะห่างระหว่างภาพกับข้อความ',
+   'ภาพขนาด [[width]] [[height]] และสีตัวอักษร [[text]] ตามเรื่องของเลขที่ตัวเอง (ดูในกล่องด้านบน)',
+   'ใส่ขอบรูปภาพ [[border="30"]]',
+   'การกำหนดลักษณะตัวอักษร มีตัวหนา ตัวเอียง ขีดเส้นใต้ ขีดฆ่า ([[<b>]] [[<i>]] [[<u>]] [[<s>]])',
+   'การจัดตำแหน่งข้อความอยู่กึ่งกลาง ([[<center>]]) และการเว้นระยะห่างของภาพและข้อความ ([[hspace]] [[vspace]])',
    'ใส่เสียงเล่านิทานตามนิทานที่ตนเองได้รับ',
-   'บันทึกเป็นไฟล์ชื่อ <b>html106-เลขที่ห้อง.html</b>'],
-  hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่ [[<body text="#213555">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] และเว้นระยะด้วย [[hspace]] [[vspace]]','เสียงใช้ [[<audio src="ชื่อไฟล์เสียง" controls>]]']},
+   'บันทึกเป็นไฟล์ชื่อ <b>HTML106-เลขที่ห้อง.html</b> เช่น <b>HTML106-20204.html</b>'],
+  hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่แท็ก [[<body>]] เช่น [[<body text="รหัสสี">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ให้หัวข้อเคลื่อนไหว ใช้ [[<marquee>]] ครอบข้อความของ [[<h1>]] และปิดแท็กให้ครบ','เขียนชื่อฟอนต์ JasmineUPC ติดกัน ไม่มีเว้นวรรค ฟอนต์นี้ต้องมีอยู่ในเครื่องที่เปิดดู ถ้าไม่มี เบราว์เซอร์จะใช้ฟอนต์อื่นแทน ขนาดกับชนิดตัวอักษรเขียนรวมในแท็กเดียวได้ เช่น [[<font size="5" face="JasmineUPC">]] และต้องปิด [[</font>]] ทุกครั้ง','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] แล้วเว้นระยะด้วย [[hspace]] [[vspace]]','เสียงใช้ [[<audio src="ชื่อไฟล์เสียง" controls>]]']},
 
  {id:'107', label:'HTML 107', u:3, home:'u3-2', lessons:['u3-1','u3-2'], title:'การใส่ภาพและใส่สีในตาราง',
   goal:'สร้างตารางข้อมูลนักเรียนจากการสำรวจเพื่อน 5 คน แล้วใส่ภาพและสีในตาราง',
@@ -2093,7 +2114,7 @@ const TAGS = [
 const $  = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const mk  = s => String(s).replace(/\[\[([\s\S]+?)\]\]/g, (m, x) => '<code>' + esc(x) + '</code>');
+const mk  = s => String(s).replace(/\[\[([\s\S]+?)\]\]/g, (m, x) => '<code' + (x.length > 26 ? ' class="lg"' : '') + '>' + esc(x) + '</code>');   // long snippets may wrap
 const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 
 /* ---------- storage (always works in memory, saved when the browser allows) ---------- */
@@ -2289,10 +2310,16 @@ function actHTML(a){
           '<p><a class="btn" href="'+esc(ex.url)+'" target="_blank" rel="noopener noreferrer">'+esc(ex.label)+' (แท็บใหม่)</a></p>' +
           '<label class="ext-alt">ถ้าปุ่มไม่เปิด ให้คัดลอกที่อยู่นี้ไปวางในแถบที่อยู่ของเบราว์เซอร์<input class="urlbox" type="text" readonly value="'+esc(ex.url)+'" aria-label="ที่อยู่ของใบกิจกรรม"></label></div></div>' : '') +
     (a.note ? '<div class="callout warn"><span class="lb">หมายเหตุ</span>'+mk(a.note)+'</div>' : '') +
+    (a.variants ? '<h2>'+esc(a.variantsTitle)+'</h2><div class="vgrid">' + a.variants.map(v =>
+      '<div class="vcard" style="--fgc:'+v.text+'"><div class="vh">นักเรียน'+esc(v.who)+'</div><div class="vb"><b>นิทานอีสป เรื่อง '+esc(v.story)+'</b>' +
+      '<p class="vsw"><span>ภาพ'+esc(v.pic)+'</span>'+mk('[[width="'+v.w+'" height="'+v.h+'"]]')+'</p>' +
+      '<p class="vsw"><i class="sw2"></i><span>สีตัวอักษร</span>'+mk('[[text="'+v.text+'"]]')+'</p>' +
+      '<div class="vprev" aria-hidden="true">ตัวอย่างสีตัวอักษร</div></div></div>').join('') + '</div>' : '') +
     '<h2>โจทย์</h2><ol class="task-list">' + a.tasks.map(t => '<li><span>'+mk(t)+'</span></li>').join('') + '</ol>' +
     (a.blocks || []).map(b => '<figure class="qblock '+b.kind+'"><figcaption>'+esc(b.title)+'</figcaption><div>' + b.lines.map(l => '<p>'+esc(l)+'</p>').join('') + '</div></figure>').join('') +
     (a.file ? '<h2>ไฟล์ที่ต้องส่ง</h2><p>' + a.file.split(', ').map(f => '<span class="fname">'+esc(f)+'</span>').join(' ') + '</p>' +
-      (/เลขที่ห้อง/.test(a.file) ? '<p class="fnote">ให้แทนคำว่า “เลขที่ห้อง” ด้วยเลขที่และห้องของตัวเองตามที่ครูกำหนด</p>' : '') : '') +
+      (/เลขที่ห้อง/.test(a.file) ? '<p class="fnote">ให้แทนคำว่า “เลขที่ห้อง” ด้วยเลขที่และห้องของตัวเองตามที่ครูกำหนด'+(a.fileExample ? ' เช่น <span class="mono">'+esc(a.fileExample)+'</span>' : '')+'</p>'
+        : '') : '') +
     (a.tags.length ? '<h2>แท็กที่ใช้ในกิจกรรมนี้</h2><div class="tagrow">' + a.tags.map(t => '<span class="tg">'+esc(t)+'</span>').join('') + '</div>' : '') +
     (lessons.length ? '<p>ลืมวิธีใช้ ให้กลับไปอ่านบทเรียน ' + listJoin(lessons) + '</p>' : '') +
     (a.hints.length ? '<h2>คำแนะนำ</h2>' + a.hints.map((h,k) => '<details class="hint"><summary>คำแนะนำข้อ '+(k+1)+'</summary><p>'+mk(h)+'</p></details>').join('') : '') +
