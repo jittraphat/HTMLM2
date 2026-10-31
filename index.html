@@ -1,0 +1,2803 @@
+<title>การสร้างเว็บเพจด้วย HTML</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Mitr:wght@400;500;600&display=swap">
+<style>
+/*
+  Layout concept: the whole site is a browser window. Each unit is a coloured tab (as in the
+  unit 3 slides), the address bar spells the current page as protocol / domain / path / page
+  (the colours of the URL lesson), and code is shown as a dark editor card next to its result.
+  Memory device: yellow "highlighter" for key terms, taken from the yellow HTML block on the unit 1 cover.
+  Type: Mitr (round, friendly display) + IBM Plex Sans Thai (body) + JetBrains Mono (code).
+*/
+:root{
+  --bg:#F2F4FF; --chrome:#DDE2FA; --surface:#FFFFFF; --surface-2:#E8ECFF; --ink:#101638; --ink-2:#444B73; --line:#C9D0F0;
+  --edge:#101638; --edge-shadow:#101638;
+  --hi:#FFC914; --on-hi:#101638;
+  --u1:#2457E6; --u2:#7440F0; --u3:#D93832;
+  --u1-soft:#DCE6FF; --u2-soft:#E8DFFF; --u3-soft:#FFDFDC;
+  --ok:#0B8F7F; --ok-soft:#D2F3ED; --warn-soft:#FFF0BF; --bad:#C92F3B; --bad-soft:#FFDFE2;
+  --code-bg:#0E1334; --code-ink:#E9ECFF; --code-line:#232B63;
+  --c-tag:#FF93A8; --c-attr:#FFD36B; --c-str:#7BE3B5; --c-ent:#8FB6FF; --c-cm:#8189B8;
+  --f-display:'Mitr','Noto Sans Thai','Sarabun',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans Thai','Noto Sans Thai','Sarabun',system-ui,sans-serif;
+  --f-code:'JetBrains Mono','IBM Plex Sans Thai','Noto Sans Thai',ui-monospace,Menlo,Consolas,monospace;
+  --k-proto:#D9650A; --k-dom:#0B8F5F; --k-path:#D6338A; --k-page:#2457E6;
+  --hh:104px;
+  color-scheme:light;
+}
+
+/* dark theme: switched on by the "โหมดมืด" switch in the header */
+:root[data-theme="dark"]{
+  --bg:#0A0F2C; --chrome:#0F1642; --surface:#131A47; --surface-2:#1B2459; --ink:#EDF0FF; --ink-2:#AEB5DE; --line:#2B3473;
+  --edge:#EDF0FF; --edge-shadow:#3A47B0;
+  --hi:#FFD23F;
+  --u1:#7AA2FF; --u2:#B39BFF; --u3:#FF8A83;
+  --u1-soft:#1B2A66; --u2-soft:#2D2268; --u3-soft:#4A2030;
+  --ok:#4FD8C4; --ok-soft:#10393A; --warn-soft:#4A3F12; --bad:#FF7B87; --bad-soft:#4A1F2A;
+  --code-bg:#080C25; --code-ink:#E9ECFF; --code-line:#232B63;
+  --k-proto:#FFA760; --k-dom:#5FE0A5; --k-path:#FF8FC5; --k-page:#7AA2FF;
+  color-scheme:dark;
+}
+:root[data-theme="dark"] .steps li::before,
+:root[data-theme="dark"] .urlfig button[aria-pressed="true"],
+:root[data-theme="dark"] .unitcard .uh,
+:root[data-theme="dark"] .outcomes .n,
+:root[data-theme="dark"] .acard .code-id,
+:root[data-theme="dark"] .tact .code-id,
+:root[data-theme="dark"] .trail .no,
+:root[data-theme="dark"] .toc a.ls[aria-current="page"] .no{color:#0A0F2C}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+input[type=range]{accent-color:var(--u,var(--u1))}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.8 var(--f-body);-webkit-text-size-adjust:100%;overflow-wrap:anywhere}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--chrome);z-index:30}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:500;line-height:1.35;margin:0;text-wrap:balance;color:var(--ink)}
+h1{font-size:clamp(1.9rem,4.5vw,2.8rem)}
+h2{font-size:clamp(1.4rem,3vw,1.85rem);margin-top:2.6rem;margin-bottom:.7rem}
+h3{font-size:1.2rem;margin-top:1.9rem;margin-bottom:.5rem}
+p{margin:.7em 0}
+a{color:var(--u1);text-underline-offset:3px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ul,ol{padding-left:1.3em;margin:.6em 0}
+li{margin:.25em 0}
+hr.sep{border:0;border-top:1.5px dashed var(--line);margin:2rem 0}
+.hl{background:linear-gradient(transparent 58%,var(--hi) 58% 94%,transparent 94%);padding:0 .12em;font-weight:600}
+.u1{--u:var(--u1);--u-soft:var(--u1-soft)}
+.u2{--u:var(--u2);--u-soft:var(--u2-soft)}
+.u3{--u:var(--u3);--u-soft:var(--u3-soft)}
+.u0{--u:var(--ok);--u-soft:var(--ok-soft)}
+code,.mono{font-family:var(--f-code);font-size:.86em}
+code.lg{white-space:normal!important}
+p code,li code,dd code,td code,th code,.callout code,h2 code,h3 code{background:var(--surface-2);color:var(--ink);padding:.08em .42em;border-radius:6px;white-space:nowrap}
+
+/* ---------- browser chrome ---------- */
+.chrome{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--chrome);border-bottom:1.5px solid var(--line)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;align-items:center;gap:14px;padding-block:10px 6px}
+.dots{display:flex;gap:6px}
+.dots i{width:11px;height:11px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#FF5F57}.dots i:nth-child(2){background:#FEBC2E}.dots i:nth-child(3){background:#28C840}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:500 1.05rem/1.2 var(--f-display);white-space:nowrap}
+.brand .logo{width:34px;height:34px;border-radius:9px;background:var(--hi);color:var(--on-hi);display:grid;place-items:center;font:600 .82rem var(--f-code);border:2px solid var(--edge);box-shadow:2px 2px 0 var(--edge-shadow)}
+.addr{flex:1;min-width:0;display:flex;align-items:center;gap:0;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:4px 16px;font:400 .88rem/1.6 var(--f-code);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.addr .p{color:var(--k-proto)}.addr .d{color:var(--k-dom)}.addr .pa{color:var(--k-path)}.addr .w{color:var(--k-page)}
+.tools{display:flex;align-items:center;gap:10px;margin-left:auto}
+.themesw{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:3px 12px 3px 4px;cursor:pointer;color:var(--ink-2);font:500 .85rem/1.4 var(--f-body);white-space:nowrap}
+.themesw .knob{width:34px;height:20px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.themesw .knob::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1.5px var(--ink-2);transition:transform .15s}
+.themesw[aria-checked="true"]{color:var(--ink)}
+.themesw[aria-checked="true"] .knob{background:var(--hi)}
+.themesw[aria-checked="true"] .knob::after{transform:translateX(14px);background:var(--ink);box-shadow:none}
+.ring{--p:0;width:36px;height:36px;border-radius:50%;background:conic-gradient(var(--hi) calc(var(--p)*1%),var(--surface) 0);display:grid;place-items:center;border:1.5px solid var(--line);font:600 .68rem var(--f-code);color:var(--ink);cursor:pointer;padding:0}
+.ring span{width:26px;height:26px;border-radius:50%;background:var(--chrome);display:grid;place-items:center}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-top:4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;display:flex;align-items:center;gap:8px;padding:9px 18px 8px;border:1.5px solid transparent;border-bottom:0;border-radius:14px 14px 0 0;background:transparent;color:var(--ink-2);font:500 .95rem/1.4 var(--f-body);white-space:nowrap;cursor:pointer;margin-bottom:-1.5px}
+.tab i{width:10px;height:10px;border-radius:50%;background:var(--u,var(--ink-2));flex:none}
+.tab:hover{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.tab[aria-current="page"]{background:var(--bg);color:var(--ink);border-color:var(--line);font-weight:600}
+@media (max-width:760px){
+  .dots{display:none}
+  .bar{gap:6px 8px;flex-wrap:wrap}
+  .addr{order:3;flex:1 1 100%;font-size:.76rem;padding:1px 12px}
+  .brand{flex:1 1 0;min-width:0;gap:8px;font-size:.9rem}
+  .brand .logo{width:30px;height:30px;flex:none}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tools{flex:none;gap:8px}
+  .ring{width:32px;height:32px}.ring span{width:23px;height:23px}
+  .themesw{padding-right:9px;font-size:.74rem;gap:5px}
+  .themesw .knob{width:30px}
+  .themesw[aria-checked="true"] .knob::after{transform:translateX(10px)}
+}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding-block:28px 56px}
+.side{display:none}
+@media (min-width:1040px){
+  .shell.has-side{grid-template-columns:268px minmax(0,1fr);gap:48px}
+  .shell.has-side .side{display:block;position:sticky;top:calc(var(--hh) + 20px);align-self:start;max-height:calc(100vh - var(--hh) - 40px);overflow:auto;padding-right:6px}
+  .mobile-toc{display:none!important}
+}
+.mobile-toc{margin-bottom:16px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);padding:2px 14px}
+.mobile-toc summary{cursor:pointer;font-weight:600;padding:10px 0}
+.toc h4{font:600 .95rem/1.4 var(--f-body);margin:18px 0 6px;display:flex;align-items:center;gap:8px;color:var(--ink)}
+.toc h4 i{width:10px;height:10px;border-radius:50%;background:var(--u);display:block}
+.toc a{display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:.95rem;line-height:1.5;cursor:pointer}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a[aria-current="page"]{background:var(--u-soft);color:var(--ink);font-weight:600}
+.toc a .tick{margin-left:auto;color:var(--ok);font-weight:700;opacity:0}
+.toc a.done .tick{opacity:1}
+.toc a.uh{margin-top:16px;padding:8px 10px;background:var(--u-soft);color:var(--ink);font:600 .95rem/1.45 var(--f-body);align-items:center}
+.toc a.uh:first-child{margin-top:0}
+.toc a.uh:hover{background:var(--u-soft);filter:brightness(.97)}
+.toc a.uh[aria-current="page"]{box-shadow:inset 0 0 0 2px var(--u)}
+.toc a.uh .dot{width:10px;height:10px;border-radius:50%;background:var(--u);flex:none}
+.toc a.uh em{margin-left:auto;font:600 .74rem var(--f-code);font-style:normal;color:var(--ink-2);white-space:nowrap}
+.toc a .no{flex:none;width:22px;height:22px;border-radius:50%;background:var(--u-soft);color:var(--ink);display:grid;place-items:center;font:600 .72rem var(--f-code);margin-top:.12em;font-style:normal}
+.toc a[aria-current="page"] .no{background:var(--u);color:#fff}
+.toc a.as{padding-left:30px;font-size:.9rem;line-height:1.45}
+.toc a .bx{flex:none;width:9px;height:9px;border:2px solid var(--u);border-radius:3px;transform:rotate(45deg);margin:.5em 7px 0 8px}
+.toc a .bx.qz{background:var(--u)}
+.toc a[aria-current="page"] .bx{background:var(--u)}
+.toc a .lbx{display:block;font:600 .72rem/1.4 var(--f-code);color:var(--u)}
+.toc a.qs{margin-bottom:2px}
+.view{min-width:0}
+.col{max-width:820px}
+.view:focus{outline:none}
+
+/* ---------- headings of a lesson ---------- */
+.l-head{margin-bottom:1.4rem}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:3px 14px 3px 10px;border-radius:999px;background:var(--u-soft);color:var(--ink);font:500 .88rem/1.7 var(--f-body)}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--u);display:block}
+.l-head h1{margin:.5rem 0 .4rem}
+.lead{font-size:1.15rem;color:var(--ink-2);max-width:62ch}
+.badge-extra{display:inline-block;margin-left:8px;padding:1px 10px;border-radius:999px;background:var(--hi);color:var(--on-hi);font:600 .78rem/1.7 var(--f-body)}
+.l-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:3rem;padding-top:1.5rem;border-top:1.5px dashed var(--line)}
+.l-foot .sp{flex:1}
+.l-foot .btn{white-space:normal;text-align:left}
+@media (max-width:640px){.l-foot .sp{display:none}.l-foot .btn{flex:1 1 100%}}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:.55em 1.15em;border-radius:999px;border:2px solid var(--edge);background:var(--hi);color:var(--on-hi);font:600 .95rem/1.5 var(--f-body);cursor:pointer;text-decoration:none;box-shadow:3px 3px 0 var(--edge-shadow);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge-shadow)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--edge-shadow)}
+.btn.ghost{background:var(--surface);color:var(--ink)}
+.btn.small{padding:.3em .9em;font-size:.85rem;box-shadow:2px 2px 0 var(--edge-shadow)}
+.btn[aria-pressed="true"]{background:var(--ok);color:#fff;border-color:var(--edge)}
+.btn svg{width:16px;height:16px;flex:none}
+
+/* ---------- content blocks ---------- */
+.callout{border-radius:14px;padding:12px 18px;margin:1.2rem 0;background:var(--u-soft);color:var(--ink)}
+.callout>:first-child{margin-top:0}.callout>:last-child{margin-bottom:0}
+.callout .lb{display:inline-block;font-weight:700;margin-right:.5em}
+.callout.tip{background:var(--ok-soft);--u:var(--ok)}
+.callout.warn{background:var(--warn-soft)}
+.callout.err{background:var(--bad-soft)}
+.callout.task{background:var(--surface);border:2px dashed var(--edge)}
+.callout.extra{background:var(--warn-soft)}
+.spec{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 18px;margin:1rem 0;padding:14px 20px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px}
+.spec dt{font-weight:600;color:var(--ink-2)}
+.spec dd{margin:0}
+@media (max-width:560px){.spec{grid-template-columns:minmax(0,1fr);gap:2px}.spec dd{margin-bottom:10px}}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;margin:1.2rem 0}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px 20px;min-width:0}
+.card h3,.card h4{margin:0 0 .35rem;font-size:1.05rem}
+.card p{margin:.3em 0;font-size:.98rem}
+.card.u{border-top:6px solid var(--u)}
+table.tbl{border-collapse:collapse;width:100%;background:var(--surface);border-radius:12px;overflow:hidden;font-size:.97rem}
+table.tbl th,table.tbl td{padding:8px 14px;border:1px solid var(--line);text-align:left;vertical-align:top}
+table.tbl th{background:var(--surface-2);font-weight:600}
+.scroll-x{overflow-x:auto;border-radius:12px}
+.steps{list-style:none;padding:0;margin:1.2rem 0;counter-reset:s;display:grid;gap:12px}
+.steps li{counter-increment:s;position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px 14px 66px;margin:0}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:12px;width:36px;height:36px;border-radius:50%;background:var(--u);color:#fff;display:grid;place-items:center;font:600 1rem var(--f-display)}
+.steps li b{display:block;font-family:var(--f-display);font-weight:500}
+.fig{margin:1.4rem 0;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px}
+.fig figcaption{font-size:.92rem;color:var(--ink-2);margin-top:10px}
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;margin:1rem 0}
+.term{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:12px 16px}
+.term h4{font:600 1rem/1.4 var(--f-code);margin:0 0 4px;color:var(--ink)}
+.term p{margin:0;font-size:.95rem;line-height:1.65}
+.term .en{color:var(--ink-2);font-weight:400;font-size:.82rem}
+
+/* ---------- syntax colours + code ---------- */
+.code{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:14px;font:400 .88rem/1.7 var(--f-code);padding:14px 16px;overflow:auto;white-space:pre;tab-size:2;min-width:0}
+.code code{font:inherit;background:none;color:inherit;padding:0;white-space:inherit}
+.code .t{color:var(--c-tag)}.code .a{color:var(--c-attr)}.code .s{color:var(--c-str)}.code .e{color:var(--c-ent)}.code .c{color:var(--c-cm)}
+.ex{margin:1.2rem 0;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.ex-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 16px;background:var(--surface-2);border-bottom:1.5px solid var(--line)}
+.ex-top b{font:500 .95rem var(--f-body);margin-right:auto}
+.ex-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
+.ex-body.nores{grid-template-columns:minmax(0,1fr)}
+.ex.stack .ex-body{grid-template-columns:minmax(0,1fr)}
+.ex.stack .ex-result{border-left:0;border-top:1.5px solid var(--line)}
+.ex-body .code{border-radius:0;max-height:420px}
+.ex-result{border-left:1.5px solid var(--line);display:flex;flex-direction:column;min-width:0;background:#fff}
+.ex-result .rb{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#E9ECF8;color:#444B73;font:500 .78rem var(--f-body);border-bottom:1px solid #D2D7EE}
+.ex-result .rb i{width:8px;height:8px;border-radius:50%;background:#B7BEE0;display:block}
+.ex-result iframe{width:100%;height:var(--h,190px);border:0;background:#fff;display:block}
+@media (max-width:760px){.ex-body{grid-template-columns:minmax(0,1fr)}.ex-result{border-left:0;border-top:1.5px solid var(--line)}}
+
+/* ---------- interactive figures ---------- */
+.urlfig{font:500 clamp(.85rem,2.6vw,1.15rem)/1.4 var(--f-code);display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px}
+.urlfig button{font:inherit;border:2px solid var(--c);background:transparent;color:var(--ink);border-radius:10px;padding:6px 10px;cursor:pointer;word-break:break-all;text-align:left}
+.urlfig button[aria-pressed="true"]{background:var(--c);color:#fff}
+.urlnote{background:var(--surface-2);border-radius:12px;padding:10px 16px;min-height:3.6em;margin:0}
+.mock{border:2px solid var(--edge);border-radius:14px;overflow:hidden;background:#fff;color:#16193a;box-shadow:4px 4px 0 var(--edge-shadow)}
+.mock button{all:unset;display:block;width:100%;box-sizing:border-box;cursor:pointer;padding:14px 16px;text-align:left;font:500 .95rem/1.5 var(--f-body);position:relative}
+.mock button:focus-visible{outline:3px solid var(--hi);outline-offset:-3px}
+.mock .m-head{background:#DCE6FF;border-bottom:2px dashed #2457E6}
+.mock .m-body{background:#fff;min-height:120px}
+.mock .m-foot{background:#222a55;color:#fff;border-top:2px dashed #FFC914}
+.mock button[aria-pressed="true"]{box-shadow:inset 0 0 0 4px #FFC914}
+.mock small{display:block;opacity:.75;font-weight:400}
+.sitemap{display:flex;flex-direction:column;align-items:center;gap:0}
+.sitemap .node{background:var(--u-soft);border:2px solid var(--u);border-radius:12px;padding:6px 14px;font:500 .9rem/1.5 var(--f-code);text-align:center}
+.sitemap .kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;width:100%;margin-top:22px;position:relative}
+.sitemap .kids::before{content:"";position:absolute;left:10%;right:10%;top:-12px;border-top:2px solid var(--u)}
+.sitemap .kids .node{position:relative;font-size:.8rem}
+.sitemap .kids .node::before{content:"";position:absolute;left:50%;top:-12px;height:10px;border-left:2px solid var(--u)}
+.sitemap .root::after{content:"";display:block}
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.sw{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);cursor:pointer;padding:0;text-align:left}
+.sw i{display:block;height:44px}
+.sw span{display:block;padding:4px 10px;font:500 .78rem/1.4 var(--f-code)}
+.mixer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:640px){.mixer{grid-template-columns:minmax(0,1fr)}}
+.mixer label{display:grid;grid-template-columns:2.2em minmax(0,1fr) 3em;gap:10px;align-items:center;font:500 .95rem var(--f-code)}
+.mixer input[type=range]{width:100%}
+.mixer .chipv{height:130px;border-radius:16px;border:2px solid var(--edge);display:grid;place-items:center;font:600 1.4rem var(--f-code)}
+.ctrl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:10px}
+.ctrl label{display:inline-flex;gap:8px;align-items:center;font-weight:500}
+.ctrl input[type=range]{width:140px}
+
+/* ---------- quiz ---------- */
+.q{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:16px 20px;margin:14px 0}
+.q h4{font:600 1.02rem/1.6 var(--f-body);margin:0 0 10px}
+.q .opts{display:grid;gap:8px}
+.q .opt{display:block;text-align:left;width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer}
+.q .opt:hover{border-color:var(--ink-2)}
+.q .opt.ok{background:var(--ok-soft);border-color:var(--ok)}
+.q .opt.no{background:var(--bad-soft);border-color:var(--bad)}
+.q .why{margin:10px 0 0;font-size:.97rem;background:var(--surface-2);border-radius:12px;padding:8px 14px}
+.score{font:500 1.2rem var(--f-display);margin:1rem 0}
+
+/* ---------- home ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:36px;align-items:center;padding-block:12px 24px}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.5rem);line-height:1.25;margin:10px 0 14px}
+.hero h1 mark{background:var(--hi);color:var(--on-hi);padding:0 .22em;border-radius:10px;border:2.5px solid var(--edge);box-shadow:4px 4px 0 var(--edge-shadow);display:inline-block;transform:rotate(-1.5deg);margin-left:.1em}
+.hero .tag{font:600 .9rem var(--f-code);color:var(--ink-2)}
+.hero .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0;padding:0;list-style:none}
+.facts li{margin:0;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:3px 14px;font-size:.92rem}
+.demo{background:var(--surface);border:2px solid var(--edge);border-radius:18px;box-shadow:6px 6px 0 var(--edge-shadow);overflow:hidden}
+.demo .dh{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--surface-2);border-bottom:2px solid var(--edge);font:500 .85rem var(--f-body)}
+.demo textarea{display:block;width:100%;height:132px;border:0;border-radius:0;resize:vertical;background:var(--code-bg);color:var(--code-ink);font:400 .9rem/1.7 var(--f-code);padding:12px 16px;white-space:pre;overflow:auto;tab-size:2}
+.demo iframe{display:block;width:100%;height:150px;border:0;background:#fff;border-top:2px solid var(--edge)}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;margin:1.2rem 0}
+.unitcard{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:2px solid var(--edge);border-radius:20px;padding:0;overflow:hidden;box-shadow:5px 5px 0 var(--edge-shadow);text-align:left;cursor:pointer;color:var(--ink)}
+.unitcard .uh{background:var(--u);color:#fff;padding:12px 20px;font:500 1.15rem/1.4 var(--f-display)}
+.unitcard .ub{padding:10px 20px 18px;font-size:.97rem}
+.unitcard ul{list-style:none;padding:0;margin:6px 0 0}
+.unitcard li{display:flex;gap:8px;margin:3px 0;line-height:1.5}
+.unitcard li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--u);margin-top:.6em;flex:none}
+details.acc{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:2px 18px;margin:8px 0}
+details.acc summary{cursor:pointer;padding:10px 0;font-weight:600}
+.outcomes{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.outcomes li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:10px 16px;margin:0}
+.outcomes .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--u);color:#fff;display:grid;place-items:center;font:600 .9rem var(--f-code)}
+.outcomes .w{font-size:.82rem;color:var(--ink-2)}
+
+/* ---------- activities ---------- */
+.acts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;margin:1.2rem 0}
+.acard{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--surface);border:2px solid var(--edge);border-radius:18px;padding:14px 18px 16px;cursor:pointer;box-shadow:4px 4px 0 var(--edge-shadow);color:var(--ink);position:relative}
+.acard:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--edge-shadow)}
+.acard .code-id{align-self:flex-start;background:var(--u);color:#fff;font:600 .82rem var(--f-code);padding:2px 10px;border-radius:8px}
+.acard b{font:500 1.1rem/1.4 var(--f-display)}
+.acard small{color:var(--ink-2);line-height:1.5}
+.acard .done-mark{position:absolute;right:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--ok);color:#fff;display:none;place-items:center;font-weight:700}
+.acard.done .done-mark,.tact.done .done-mark,.tcard.done .done-mark{display:grid}
+.task-list{counter-reset:t;list-style:none;padding:0;margin:.8rem 0;display:grid;gap:10px}
+.task-list li{counter-increment:t;display:flex;gap:14px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:10px 16px;margin:0}
+.task-list li::before{content:counter(t);flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font:600 .85rem var(--f-code);margin-top:.15em}
+.fname{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--edge);border-radius:10px;padding:2px 12px;font:500 .92rem var(--f-code);box-shadow:2px 2px 0 var(--edge-shadow)}
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin:.6rem 0}
+.tg{background:var(--code-bg);color:var(--c-tag);font:500 .85rem var(--f-code);padding:2px 10px;border-radius:8px}
+.hint{margin:8px 0}
+.hint summary{cursor:pointer;font-weight:600}
+
+/* ---------- unit contents: hero + learning trail ---------- */
+.uhero{position:relative;overflow:hidden;background:var(--u-soft);border:2px solid var(--edge);border-radius:24px;box-shadow:6px 6px 0 var(--edge-shadow);padding:24px 28px 26px;margin-bottom:2.4rem}
+.uhero>*{position:relative}
+.uhero .big{position:absolute;right:10px;top:-26px;font:600 min(12rem,38vw)/1 var(--f-display);color:transparent;-webkit-text-stroke:3px var(--u);opacity:.5;pointer-events:none;user-select:none;-webkit-user-select:none}
+.uhero h1{margin:.55rem 0 .35rem;max-width:15em}
+.uhero .lead{margin:.2rem 0 0}
+.uh-stats{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.uh-stats li{margin:0;background:var(--surface);border:1.5px solid var(--edge);border-radius:999px;padding:1px 14px;font-size:.95rem}
+.uh-stats b{font:600 1rem var(--f-code)}
+.uh-prog{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:16px;font-size:.93rem;color:var(--ink-2)}
+.uh-bar{display:block;flex:0 1 260px;min-width:140px;height:12px;border-radius:999px;background:var(--surface);border:1.5px solid var(--edge);overflow:hidden}
+.uh-bar i{display:block;height:100%;width:var(--w,0%);background:var(--u);transition:width .3s}
+.uh-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+
+.trail{list-style:none;margin:0;padding:0}
+.tn{position:relative;margin:0;padding:0 0 26px 66px}
+.tn::before{content:"";position:absolute;left:21px;top:46px;bottom:2px;width:4px;border-radius:2px;background:var(--u);opacity:.4}
+.tn.end{padding-bottom:0}
+.tn.end::before{display:none}
+.tn .no{position:absolute;left:0;top:6px;width:46px;height:46px;border-radius:50%;background:var(--u);color:#fff;display:grid;place-items:center;font:600 1.2rem/1 var(--f-display);border:2px solid var(--edge);box-shadow:2px 2px 0 var(--edge-shadow)}
+.tcard{position:relative;display:block;width:100%;text-align:left;background:var(--surface);border:2px solid var(--edge);border-radius:18px;padding:14px 20px 16px;cursor:pointer;box-shadow:4px 4px 0 var(--edge-shadow);color:var(--ink);transition:transform .12s,box-shadow .12s}
+.tcard:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--edge-shadow)}
+.tcard .lbl{display:block;font:600 .82rem var(--f-code);color:var(--u)}
+.tcard b{display:block;font:500 1.3rem/1.4 var(--f-display);margin:2px 0 4px}
+.tcard small{display:block;color:var(--ink-2);font-size:.96rem;line-height:1.65}
+.tcard .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tcard .tags span{background:var(--code-bg);color:var(--c-tag);font:500 .8rem/1.6 var(--f-code);padding:1px 9px;border-radius:7px}
+.tcard .tags .more{background:transparent;color:var(--ink-2);padding-left:2px}
+.tcard.quiz{background:var(--u-soft)}
+.tcard .done-mark{position:absolute;right:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--ok);color:#fff;display:none;place-items:center;font-weight:700}
+.tacts{list-style:none;margin:16px 0 0 24px;padding:0 0 0 24px;border-left:3px dashed var(--u);display:grid;gap:14px}
+.tacts li{margin:0;position:relative}
+.tacts li::before{content:"";position:absolute;left:-24px;top:26px;width:22px;border-top:3px dashed var(--u)}
+.tact{position:relative;display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;background:var(--warn-soft);border:2px solid var(--edge);border-radius:16px;padding:10px 18px 12px;cursor:pointer;box-shadow:3px 3px 0 var(--edge-shadow);color:var(--ink);transition:transform .12s,box-shadow .12s}
+.tact:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge-shadow)}
+.tact .code-id{align-self:flex-start;background:var(--u);color:#fff;font:600 .8rem var(--f-code);padding:1px 10px;border-radius:8px}
+.tact b{font:500 1.08rem/1.4 var(--f-display)}
+.tact small{color:var(--ink-2);line-height:1.55}
+.tact .done-mark{position:absolute;right:12px;top:10px;width:26px;height:26px;border-radius:50%;background:var(--ok);color:#fff;display:none;place-items:center;font-weight:700}
+@media (max-width:560px){
+  .uhero{padding:20px 18px 22px;border-radius:20px}
+  .uhero .big{right:8px;top:-6px;font-size:6.5rem;-webkit-text-stroke-width:2px;opacity:.28}
+  .tn{padding-left:50px}
+  .tn::before{left:15px;top:38px}
+  .tn .no{width:34px;height:34px;top:8px;font-size:1rem}
+  .tcard{padding:12px 16px 14px}
+  .tacts{margin-left:10px;padding-left:16px}
+  .tacts li::before{left:-16px;width:14px}
+}
+
+/* ---------- one activity: note, text boxes, outside worksheet ---------- */
+.act-cta{display:flex;flex-wrap:wrap;gap:12px;margin:1rem 0}
+.fnote{margin:.2rem 0 0;color:var(--ink-2);font-size:.95rem}
+.qblock{margin:1rem 0;background:var(--surface);border:2px solid var(--edge);border-left:8px solid var(--u);border-radius:14px;padding:10px 20px 14px}
+.qblock figcaption{font:600 .88rem var(--f-code);color:var(--u);margin-bottom:2px}
+.qblock p{margin:.2em 0}
+.qblock.poem p{font:500 1.15rem/1.8 var(--f-display)}
+.extcard{margin:1.2rem 0;background:var(--surface);border:2px solid var(--edge);border-radius:18px;overflow:hidden;box-shadow:5px 5px 0 var(--edge-shadow)}
+.ext-top{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--surface-2);border-bottom:2px solid var(--edge)}
+.ext-site{background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:0 14px;font:500 .85rem/1.8 var(--f-code)}
+.ext-body{padding:16px 20px 20px}
+.ext-body>b{font:500 1.3rem/1.4 var(--f-display)}
+.ext-alt{display:block;margin-top:8px;color:var(--ink-2);font-size:.9rem}
+.urlbox{display:block;width:100%;margin-top:6px;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:5px 12px;font:400 .8rem var(--f-code);color:var(--ink-2)}
+
+/* ---------- code is shown for reading only: it cannot be selected or copied (the lab editor is the exception) ---------- */
+.view:not(#view-lab) :is(code,pre,.code,.ex-body,.addr),.ex{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.view:not(#view-lab) :is(code,pre,.code){cursor:default}
+.ex-result iframe{-webkit-user-select:none;user-select:none}
+
+/* ---------- lab ---------- */
+#view-lab{--lab-h:clamp(320px,56vh,520px)}
+#view-lab .l-head{margin-bottom:.6rem}
+#view-lab .l-head h1{font-size:1.75rem;margin:.25rem 0}
+#view-lab .lead{font-size:1rem;margin:.2rem 0}
+#view-lab .media{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;margin:10px 0}
+#view-lab .media .m,#view-lab .media b{flex:none}
+.lab-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
+@media (max-width:1000px){.lab-grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:2px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;min-width:0;box-shadow:5px 5px 0 var(--edge-shadow)}
+.filetabs{display:flex;gap:2px;overflow-x:auto;background:var(--surface-2);padding:6px 8px 0;border-bottom:2px solid var(--edge);scrollbar-width:thin}
+.ft{border:1.5px solid transparent;border-bottom:0;border-radius:10px 10px 0 0;background:transparent;padding:5px 12px;font:500 .85rem var(--f-code);white-space:nowrap;cursor:pointer;color:var(--ink-2)}
+.ft[aria-selected="true"]{background:var(--code-bg);color:var(--code-ink);border-color:var(--edge)}
+.newfile{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.newfile input{background:var(--surface);border:1.5px solid var(--edge);border-radius:10px;padding:5px 12px;font:500 .88rem var(--f-code);width:17em;max-width:100%}
+.newfile input::placeholder{color:var(--ink-2);opacity:.8}
+.editor textarea::placeholder{color:var(--c-cm);opacity:1}
+.editor{display:grid;grid-template-columns:auto minmax(0,1fr);background:var(--code-bg);height:var(--lab-h);min-height:300px;position:relative}
+.gut{margin:0;padding:12px 10px 32px 14px;color:var(--c-cm);font:400 .9rem/1.7 var(--f-code);text-align:right;overflow:hidden;user-select:none;border-right:1px solid var(--code-line);white-space:pre}
+.editor textarea{display:block;width:100%;height:100%;border:0;background:transparent;color:var(--code-ink);font:400 .9rem/1.7 var(--f-code);padding:12px 14px;resize:none;white-space:pre;overflow:auto;tab-size:2;caret-color:var(--hi)}
+.editor textarea:focus{outline:none}
+.editor:focus-within{box-shadow:inset 0 0 0 3px var(--hi)}
+.prev .rb{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface-2);border-bottom:2px solid var(--edge);font:500 .82rem var(--f-code)}
+.prev .rb .mono{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prev .rb .mono.stale{color:var(--bad)}
+.prev .rb .ti{background:#fff;color:#16193a;padding:2px 12px;border-radius:8px 8px 0 0;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--f-body)}
+.prev iframe{width:100%;height:var(--lab-h);border:0;background:#fff;display:block}
+.media{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.media .m{display:inline-flex;gap:8px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:2px 12px 2px 4px;font:500 .8rem var(--f-code)}
+.media .m img{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#fff}
+.media .m.up{padding-left:12px}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* ---------- reference ---------- */
+.ref-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:1rem 0}
+.ref-tools input[type=search]{flex:1;min-width:200px;background:var(--surface);border:2px solid var(--edge);border-radius:999px;padding:6px 16px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.pill{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 14px;cursor:pointer;font-size:.9rem}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.refrow td:first-child{font-family:var(--f-code);white-space:nowrap}
+.refrow{cursor:pointer}
+.refrow:hover td{background:var(--surface-2)}
+
+/* ---------- footer + toast ---------- */
+.foot{border-top:1.5px solid var(--line);background:var(--chrome);padding-block:26px 40px;font-size:.93rem;color:var(--ink-2)}
+.foot p{margin:.15em 0;line-height:1.7}
+.foot b{color:var(--ink);font-weight:600}
+.foot a{color:var(--ink-2)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:14px;font:500 .95rem/1.5 var(--f-body);max-width:min(92vw,560px);transition:.2s;z-index:50;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.empty{padding:20px;border:2px dashed var(--line);border-radius:14px;color:var(--ink-2);text-align:center}
+</style>
+<header class="chrome" id="chrome">
+  <div class="wrap">
+    <div class="bar">
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <a class="brand" href="#home" data-go="home"><span class="logo" aria-hidden="true">&lt;/&gt;</span><span>การสร้างเว็บเพจด้วย HTML</span></a>
+      <div class="addr" id="addr" role="img" aria-label="ที่อยู่เว็บไซต์ http://www.com22292.th/index.html"><span class="p">http://</span><span class="d">www.com22292.th</span><span class="pa">/</span><span class="w">index.html</span></div>
+      <div class="tools">
+        <button class="themesw" id="theme-sw" type="button" role="switch" aria-checked="false" aria-label="โหมดมืด"><span class="knob" aria-hidden="true"></span><span>โหมดมืด</span></button>
+        <button class="ring" id="ring" type="button" data-go="home" title="ความคืบหน้าของฉัน" aria-label="ความคืบหน้าของฉัน"><span>0</span></button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="เมนูหลัก">
+      <button class="tab" type="button" data-go="home" data-tab="home" style="--u:var(--hi)"><i></i>หน้าแรก</button>
+      <button class="tab u1" type="button" data-go="unit-1" data-tab="unit-1"><i></i>หน่วยที่ 1</button>
+      <button class="tab u2" type="button" data-go="unit-2" data-tab="unit-2"><i></i>หน่วยที่ 2</button>
+      <button class="tab u3" type="button" data-go="unit-3" data-tab="unit-3"><i></i>หน่วยที่ 3</button>
+      <button class="tab u0" type="button" data-go="acts" data-tab="acts"><i></i>กิจกรรม</button>
+      <button class="tab u0" type="button" data-go="lab" data-tab="lab"><i></i>ห้องทดลอง</button>
+      <button class="tab" type="button" data-go="ref" data-tab="ref" style="--u:var(--hi)"><i></i>สรุปแท็ก</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap shell" id="shell">
+<aside class="side toc" id="side" aria-label="สารบัญบทเรียน"></aside>
+<main id="main">
+<details class="mobile-toc" id="mtoc" hidden><summary>สารบัญบทเรียนและกิจกรรม</summary><div class="toc" id="mtoc-body"></div></details>
+<div id="gen"></div>
+<section class="view" id="view-home" tabindex="-1" hidden>
+  <div class="hero">
+    <div>
+      <div class="tag">ว22292 · ชั้นมัธยมศึกษาปีที่ 2</div>
+      <h1>การสร้างเว็บเพจด้วย <mark>HTML</mark></h1>
+      <p class="lead">เรียนให้จบในเว็บเดียว อ่านบทเรียน ดูโค้ดพร้อมผลลัพธ์ แล้วฝึกเขียนโค้ดเองในห้องทดลองได้ทันที</p>
+      <div class="cta">
+        <button class="btn" type="button" data-go="u1-1">เริ่มบทเรียนแรก</button>
+        <button class="btn ghost" type="button" data-go="lab">เปิดห้องทดลอง</button>
+      </div>
+      <ul class="facts">
+        <li>0.5 หน่วยกิต</li>
+        <li>เรียน 2 คาบ/สัปดาห์</li>
+        <li>คะแนน ระหว่างภาค : กลางภาค : ปลายภาค = 70 : 10 : 20</li>
+      </ul>
+    </div>
+    <div class="demo" aria-label="ตัวอย่างการเขียน HTML">
+      <div class="dh"><span class="dots" aria-hidden="true" style="display:flex"><i></i><i></i><i></i></span>ลองแก้โค้ดตรงนี้ได้เลย ผลลัพธ์เปลี่ยนทันที</div>
+      <textarea id="demo-code" spellcheck="false" aria-label="โค้ด HTML ตัวอย่าง"></textarea>
+      <iframe id="demo-frame" title="ผลลัพธ์ของโค้ดตัวอย่าง" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <h2>เส้นทางการเรียน 3 หน่วย</h2>
+  <div class="path">
+    <button class="unitcard u1" type="button" data-go="unit-1">
+      <span class="uh">หน่วยที่ 1 การเริ่มต้นกับ HTML</span>
+      <span class="ub">เว็บเพจทำงานอย่างไร และเริ่มเขียน HTML ด้วยมือตัวเองครั้งแรก
+        <ul><li>เว็บเพจและศัพท์เบื้องต้น</li><li>URL และโดเมนเนม</li><li>ส่วนประกอบของเว็บและขั้นตอนสร้างเว็บไซต์</li><li>เริ่มต้นกับ HTML</li></ul></span>
+    </button>
+    <button class="unitcard u2" type="button" data-go="unit-2">
+      <span class="uh">หน่วยที่ 2 การปรับแต่งเว็บเพจ</span>
+      <span class="ub">จัดข้อความ ใส่สี และแทรกรูปภาพให้หน้าเว็บสวยขึ้น
+        <ul><li>คำสั่งพื้นฐานและการจัดข้อความ</li><li>ตกแต่งตัวอักษร</li><li>การใส่สี</li><li>การแทรกรูปภาพและภาพพื้นหลัง</li></ul></span>
+    </button>
+    <button class="unitcard u3" type="button" data-go="unit-3">
+      <span class="uh">หน่วยที่ 3 เทคนิคในการสร้างเว็บ</span>
+      <span class="ub">ตาราง ลิงก์ และการเชื่อมหลายหน้าเป็นเว็บไซต์
+        <ul><li>การสร้างตาราง</li><li>การตกแต่งตาราง</li><li>การเชื่อมโยงเว็บเพจ</li><li>ไฟล์มัลติมีเดีย (เนื้อหาเสริม)</li></ul></span>
+    </button>
+  </div>
+
+  <h2>เครื่องมือช่วยเรียน</h2>
+  <div class="cards">
+    <div class="card u0 u"><h3>กิจกรรม <span data-acts-count></span> ชิ้น</h3><p>อ่านโจทย์ของแต่ละกิจกรรม แล้วไปเขียนโค้ดในห้องทดลองเพื่อทำต่อได้เลย</p><p><button class="btn small" type="button" data-go="acts">ดูกิจกรรมทั้งหมด</button></p></div>
+    <div class="card u0 u"><h3>ห้องทดลอง</h3><p>พื้นที่ฝึกเขียน HTML พิมพ์เองแล้วกด “แสดงผล” เพื่อดูผล และเพิ่มรูปจากเครื่องมาใช้ได้</p><p><button class="btn small" type="button" data-go="lab">เข้าห้องทดลอง</button></p></div>
+    <div class="card u0 u"><h3>สรุปแท็ก</h3><p>รวมแท็กและแอตทริบิวต์ทั้งหมดที่เรียนในวิชานี้ ค้นหาได้ในที่เดียว</p><p><button class="btn small" type="button" data-go="ref">เปิดสรุปแท็ก</button></p></div>
+  </div>
+
+  <h2>ผลการเรียนรู้ของรายวิชา</h2>
+  <ol class="outcomes">
+    <li class="u1"><span class="n">1</span><span>อธิบายถึงหลักการและขั้นตอนในการออกแบบเว็บไซต์ได้ <span class="w">(หน่วยที่ 1)</span></span></li>
+    <li class="u1"><span class="n">2</span><span>อธิบายถึงขั้นตอนวิธีการสร้างเอกสารภาษา HTML ได้ <span class="w">(หน่วยที่ 1)</span></span></li>
+    <li class="u1"><span class="n">3</span><span>อธิบายการใช้แท็กคำสั่งในการจัดเอกสารและจัดรูปแบบเอกสารเว็บเพจในรูปแบบต่างๆ ได้ <span class="w">(หน่วยที่ 1)</span></span></li>
+    <li class="u2"><span class="n">4</span><span>อธิบายถึงคำสั่งในการจัดรูปแบบตัวอักษรและสามารถจัดรูปแบบตัวอักษรให้กับเว็บเพจได้ <span class="w">(หน่วยที่ 2)</span></span></li>
+    <li class="u2"><span class="n">5</span><span>อธิบายถึงคำสั่งที่ใช้ในการใส่รูปภาพลงในเว็บเพจและสามารถใส่รูปภาพลงในเว็บเพจได้ <span class="w">(หน่วยที่ 2)</span></span></li>
+    <li class="u3"><span class="n">6</span><span>อธิบายรูปแบบคำสั่งในการสร้างตารางและสามารถสร้างตารางในเว็บเพจได้ <span class="w">(หน่วยที่ 3)</span></span></li>
+    <li class="u3"><span class="n">7</span><span>อธิบายถึงลักษณะการเชื่อมโยงเว็บเพจและสามารถสร้างการเชื่อมโยงไปยังตำแหน่งต่างๆ ได้ <span class="w">(หน่วยที่ 3)</span></span></li>
+    <li class="u3"><span class="n">8</span><span>อธิบายรูปแบบคำสั่งการใส่ไฟล์มัลติมีเดียและสามารถใส่ไฟล์มัลติมีเดียลงในเว็บเพจได้ <span class="w">(หน่วยที่ 3)</span></span></li>
+  </ol>
+
+  <details class="acc" style="margin-top:1.4rem">
+    <summary>คำอธิบายรายวิชา ว22292</summary>
+    <p>ศึกษาหลักการเขียนโปรแกรมเบื้องต้น การวิเคราะห์ขั้นตอนวิธีการแก้ปัญหา การเลือกซอฟต์แวร์ที่เหมาะสมกับลักษณะงาน การใช้ซอฟต์แวร์และอุปกรณ์ดิจิตอลมาช่วยในการนำเสนองาน และการใช้คอมพิวเตอร์ช่วยสร้างงานตามหลักการทำโครงงาน</p>
+    <p>ปฏิบัติการเกี่ยวกับการวิเคราะห์ขั้นตอนวิธีการแก้ปัญหา ลำดับการทำงาน ออกแบบโปรแกรม และเลือกใช้ภาษาที่ใช้ในการเขียนโปรแกรมคอมพิวเตอร์ ปฏิบัติเขียนโปรแกรมเบื้องต้น โดยใช้ภาษาคอมพิวเตอร์ สื่อสารข้อมูลผ่านระบบเครือข่าย การสืบค้น การเรียนรู้จากแหล่งเรียนรู้ทางอินเทอร์เน็ต</p>
+    <p>เพื่อให้มีความรู้ ความเข้าใจ เห็นคุณค่าของเทคโนโลยี และมีทักษะในการวิเคราะห์ ขั้นตอน วิธีการแก้ปัญหา สามารถลำดับการทำงาน ออกแบบโปรแกรม และเขียนโปรแกรมได้อย่างถูกต้อง รวมทั้งใช้คอมพิวเตอร์ช่วยสร้างชิ้นงานจากจินตนาการหรือประยุกต์ใช้เทคโนโลยีสารสนเทศ ในชีวิตประจำวันอย่างมีจิตสำนึก และความรับผิดชอบ</p>
+  </details>
+
+</section>
+<!-- ===================== หน่วยที่ 1 ===================== -->
+<section class="view col u1" id="view-u1-1" data-lesson="u1-1" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 1 · บทที่ 1</span>
+    <h1>เว็บเพจและศัพท์เบื้องต้น</h1>
+    <p class="lead">รู้จักเว็บเพจ ประโยชน์ในชีวิตประจำวัน และคำศัพท์ที่ควรรู้ก่อนสร้างเว็บ</p>
+  </div>
+
+  <h2>เว็บเพจคืออะไร</h2>
+  <div class="callout">
+    <span class="lb">นิยาม</span><span class="hl">เว็บเพจ</span> คือ “เอกสารที่ใช้ในการเผยแพร่ข้อมูลข่าวสาร” ซึ่งประกอบด้วย ข้อความ ภาพ เสียง และภาพยนตร์ ผ่านทางเครือข่ายอินเทอร์เน็ต
+  </div>
+  <div class="callout task">
+    <p><span class="lb">ลองคิดก่อน</span>นักเรียนคิดว่าเว็บเพจมีประโยชน์อะไรบ้างในชีวิตประจำวัน</p>
+    <details class="hint"><summary>ดูประโยชน์ของเว็บเพจ</summary>
+      <ul>
+        <li>ข่าวและเหตุการณ์ในปัจจุบัน</li>
+        <li>ข้อมูลความรู้และห้องสมุด</li>
+        <li>ประชาสัมพันธ์บริษัทและองค์กร</li>
+        <li>ความบันเทิง</li>
+        <li>การเงิน การลงทุน</li>
+        <li>ซื้อ-ขายสินค้าและบริการ</li>
+        <li>ดาวน์โหลดข้อมูล</li>
+        <li>บริการติดต่อสื่อสาร</li>
+      </ul>
+    </details>
+  </div>
+
+  <h2>เว็บเพจมาถึงหน้าจอเราได้อย่างไร</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 640 230" role="img" aria-label="แผนภาพ: เว็บเบราว์เซอร์ขอข้อมูลจากเว็บเซิร์ฟเวอร์ด้วย URL และเซิร์ฟเวอร์ส่งไฟล์ HTML กลับมา" style="width:100%;height:auto;display:block">
+      <defs><marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+      <g style="color:var(--ink)" font-family="IBM Plex Sans Thai, Noto Sans Thai, sans-serif">
+        <rect x="14" y="40" width="190" height="150" rx="16" fill="var(--u1-soft)" stroke="var(--u1)" stroke-width="2.5"/>
+        <text x="109" y="74" text-anchor="middle" font-size="19" font-weight="600" fill="currentColor">เครื่องของเรา</text>
+        <text x="109" y="104" text-anchor="middle" font-size="16" fill="currentColor">Web browser</text>
+        <text x="109" y="130" text-anchor="middle" font-size="14" fill="var(--ink-2)">แปลคำสั่ง HTML</text>
+        <text x="109" y="150" text-anchor="middle" font-size="14" fill="var(--ink-2)">แล้วแสดงเป็นเว็บเพจ</text>
+        <rect x="436" y="40" width="190" height="150" rx="16" fill="var(--u3-soft)" stroke="var(--u3)" stroke-width="2.5"/>
+        <text x="531" y="74" text-anchor="middle" font-size="19" font-weight="600" fill="currentColor">เครื่องให้บริการ</text>
+        <text x="531" y="104" text-anchor="middle" font-size="16" fill="currentColor">Web server</text>
+        <text x="531" y="130" text-anchor="middle" font-size="14" fill="var(--ink-2)">เก็บเว็บเพจ (ไฟล์ HTML)</text>
+        <text x="531" y="150" text-anchor="middle" font-size="14" fill="var(--ink-2)">และโปรแกรมจัดการ</text>
+        <line x1="214" y1="84" x2="426" y2="84" stroke="currentColor" stroke-width="2.5" marker-end="url(#arw)"/>
+        <text x="320" y="72" text-anchor="middle" font-size="14" fill="currentColor">ขอข้อมูลด้วย URL</text>
+        <line x1="426" y1="132" x2="214" y2="132" stroke="currentColor" stroke-width="2.5" marker-end="url(#arw)"/>
+        <text x="320" y="156" text-anchor="middle" font-size="14" fill="currentColor">ส่งไฟล์ HTML กลับมา</text>
+        <text x="320" y="214" text-anchor="middle" font-size="14" fill="var(--ink-2)">Upload = ส่งไฟล์ขึ้นไปเก็บ · Download = รับไฟล์ลงมาเก็บ</text>
+      </g>
+    </svg>
+    <figcaption>เมื่อเราพิมพ์ที่อยู่เว็บ เบราว์เซอร์จะเรียกขอข้อมูลจากเซิร์ฟเวอร์ แล้วนำไฟล์ HTML ที่ได้มาแสดงผล</figcaption>
+  </figure>
+
+  <h2>คำศัพท์เบื้องต้นเกี่ยวกับเว็บไซต์</h2>
+  <div class="terms">
+    <div class="term"><h4>Internet</h4><p>ระบบเครือข่ายคอมพิวเตอร์ที่ใหญ่ที่สุดในโลก เกิดจากการเชื่อมโยงของคอมพิวเตอร์หลายล้านเครื่องที่กระจายอยู่ตามที่ต่างๆ ในโลก</p></div>
+    <div class="term"><h4>WWW <span class="en">World Wide Web</span></h4><p>บริการข้อมูลที่อยู่ในรูปเอกสารแบบ Hypertext ภายในเอกสารมีจุดเชื่อมโยง (link) ไปยังเอกสารอื่นๆ ที่เกี่ยวข้อง เหมือนใยแมงมุม จึงเป็นที่มาของคำว่า Web</p></div>
+    <div class="term"><h4>HTTP <span class="en">HyperText Transfer Protocol</span></h4><p>โปรโตคอลสำหรับเปิดดูข้อมูลจาก www เรียกใช้โดยระบุ <code>http://</code> และตามด้วย URL ในช่อง Address ด้านบนของโปรแกรมเว็บบราวเซอร์</p></div>
+    <div class="term"><h4>เว็บเพจ <span class="en">Web Page</span></h4><p>คำที่ใช้เรียกหน้าเอกสารต่างๆ ที่อยู่ในรูปแบบไฟล์ HTML เปรียบเสมือนหน้ากระดาษแต่ละหน้าในนิตยสาร แต่ต่างกันตรงที่มีการเชื่อมโยง (Link) ให้คลิกไปหน้าอื่นได้</p></div>
+    <div class="term"><h4>โฮมเพจ <span class="en">Home Page</span></h4><p>คำที่ใช้เรียกหน้าแรกของเว็บไซต์ ประกอบด้วยเมนูและเรื่องราวต่างๆ คล้ายหน้าปกนิตยสาร ถ้าออกแบบให้สวยงามและน่าสนใจ ผู้ชมก็จะแวะเข้ามาเยี่ยมชมมากขึ้น</p></div>
+    <div class="term"><h4>เว็บไซต์ <span class="en">Web Site</span></h4><p>กลุ่มของเว็บเพจ ภายในเว็บไซต์ประกอบด้วยโฮมเพจและเว็บเพจ มักใช้เรียกเว็บที่มีขนาดใหญ่และจดทะเบียนชื่อ (Domain Name) ไว้แล้ว เช่น <code>http://www.yahoo.com</code></p></div>
+    <div class="term"><h4>Web browser</h4><p>โปรแกรมสำหรับเรียกดูเว็บเพจ โดยจะแปลคำสั่ง HTML แล้วประมวลผลเพื่อแสดงเป็นเว็บเพจ เช่น Chrome, Edge, Firefox, Safari และ Opera</p></div>
+    <div class="term"><h4>Web server</h4><p>เครื่องคอมพิวเตอร์ที่ให้บริการข้อมูลใน www เก็บเว็บเพจและโปรแกรมจัดการบริการ เมื่อผู้ใช้อยากดูเว็บเพจก็ใช้เบราว์เซอร์เรียกขอข้อมูลด้วยที่อยู่ที่เรียกว่า URL</p></div>
+    <div class="term"><h4>Upload</h4><p>การส่งข้อมูลจากเครื่องของเราไปยัง Web Server เมื่อสร้างเว็บเพจเสร็จแล้วต้องส่งไฟล์ไปเก็บไว้ที่เซิร์ฟเวอร์ โดยอาศัยโปรแกรม FTP</p></div>
+    <div class="term"><h4>Download</h4><p>การรับหรือบันทึกข้อมูลจากเครื่อง Server / Web Server ที่ให้บริการข้อมูลมาเก็บไว้ที่เครื่องคอมพิวเตอร์ของตนเอง</p></div>
+    <div class="term"><h4>Search engine</h4><p>เครื่องมือหรือโปรแกรมค้นหาเว็บต่างๆ โดยเก็บรายชื่อเว็บไซต์และข้อมูลที่เกี่ยวข้องไว้ใน server เพื่อให้ค้นหาและแสดงผลได้สะดวกรวดเร็ว เช่น google.com, bing.com, yahoo.com</p></div>
+  </div>
+  <div class="callout tip"><span class="lb">จำง่ายๆ</span>เว็บเพจ = หนึ่งหน้า · โฮมเพจ = หน้าแรก · เว็บไซต์ = ทุกหน้ารวมกัน</div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u1" id="view-u1-2" data-lesson="u1-2" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 1 · บทที่ 2</span>
+    <h1>URL และโดเมนเนม</h1>
+    <p class="lead">ที่อยู่ของเว็บเพจอ่านอย่างไร และชื่อเว็บไซต์ถูกตั้งขึ้นมาอย่างไร</p>
+  </div>
+
+  <h2>URL คือที่อยู่ของข้อมูลบนอินเทอร์เน็ต</h2>
+  <p><span class="hl">URL</span> (Uniform Resource Locator) คือข้อความที่บอกตำแหน่งของข้อมูลใน Internet ไม่ว่าจะเป็น Web page หรือไฟล์ประเภทต่างๆ เช่น รูปภาพ เสียง URL ประกอบด้วย <b>โปรโตคอล + domain name + directory ที่เก็บไฟล์ + ชื่อไฟล์</b></p>
+  <figure class="fig" data-pick>
+    <div class="urlfig" role="group" aria-label="ส่วนประกอบของ URL">
+      <button type="button" style="--c:var(--k-proto)" data-note="โปรโตคอล (Protocol) คือวิธีที่ใช้คุยกัน ที่นี่คือ http ซึ่งเป็นโปรโตคอลสำหรับเปิดดูข้อมูลจาก www">http://</button><button type="button" style="--c:var(--k-dom)" data-note="Domain name คือชื่อเว็บไซต์ ซึ่งไม่ซ้ำกับเว็บไซต์อื่น">www.enjoyday.net</button><button type="button" style="--c:var(--k-path)" data-note="Directory คือโฟลเดอร์ที่เก็บไฟล์ในเซิร์ฟเวอร์ ที่นี่คือโฟลเดอร์ webtutorial และโฟลเดอร์ย่อย css">/webtutorial/css/</button><button type="button" style="--c:var(--k-page)" data-note="ชื่อไฟล์ คือเว็บเพจที่ต้องการเปิด ไฟล์ HTML ลงท้ายด้วย .html">index.html</button>
+    </div>
+    <p class="urlnote" aria-live="polite">คลิกแต่ละส่วนของ URL เพื่ออ่านคำอธิบาย</p>
+    <figcaption>ตัวอย่าง URL จากสไลด์ ถ้าเปลี่ยนไฟล์ปลายทางเป็นรูปภาพ เช่น <code class="lg">http://www.enjoyday.net/images/logo.jpg</code> URL ก็ชี้ไปที่ไฟล์รูปได้เช่นกัน</figcaption>
+  </figure>
+  <div class="callout tip"><span class="lb">สังเกตแถบที่อยู่ด้านบนของเว็บนี้</span>แถบที่อยู่ในหัวเว็บใช้สี 4 สีแบบเดียวกับรูปนี้ เพื่อให้เห็นว่า protocol, domain, path และ webpage แยกกันอย่างไร</div>
+
+  <h2>โดเมนเนม (Domain Name)</h2>
+  <p>การติดต่อกันบนอินเทอร์เน็ตใช้ <b>ไอพีแอดเดรส (IP Address)</b> ในการทำงาน แต่เป็นตัวเลขยาวๆ ทำให้ผู้ใช้จำยาก จึงมีการใช้ <span class="hl">โดเมนเนม</span> หรืออินเทอร์เน็ตแอดเดรส (Internet Address) ซึ่งเป็นตัวอักษรที่จำง่ายมาใช้แทนไอพีแอดเดรส โดเมนเนมจะ<b>ไม่ซ้ำกัน</b> และมักตั้งให้สอดคล้องกับชื่อบริษัทหรือองค์กรเจ้าของ เพื่อสะดวกในการจดจำ เช่น บริษัท ดีแทค มีโดเมนเป็น <code>www.dtac.co.th</code></p>
+  <figure class="fig">
+    <p class="mono" style="font-size:1.5rem;margin:0">123.89.46.72</p>
+    <figcaption>ตัวอย่างไอพีแอดเดรส (IPv4) ประกอบด้วยตัวเลข 4 ชุด ชุดละ 8 บิต รวม 32 บิต ซึ่งจำยากกว่าชื่อโดเมนมาก</figcaption>
+  </figure>
+
+  <h2>ประเภทของโดเมนเนม</h2>
+  <p>โดเมนเนมเป็นชื่อของเว็บไซต์ที่เราเผยแพร่ข้อมูล ซึ่งจะไม่ซ้ำใครในโลก แบ่งเป็น 2 ประเภทตามลักษณะ คือ โดเมนเนม 2 ระดับ และโดเมนเนม 3 ระดับ</p>
+  <div class="cards">
+    <div class="card u u1"><h3>โดเมนเนม 2 ระดับ</h3><p class="mono" style="font-size:1.25rem"><span style="color:var(--k-dom)">dtac</span>.<span style="color:var(--k-proto)">com</span></p><p>คำย่อหลังเครื่องหมายจุด คือคำย่อของ<b>ประเภทองค์กร</b></p></div>
+    <div class="card u u2"><h3>โดเมนเนม 3 ระดับ</h3><p class="mono" style="font-size:1.25rem"><span style="color:var(--k-dom)">dtac</span>.<span style="color:var(--k-proto)">co</span>.<span style="color:var(--k-path)">th</span></p><p>คำย่อส่วนที่ 2 บอก<b>ประเภทองค์กร</b> ส่วนที่ 3 บอก<b>ประเทศ</b>ที่ตั้ง</p></div>
+  </div>
+
+  <h3>คำย่อประเภทองค์กรที่พบบ่อย (โดเมน 2 ระดับ)</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>คำย่อ</th><th>กลุ่มองค์กร</th><th>ตัวอย่าง</th></tr></thead>
+    <tbody>
+      <tr><td><code>.com</code></td><td>กลุ่มองค์การค้า (Commercial)</td><td class="mono">www.ibm.com</td></tr>
+      <tr><td><code>.edu</code></td><td>กลุ่มการศึกษา (Education)</td><td class="mono">www.chula.edu</td></tr>
+      <tr><td><code>.gov</code></td><td>กลุ่มองค์การรัฐบาล (Government)</td><td class="mono">www.whitehouse.gov</td></tr>
+      <tr><td><code>.mil</code></td><td>กลุ่มองค์การทหาร (Military)</td><td class="mono">www.dtic.mil</td></tr>
+      <tr><td><code>.net</code></td><td>กลุ่มองค์การบริการเครือข่าย (Network Services)</td><td class="mono">www.ksc.net</td></tr>
+      <tr><td><code>.org</code></td><td>กลุ่มองค์การอื่นๆ (Organizations)</td><td class="mono">www.greenpeace.org</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>คำย่อส่วนที่ 2 ของโดเมนไทย (โดเมน 3 ระดับ)</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>คำย่อ</th><th>กลุ่มองค์กร</th><th>ตัวอย่าง</th></tr></thead>
+    <tbody>
+      <tr><td><code>.ac</code></td><td>สถาบันการศึกษา (Academic)</td><td class="mono">www.sppk.ac.th</td></tr>
+      <tr><td><code>.co</code></td><td>องค์กรธุรกิจ (Commercial)</td><td class="mono">www.lazada.co.th</td></tr>
+      <tr><td><code>.or</code></td><td>องค์กรอื่นๆ ที่ไม่แสวงหากำไร (Organizations)</td><td class="mono">www.gsb.or.th</td></tr>
+      <tr><td><code>.go</code></td><td>หน่วยงานรัฐบาล (Government)</td><td class="mono">www.thaigov.go.th</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>คำย่อประเทศ (ส่วนที่ 3)</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>คำย่อ</th><th>ประเทศ</th><th>คำย่อ</th><th>ประเทศ</th></tr></thead>
+    <tbody>
+      <tr><td><code>.au</code></td><td>ออสเตรเลีย (Australia)</td><td><code>.jp</code></td><td>ญี่ปุ่น (Japan)</td></tr>
+      <tr><td><code>.fr</code></td><td>ฝรั่งเศส (France)</td><td><code>.th</code></td><td>ไทย (Thailand)</td></tr>
+      <tr><td><code>.hk</code></td><td>ฮ่องกง (Hong Kong)</td><td><code>.sg</code></td><td>สิงคโปร์ (Singapore)</td></tr>
+      <tr><td><code>.uk</code></td><td>อังกฤษ (United Kingdom)</td><td></td><td></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout task">
+    <p><span class="lb">ลองอ่านโดเมน</span>เว็บไซต์ของโรงเรียนอุตรดิตถ์ใช้โดเมน <code>utd.ac.th</code> ลองบอกว่าแต่ละส่วนหมายถึงอะไร</p>
+    <details class="hint"><summary>ดูคำตอบ</summary>
+      <p><b>utd</b> = ชื่อเว็บไซต์ (ตัวย่อของโรงเรียน) · <b>ac</b> = สถาบันการศึกษา (Academic) · <b>th</b> = ประเทศไทย ดังนั้นเป็นโดเมน 3 ระดับ</p>
+    </details>
+  </div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u1" id="view-u1-3" data-lesson="u1-3" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 1 · บทที่ 3</span>
+    <h1>ส่วนประกอบของเว็บเพจและขั้นตอนสร้างเว็บไซต์</h1>
+    <p class="lead">หน้าเว็บแบ่งเป็นกี่ส่วน และก่อนลงมือเขียนโค้ดต้องวางแผนอะไรบ้าง</p>
+  </div>
+
+  <h2>ส่วนประกอบของหน้าเว็บเพจ</h2>
+  <p>หน้าเว็บเพจแบ่งเป็น 3 ส่วน คลิกในภาพเพื่อดูว่าแต่ละส่วนมีหน้าที่อะไร</p>
+  <figure class="fig" data-pick>
+    <div class="mock">
+      <button type="button" class="m-head" data-note="ส่วนหัวของหน้า (Page Header) อยู่บริเวณบนสุดของหน้าเว็บเพจ เป็นส่วนที่แสดงชื่อเว็บไซต์ โลโก้ แบนเนอร์โฆษณา และลิงก์สำหรับข้ามไปยังหน้าเว็บอื่น">ส่วนหัว (Page Header)<small>ชื่อเว็บไซต์ · โลโก้ · แบนเนอร์ · ลิงก์ไปหน้าอื่น</small></button>
+      <button type="button" class="m-body" data-note="ส่วนของเนื้อหา (Page Body) อยู่บริเวณตอนกลางของหน้า เป็นส่วนที่แสดงเนื้อหาภายในหน้านั้น ประกอบด้วยข้อความ ข้อมูล ภาพเคลื่อนไหว เป็นต้น">ส่วนเนื้อหา (Page Body)<small>ข้อความ · ข้อมูล · ภาพ · ภาพเคลื่อนไหว</small></button>
+      <button type="button" class="m-foot" data-note="ส่วนท้ายกระดาษ (Page Footer) อยู่บริเวณด้านล่างสุดของหน้า ส่วนมากใช้สำหรับลิงก์ข้อความสั้นๆ เข้าใจง่าย หรือมีชื่อเจ้าของเว็บไซต์ และอีเมลแอดเดรสของผู้ดูแลเว็บไซต์สำหรับติดต่อ">ส่วนท้าย (Page Footer)<small>ลิงก์สั้นๆ · ชื่อเจ้าของเว็บ · อีเมลผู้ดูแล</small></button>
+    </div>
+    <p class="urlnote" aria-live="polite" style="margin-top:12px">คลิกที่ส่วนหัว ส่วนเนื้อหา หรือส่วนท้าย</p>
+  </figure>
+  <div class="callout task"><span class="lb">ลองทำ</span>เปิดเว็บไซต์ <a href="https://www.apple.com/th/" target="_blank" rel="noopener">https://www.apple.com/th/</a> แล้วลองบอกส่วนประกอบของเว็บเพจว่าส่วนหัว ส่วนเนื้อหา และส่วนท้ายอยู่ตรงไหน</div>
+
+  <h2>ขั้นตอนการสร้างเว็บไซต์</h2>
+  <p>การสร้างเว็บไซต์มี 7 ขั้นตอน เรียงลำดับตามนี้</p>
+  <ol class="steps">
+    <li><b>วางแผนจัดทำเว็บไซต์</b>กำหนดเนื้อหา แบ่งเนื้อหาเป็นหมวดหมู่ตามลำดับก่อนหลัง และรายละเอียดของเว็บที่จะจัดทำ เพื่อให้เห็นมุมมองคร่าวๆ ก่อนลงมือสร้าง</li>
+    <li><b>กำหนดโครงสร้างของเว็บ</b>วางผังว่ามีกี่หน้า หน้าไหนอยู่ตรงไหน เช่น เว็บโรงเรียนอาจมีหน้าประวัติ วิสัยทัศน์ บุคลากร เกียรติประวัติ และติดต่อ
+      <div class="sitemap" role="img" aria-label="ผังเว็บไซต์ หน้า index.html เชื่อมไปยัง history, vision, person, prestige, contact" style="margin-top:14px">
+        <div class="node">หน้าโฮมเพจ<br>index.html</div>
+        <div class="kids">
+          <div class="node">ประวัติโรงเรียน<br>history.html</div>
+          <div class="node">วิสัยทัศน์<br>vision.html</div>
+          <div class="node">บุคลากร<br>person.html</div>
+          <div class="node">เกียรติประวัติ<br>prestige.html</div>
+          <div class="node">ติดต่อโรงเรียน<br>contact.html</div>
+        </div>
+      </div>
+    </li>
+    <li><b>กำหนดการเชื่อมโยงระหว่างเว็บเพจ</b>กำหนดให้แต่ละหน้าเชื่อมโยงกลับไปกลับมาระหว่างหน้าต่างๆ ได้ จากตัวอย่าง หน้า <code>index.html</code> เชื่อมไปยังทุกหน้าได้ และแต่ละหน้าก็เชื่อมกลับมายังหน้า <code>index.html</code> ได้</li>
+    <li><b>ออกแบบหน้าเว็บเพจแต่ละหน้า</b>ออกแบบโครงสร้างว่าแต่ละหน้ามีรายละเอียดอะไรบ้าง ไม่ว่าจะเป็นข้อมูลหรือรูปภาพ
+      <div class="mock" style="margin-top:14px;color:#16193a;font-size:.85rem;line-height:1.5;box-shadow:none" aria-label="ผังหน้าเว็บ">
+        <div style="display:grid;grid-template-columns:130px minmax(0,1fr);grid-template-rows:auto auto auto;min-width:0">
+          <div style="grid-column:1/3;background:#DCE6FF;padding:8px 12px;border-bottom:2px dashed #2457E6">แถบหัวด้านบน · ชื่อเว็บ · ชื่อหน่วยงาน</div>
+          <div style="background:#F2F4FF;padding:8px 12px;border-right:2px dashed #2457E6">เมนูด้านซ้าย<br>ประวัติ<br>วิสัยทัศน์<br>บุคลากร</div>
+          <div style="padding:8px 12px">เนื้อหาเกี่ยวกับเว็บ · แนะนำเว็บ<div style="margin-top:8px;border:2px solid #FFC914;padding:14px 6px;text-align:center">รูปภาพ</div></div>
+          <div style="grid-column:1/3;background:#222a55;color:#fff;padding:8px 12px;border-top:2px dashed #FFC914">แถบด้านล่าง · ที่อยู่ของหน่วยงาน</div>
+        </div>
+      </div>
+    </li>
+    <li><b>สร้างเว็บเพจในแต่ละหน้า</b>เมื่อออกแบบแล้ว ก็สร้างหน้าเว็บตามที่ออกแบบไว้ ด้วยโปรแกรมประเภท Text Editor เพื่อเขียนชุดคำสั่ง HTML หรือโปรแกรมสำเร็จรูป เพื่อให้แต่ละหน้านำเสนอข้อความ รูปภาพ วีดีโอ และเสียง ตามที่ต้องการ</li>
+    <li><b>จดโดเมนเนมและหาพื้นที่ฝากเว็บไซต์</b>ตั้งชื่อเว็บไซต์ที่ไม่ซ้ำใคร และเช่าพื้นที่บนเว็บเซิร์ฟเวอร์เพื่อเก็บไฟล์เว็บ</li>
+    <li><b>อัพโหลดเว็บไซต์</b>ส่งไฟล์ทั้งหมดขึ้นไปเก็บบนเว็บเซิร์ฟเวอร์ ด้วยโปรแกรม FTP เช่น FileZilla</li>
+  </ol>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u1" id="view-u1-4" data-lesson="u1-4" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 1 · บทที่ 4</span>
+    <h1>เริ่มต้นกับการสร้างเว็บเพจด้วย HTML</h1>
+    <p class="lead">รู้จักภาษา HTML แท็กเปิด แท็กปิด และโครงสร้างของเอกสารที่ทุกเว็บเพจต้องมี</p>
+  </div>
+
+  <h2>HTML คืออะไร</h2>
+  <p><span class="hl">HTML</span> ย่อมาจาก <b>HyperText Markup Language</b> เป็นภาษาที่ใช้เขียนเพื่อกำกับข้อมูลต่างๆ และทำงานร่วมกับ web browser เป็นภาษาพื้นฐานที่สุดที่ใช้พัฒนาเว็บไซต์ ปัจจุบันพัฒนาภายใต้การดูแลขององค์กรชื่อ World Wide Web Consortium (W3C) และเวอร์ชันปัจจุบันคือเวอร์ชัน 5 หรือที่เรียกกันว่า <b>HTML5</b></p>
+
+  <h2>รูปแบบการเขียนของ HTML</h2>
+  <p>HTML เขียนในลักษณะ <b>TAG (แท็ก)</b> ซึ่งมีทั้งแท็กเปิดและแท็กปิด โดยแท็กปิดจะมีเครื่องหมาย slash (/) นำหน้าชื่อแท็ก</p>
+  <figure class="fig">
+    <div class="code" style="font-size:1.05rem;text-align:center"><span class="t">&lt;TAG&gt;</span> ข้อความหรือเนื้อหา <span class="t">&lt;/TAG&gt;</span></div>
+    <figcaption><code>&lt;TAG&gt;</code> คือแท็กเปิด · <code>&lt;/TAG&gt;</code> คือแท็กปิด (มี slash หน้าชื่อแท็ก)</figcaption>
+  </figure>
+  <script type="text/x-code" class="ex" data-title="ลองดูแท็ก p และ b" data-h="110">
+<p>นี่คือย่อหน้า มีคำที่เป็น <b>ตัวหนา</b> อยู่ด้วย</p>
+  </script>
+
+  <h2>โครงสร้างของ HTML</h2>
+  <p>เอกสาร HTML มีโครงสร้าง 2 ส่วน คือ <b>HEAD</b> สำหรับข้อมูลในส่วนหัวของเอกสาร เช่น ข้อความบน Title bar ของ web browser และ <b>BODY</b> สำหรับแสดงผลบนหน้าเอกสาร หรือหน้า web browser</p>
+  <script type="text/x-code" class="ex" data-title="โครงสร้างพื้นฐานของเว็บเพจ" data-h="120">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ข้อความบน Title bar</title>
+</head>
+<body>
+สิ่งที่อยู่ใน body จะแสดงบนหน้าเว็บ
+</body>
+</html>
+  </script>
+  <dl class="spec">
+    <dt><code>&lt;!DOCTYPE html&gt;</code></dt><dd>ประกาศว่าเอกสารนี้ใช้ HTML5</dd>
+    <dt><code>&lt;html&gt;</code></dt><dd>แท็กอันแรกสุด ครอบเนื้อหาทั้งเอกสาร และปิดด้วย <code>&lt;/html&gt;</code> เป็นแท็กสุดท้าย</dd>
+    <dt><code>&lt;head&gt;</code></dt><dd>ส่วนหัว (header) ของเอกสาร</dd>
+    <dt><code>&lt;body&gt;</code></dt><dd>ส่วนเนื้อหาที่แสดงบนหน้าเว็บ</dd>
+  </dl>
+
+  <h3>HEAD section</h3>
+  <p>ส่วน HEAD เป็นส่วนที่ใส่คำอธิบายเว็บเพจ เช่น <b>TITLE</b> หรือชื่อเรื่องของเอกสาร, KEYWORD สำหรับการค้นหา หรืออื่นๆ โดยเขียนแท็กในกลุ่มนี้ไว้ภายใน <code>&lt;head&gt;…&lt;/head&gt;</code></p>
+  <div class="callout tip"><span class="lb">เขียนภาษาไทยให้ถูกต้อง</span>ใส่ <code>&lt;meta charset="utf-8"&gt;</code> ไว้ใน head และตอนบันทึกไฟล์ใน Notepad ให้เลือก Encoding เป็น UTF-8 เพื่อไม่ให้ตัวอักษรไทยเพี้ยน</div>
+
+  <h3>BODY section</h3>
+  <p>ส่วน BODY เป็นส่วนที่จะแสดงผลไปยังหน้า web browser เช่น การแสดงรูปภาพ การแสดงเนื้อหา การสร้างจุดเชื่อมโยงหรือลิงก์ โดยเขียนแท็กในกลุ่มนี้ไว้ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></p>
+  <script type="text/x-code" class="ex" data-title="ตัวอย่าง body ที่มีข้อความและลิงก์" data-h="110">
+<body>
+<p>Hello..... HTML
+  <a href="https://www.w3.org">ไปที่เว็บไซต์ W3C</a>
+</p>
+</body>
+  </script>
+
+  <h2>เริ่มเขียน HTML โดยใช้ Notepad</h2>
+  <ol class="steps">
+    <li><b>เปิด Notepad</b>โปรแกรม Text Editor ที่มีมากับ Windows</li>
+    <li><b>พิมพ์โค้ด HTML</b>เริ่มจากโครงสร้างพื้นฐาน แล้วเติมข้อความลงในส่วน head และ body</li>
+    <li><b>บันทึกไฟล์</b>เลือก File &gt; Save As ตั้งชื่อไฟล์ให้ลงท้ายด้วย <code>.html</code> เลือก Save as type เป็น All Files และ Encoding เป็น UTF-8</li>
+    <li><b>เปิดดูในเว็บเบราว์เซอร์</b>ดับเบิลคลิกไฟล์ที่บันทึกไว้ เบราว์เซอร์จะแปลคำสั่งและแสดงเป็นหน้าเว็บ</li>
+    <li><b>แก้ไขแล้วดูผลใหม่</b>แก้โค้ดใน Notepad บันทึกไฟล์ แล้วกดรีเฟรชหน้าเว็บในเบราว์เซอร์</li>
+  </ol>
+  <script type="text/x-code" class="ex" data-title="ตัวอย่างเว็บเพจหน้าแรก" data-h="120">
+<html>
+<head>
+<meta charset="utf-8">
+<title>เว็บเพจหน้าแรกของผม</title>
+</head>
+<body>
+<h2>เว็บเพจหน้าแรกของผม</h2>
+</body>
+</html>
+  </script>
+  <div class="callout task" data-act-link="start"></div>
+  <div class="callout task" data-act-link="101"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+<!-- ===================== หน่วยที่ 2 ===================== -->
+<section class="view col u2" id="view-u2-1" data-lesson="u2-1" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 2 · บทที่ 1</span>
+    <h1>คำสั่งพื้นฐานและการจัดข้อความ</h1>
+    <p class="lead">ขึ้นบรรทัดใหม่ ขึ้นย่อหน้า จัดตำแหน่ง เว้นช่องว่าง และเส้นคั่น</p>
+  </div>
+
+  <h2>ทบทวนคำสั่งพื้นฐานในการสร้างเว็บเพจ</h2>
+  <dl class="spec">
+    <dt>1</dt><dd><code>&lt;html&gt;…&lt;/html&gt;</code></dd>
+    <dt>2</dt><dd><code>&lt;head&gt;…&lt;/head&gt;</code> และภายในมี <code>&lt;title&gt;…&lt;/title&gt;</code></dd>
+    <dt>3</dt><dd><code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+  </dl>
+  <div class="callout"><span class="lb">รู้ไว้</span>คำสั่งในหน่วยนี้หลายตัว เช่น <code>&lt;font&gt;</code> <code>&lt;center&gt;</code> และ <code>bgcolor</code> เป็นแท็กแบบดั้งเดิมของ HTML ปัจจุบันนิยมใช้ CSS แทน แต่เบราว์เซอร์ยังแสดงผลได้ และเหมาะกับการเรียนรู้พื้นฐานของเว็บเพจ</div>
+
+  <h2>การตัดคำขึ้นบรรทัดใหม่ <code>&lt;br&gt;</code></h2>
+  <p>คำสั่ง <code>&lt;br&gt;</code> เป็นคำสั่งขึ้นบรรทัดใหม่ โดยตัวคำสั่งใช้เพียงตัวเดียว ไม่ต้องใช้ 2 ตัวเหมือนคำสั่งอื่น</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;br&gt;</code> ข้อความที่ต้องการขึ้นบรรทัดใหม่</dd>
+  </dl>
+  <div class="callout warn"><span class="lb">ระวัง</span>ถ้าใส่ <code>&lt;br&gt;&lt;br&gt;</code> จะเป็นการขึ้นย่อหน้าใหม่</div>
+  <script type="text/x-code" class="ex" data-title="ขึ้นบรรทัดใหม่ด้วย br" data-h="130">
+<body>
+บรรทัดที่หนึ่ง<br>บรรทัดที่สอง
+<br><br>
+ย่อหน้าใหม่เริ่มตรงนี้
+</body>
+  </script>
+
+  <h2>การขึ้นย่อหน้าใหม่ <code>&lt;p&gt;</code></h2>
+  <p>คำสั่ง <code>&lt;p&gt;</code> ใช้สำหรับจัดวางตำแหน่งข้อความ (Paragraph Break หรือ Alignment) เพราะบางครั้งการใช้ <code>&lt;br&gt;</code> ก็ไม่ตรงตามรูปแบบที่ต้องการ เช่น ต้องการขึ้นบรรทัดใหม่และเว้นบรรทัด หรือจัดย่อหน้า จัดข้อความชิดซ้าย หรือให้อยู่กึ่งกลาง</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;p&gt;…&lt;/p&gt;</code></dd>
+  </dl>
+
+  <h3>การจัดตำแหน่งข้อความภายในย่อหน้าด้วย align</h3>
+  <p><code>align</code> เป็นแอตทริบิวต์ (attribute) ที่ใช้จัดตำแหน่งข้อความในย่อหน้าตามตำแหน่งที่ต้องการ</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;p&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;p align="ตำแหน่ง"&gt;…&lt;/p&gt;</code></dd>
+    <dt>ตำแหน่งที่ใช้</dt><dd><code>left</code> = ชิดซ้าย · <code>right</code> = ชิดขวา · <code>center</code> = กึ่งกลาง</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="จัดย่อหน้าด้วย align" data-h="190">
+<body>
+<p align="left">ข้อความชิดซ้าย</p>
+<p align="center">ข้อความอยู่กึ่งกลาง</p>
+<p align="right">ข้อความชิดขวา</p>
+</body>
+  </script>
+  <div class="callout task" data-act-link="102"></div>
+
+  <h2>เพิ่มช่องว่างข้อความด้วย <code>&amp;nbsp;</code></h2>
+  <p>ถ้าต้องการเว้นช่องว่างระหว่างข้อความ ทำได้ด้วยการแทรกอักขระพิเศษ <code>&amp;nbsp;</code> โดย 1 ชุดแทนหนึ่งช่องว่างตัวอักษร ถ้าอยากเว้นหลายช่องก็ใส่ซ้ำหลายชุด</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd>ใส่ <code>&amp;nbsp;</code> ตรงตำแหน่งที่ต้องการเว้นช่องว่าง (มากกว่า 1 ช่องก็ใส่ซ้ำ)</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="เว้นช่องว่างด้วย &amp;nbsp;" data-h="110">
+<body>
+&nbsp;&nbsp;&nbsp;&nbsp;ย่อหน้าที่เว้นช่องว่างหน้าข้อความ 4 ช่อง
+</body>
+  </script>
+
+  <h2>การจัดข้อความให้อยู่กึ่งกลางด้วย <code>&lt;center&gt;</code></h2>
+  <p><code>&lt;center&gt;</code> ใช้จัดกึ่งกลางเนื้อหาบนหน้าเว็บเพจ ไม่ว่าจะเป็นข้อความ รูปภาพ หรือตาราง แต่ในหน่วยนี้จะกล่าวถึงเฉพาะการจัดกึ่งกลางข้อความ</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;center&gt;…&lt;/center&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="จัดกึ่งกลางด้วย center" data-h="100">
+<body>
+<center>ข้อความนี้อยู่กึ่งกลางหน้า</center>
+</body>
+  </script>
+
+  <h2>การจัดรูปแบบเอกสารด้วย <code>&lt;pre&gt;</code></h2>
+  <p><code>&lt;pre&gt;</code> คือการระบุให้ข้อความที่อยู่ในแท็กแสดงผลแบบคงที่ คงรูปแบบเดิม ไม่ตัดเว้นวรรคส่วนเกินและการเว้นบรรทัดออก</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;pre&gt;…&lt;/pre&gt;</code> (ต้องมีแท็กปิด <code>&lt;/pre&gt;</code>)</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="เปรียบเทียบ p กับ pre" data-h="210">
+<body>
+<p>
+Name     Score
+Mali       95
+</p>
+<pre>
+Name     Score
+Mali       95
+</pre>
+</body>
+  </script>
+
+  <h2>การสร้างเส้นคั่นแนวนอน <code>&lt;hr&gt;</code></h2>
+  <p>เส้นคั่นแนวนอน (Horizontal Line) ใช้แยกเอกสารออกเป็นส่วนๆ ทำให้อ่านง่ายและดูเป็นระเบียบมากขึ้น</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;hr&gt;</code> (ตัวเดียว ไม่มีแท็กปิด)</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="เส้นคั่นระหว่างหัวข้อ" data-h="150">
+<body>
+<center>หัวข้อที่ 1</center>
+<hr>
+<center>หัวข้อที่ 2</center>
+<hr>
+</body>
+  </script>
+  <div class="callout task" data-act-link="103"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u2" id="view-u2-2" data-lesson="u2-2" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 2 · บทที่ 2</span>
+    <h1>การจัดและตกแต่งข้อความ</h1>
+    <p class="lead">หัวเรื่อง ลักษณะตัวอักษร ขนาด และรูปแบบฟอนต์</p>
+  </div>
+
+  <h2>การกำหนดหัวเรื่อง <code>&lt;hn&gt;</code></h2>
+  <p>คือการกำหนดขนาดตัวอักษรให้แตกต่างกันเพื่อแยกแต่ละหัวเรื่องอย่างชัดเจน กำหนดขนาดหัวเรื่องได้ถึง <b>6 ระดับ</b> (<code>&lt;h1&gt;</code> ใหญ่สุด ถึง <code>&lt;h6&gt;</code> เล็กสุด)</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;hn&gt;หัวเรื่อง&lt;/hn&gt;</code> โดย n คือเลข 1 ถึง 6</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="หัวเรื่อง 6 ระดับ" data-h="290">
+<body>
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+</body>
+  </script>
+
+  <h2>การกำหนดลักษณะตัวอักษร (Physical &amp; Logical)</h2>
+  <p>การกำหนดลักษณะตัวอักษรในเว็บเพจมี 2 วิธี</p>
+  <div class="cards">
+    <div class="card u u2"><h3>Physical</h3><p>กำหนดรูปแบบตัวอักษรอย่าง<b>เจาะจง</b> รูปแบบที่กำหนดจะไม่เปลี่ยนแปลง แม้ web browser ที่ใช้เปิดจะเป็นคนละตัวกัน</p></div>
+    <div class="card u u1"><h3>Logical</h3><p>กำหนดรูปแบบตัวอักษรตาม<b>ความหมาย</b>ของข้อความนั้น โดยผู้ใช้บราวเซอร์สามารถกำหนดรูปแบบตัวอักษรได้ด้วยตัวเอง</p></div>
+  </div>
+
+  <h3>1. แบบ Physical</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>ชื่อ</th><th>รูปแบบแท็ก</th><th>ตัวอย่าง</th></tr></thead>
+    <tbody>
+      <tr><td>Bold (ตัวหนา)</td><td><code>&lt;b&gt;…&lt;/b&gt;</code></td><td><b>This is Bold</b></td></tr>
+      <tr><td>Italic (ตัวเอียง)</td><td><code>&lt;i&gt;…&lt;/i&gt;</code></td><td><i>This is Italic</i></td></tr>
+      <tr><td>Underline (ขีดเส้นใต้)</td><td><code>&lt;u&gt;…&lt;/u&gt;</code></td><td><u>This is Underline</u></td></tr>
+      <tr><td>Strike (ขีดฆ่า)</td><td><code>&lt;s&gt;…&lt;/s&gt;</code></td><td><s>This is Strike</s></td></tr>
+      <tr><td>Typewriter Text (ตัวพิมพ์ดีด)</td><td><code>&lt;tt&gt;…&lt;/tt&gt;</code></td><td><tt>This is Typewriter Text</tt></td></tr>
+      <tr><td>Superscript (ตัวอักษรยก)</td><td><code>&lt;sup&gt;…&lt;/sup&gt;</code></td><td>This is <sup>Superscript</sup></td></tr>
+      <tr><td>Subscript (ตัวอักษรห้อย)</td><td><code>&lt;sub&gt;…&lt;/sub&gt;</code></td><td>This is <sub>Subscript</sub></td></tr>
+      <tr><td>Big (ตัวอักษรขนาดใหญ่)</td><td><code>&lt;big&gt;…&lt;/big&gt;</code></td><td><big>This is Big</big></td></tr>
+      <tr><td>Small (ตัวอักษรขนาดเล็ก)</td><td><code>&lt;small&gt;…&lt;/small&gt;</code></td><td><small>This is Small</small></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>2. แบบ Logical</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>ชื่อ</th><th>รูปแบบแท็ก</th><th>ตัวอย่าง</th></tr></thead>
+    <tbody>
+      <tr><td>Emphasis (ใช้เน้นข้อความคำพูดหรือสี)</td><td><code>&lt;em&gt;…&lt;/em&gt;</code></td><td><em>Emphasis</em></td></tr>
+      <tr><td>Strong (ข้อความที่สำคัญมาก)</td><td><code>&lt;strong&gt;…&lt;/strong&gt;</code></td><td><strong>Strong</strong></td></tr>
+      <tr><td>Computer Code (ข้อความที่เป็นโค้ดโปรแกรม)</td><td><code>&lt;code&gt;…&lt;/code&gt;</code></td><td><code>Computer Code</code></td></tr>
+      <tr><td>Citations (ข้อความที่อ้างอิงแหล่งที่มาของเนื้อหา)</td><td><code>&lt;cite&gt;…&lt;/cite&gt;</code></td><td><cite>Citations</cite></td></tr>
+      <tr><td>Definition (ข้อความที่เป็นคำนิยาม)</td><td><code>&lt;dfn&gt;…&lt;/dfn&gt;</code></td><td><dfn>Definition</dfn></td></tr>
+      <tr><td>Keyboard (ข้อความที่เหมือนแป้นพิมพ์)</td><td><code>&lt;kbd&gt;…&lt;/kbd&gt;</code></td><td><kbd>Keyboard</kbd></td></tr>
+      <tr><td>Samples (ข้อความที่เป็นตัวอย่าง)</td><td><code>&lt;samp&gt;…&lt;/samp&gt;</code></td><td><samp>Samples</samp></td></tr>
+      <tr><td>Example (ให้แท็ก HTML ปรากฏบนหน้าเว็บเพจ)</td><td><code>&lt;xmp&gt;…&lt;/xmp&gt;</code></td><td>ดูในตัวอย่างด้านล่าง</td></tr>
+      <tr><td>Address (กำหนดข้อความให้กับชื่อและที่อยู่)</td><td><code>&lt;address&gt;…&lt;/address&gt;</code></td><td><address style="margin:0">Address</address></td></tr>
+      <tr><td>bi-directional algorithm (ตัวอักษรเขียนย้อนกลับ)</td><td><code>&lt;bdo dir="rtl"&gt;…&lt;/bdo&gt;</code></td><td><bdo dir="rtl">bi-directional</bdo></td></tr>
+    </tbody>
+  </table></div>
+  <script type="text/x-code" class="ex" data-title="ลองใช้แท็กตัวอักษรหลายแบบ" data-h="240">
+<body>
+น้ำ = H<sub>2</sub>O และ 2<sup>3</sup> = 8<br>
+<b>ตัวหนา</b> <i>ตัวเอียง</i> <u>ขีดเส้นใต้</u> <s>ขีดฆ่า</s><br>
+<em>เน้นคำ</em> และ <strong>ข้อความสำคัญมาก</strong><br>
+<xmp><b>แท็กนี้จะแสดงเป็นตัวอักษร ไม่ถูกแปลคำสั่ง</b></xmp>
+</body>
+  </script>
+
+  <h2>การปรับเปลี่ยนขนาดตัวอักษร <code>&lt;font size&gt;</code></h2>
+  <p>ปรับขนาดตัวอักษรในหน้าเว็บเพจให้แตกต่างกันได้ ค่าที่ใช้ได้คือ <b>1 ถึง 7</b> (ค่าปกติของข้อความทั่วไปคือ 3)</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;font&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;font size="n"&gt;ข้อความ&lt;/font&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ขนาดตัวอักษร n มีค่าตั้งแต่ 1 ถึง 7</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ขนาดตัวอักษร 7 ถึง 1" data-h="260">
+<body>
+<font size="7">font size=7</font><br>
+<font size="6">font size=6</font><br>
+<font size="5">font size=5</font><br>
+<font size="4">font size=4</font><br>
+<font size="3">font size=3</font><br>
+<font size="2">font size=2</font><br>
+<font size="1">font size=1</font><br>
+</body>
+  </script>
+
+  <h2>การกำหนดรูปแบบตัวอักษร <code>&lt;font face&gt;</code></h2>
+  <p>กำหนดรูปแบบ (ชนิด) ของตัวอักษรที่จะแสดงผลได้ เช่น Angsana New, Cordia New, JasmineUPC</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;font&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;font face="ชื่อฟอนต์"&gt;ข้อความ&lt;/font&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ชื่อฟอนต์ที่ต้องการใช้งาน เช่น Angsana New, JasmineUPC</dd>
+  </dl>
+  <div class="callout warn"><span class="lb">ระวัง</span>ในสไลด์เดิมเขียนรูปแบบการใช้เป็น <code>&lt;font size="ชื่อฟอนต์"&gt;</code> ซึ่งไม่ถูกต้อง ต้องใช้แอตทริบิวต์ <code>face</code> สำหรับชื่อฟอนต์ ส่วน <code>size</code> ใช้กับขนาดตัวอักษร</div>
+  <h3>ตัวเลือกชื่อฟอนต์ที่ใช้ในวิชานี้</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>ชื่อฟอนต์</th><th>วิธีเขียน</th><th>หน้าตาตัวอักษร</th></tr></thead>
+    <tbody>
+      <tr><td>Angsana New</td><td><code>&lt;font face="Angsana New"&gt;</code></td><td><font face="Angsana New" size="5">ตัวอักษร Angsana New</font></td></tr>
+      <tr><td>Cordia New</td><td><code>&lt;font face="Cordia New"&gt;</code></td><td><font face="Cordia New" size="5">ตัวอักษร Cordia New</font></td></tr>
+      <tr><td>JasmineUPC</td><td><code>&lt;font face="JasmineUPC"&gt;</code></td><td><font face="JasmineUPC" size="5">ตัวอักษร JasmineUPC</font></td></tr>
+      <tr><td>Impact</td><td><code>&lt;font face="Impact"&gt;</code></td><td><font face="Impact" size="4">Impact font</font></td></tr>
+      <tr><td>Courier New</td><td><code>&lt;font face="Courier New"&gt;</code></td><td><font face="Courier New" size="4">Courier New font</font></td></tr>
+    </tbody>
+  </table></div>
+  <script type="text/x-code" class="ex" data-title="กำหนดฟอนต์ด้วย face" data-h="190">
+<body>
+<font face="Angsana New" size="5">กำหนดรูปแบบตัวอักษร Angsana New</font><br>
+<font face="JasmineUPC" size="5">กำหนดรูปแบบตัวอักษร JasmineUPC</font><br>
+<font face="Impact" size="5">Impact font</font><br>
+<font face="Courier New" size="4">Courier New font</font>
+</body>
+  </script>
+  <div class="callout tip"><span class="lb">เกร็ด</span>ฟอนต์ที่ระบุต้องมีอยู่ในเครื่องของคนที่เปิดดูเว็บ ถ้าไม่มี เบราว์เซอร์จะเปลี่ยนไปใช้ฟอนต์อื่นแทน จึงอาจเห็นผลต่างกันในแต่ละเครื่อง ชื่อ <code>JasmineUPC</code> ต้องเขียนติดกัน ไม่มีเว้นวรรค และตัวอักษรของฟอนต์นี้ค่อนข้างเล็ก จึงมักใช้คู่กับ <code>size="5"</code> ขึ้นไป</div>
+  <div class="callout task" data-act-link="104"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u2" id="view-u2-3" data-lesson="u2-3" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 2 · บทที่ 3</span>
+    <h1>การใส่สีด้วยชื่อสีและรหัสสี</h1>
+    <p class="lead">สีบนหน้าจอเกิดจากการผสมแสง 3 สี และเราเลือกสีให้เว็บเพจได้ 2 วิธี</p>
+  </div>
+
+  <h2>การใส่สีในเว็บเพจ</h2>
+  <p>สีในคอมพิวเตอร์เกิดขึ้นจากการผสมค่าสีโหมด <b>RGB</b> ซึ่งประกอบด้วยสี 3 สี คือ <span class="hl">Red</span> (แดง) <span class="hl">Green</span> (เขียว) และ <span class="hl">Blue</span> (น้ำเงิน) เราสามารถกำหนดค่าสีได้ 2 แบบ</p>
+  <div class="cards">
+    <div class="card u u2"><h3>1. ชื่อสี</h3><p>ระบุชื่อสีลงไปเลย เช่น <code>red</code> <code>blue</code> <code>yellow</code></p></div>
+    <div class="card u u3"><h3>2. ค่าสี</h3><p>ระบุเป็นเลขฐาน 16 (0-9 หรือ A-F) ทั้งหมด 3 ชุด ชุดละ 2 ตัว คือ แดง เขียว น้ำเงิน (RGB) และต้องเขียนหลังเครื่องหมาย <b>#</b> เช่น <code>#FFFFFF</code> ได้สีขาว, <code>#000000</code> ได้สีดำ</p></div>
+  </div>
+  <p>ในเลขฐาน 16 ตัว <b>0</b> มีค่าสีน้อยที่สุด และ <b>F</b> มีค่าสีมากที่สุด</p>
+
+  <h3>ลองผสมสี RGB</h3>
+  <figure class="fig" data-widget="mixer">
+    <div class="mixer">
+      <div>
+        <label>R<input type="range" min="0" max="255" value="255" data-ch="r" aria-label="ค่าสีแดง"><output>FF</output></label>
+        <label>G<input type="range" min="0" max="255" value="201" data-ch="g" aria-label="ค่าสีเขียว"><output>C9</output></label>
+        <label>B<input type="range" min="0" max="255" value="20" data-ch="b" aria-label="ค่าสีน้ำเงิน"><output>14</output></label>
+      </div>
+      <div class="chipv" data-out>#FFC914</div>
+    </div>
+    <figcaption>เลื่อนแถบเพื่อดูว่ารหัสสีเปลี่ยนไปอย่างไร ค่า 00 คือไม่มีสีนั้นเลย ส่วน FF คือสีนั้นเข้มที่สุด</figcaption>
+  </figure>
+
+  <h3>ชื่อสีมาตรฐาน 16 สี</h3>
+  <p>คลิกที่สีเพื่อดูรหัสสีที่ตรงกัน</p>
+  <div class="palette" id="named-colors" data-widget="named"></div>
+  <p class="urlnote" id="named-note" style="margin-top:10px" aria-live="polite">คลิกที่สีใดสีหนึ่ง</p>
+  <p>หาชุดสีสวยๆ ได้ที่เว็บไซต์ <a href="https://colorhunt.co/" target="_blank" rel="noopener">https://colorhunt.co/</a></p>
+
+  <h2>การใส่สีพื้นหลังและสีตัวอักษร <code>&lt;body bgcolor text&gt;</code></h2>
+  <p>กำหนดสีพื้นหลังของหน้าเว็บเพจและสีตัวอักษรได้ด้วยการกำหนดค่าสีให้แอตทริบิวต์ <code>bgcolor</code> (สีพื้นหลัง) และ <code>text</code> (สีตัวอักษร)</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;body bgcolor="รหัสสี/ชื่อสี" text="รหัสสี/ชื่อสี"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>รหัสสี เช่น <code>"#FFFFFF"</code> หรือชื่อสี เช่น <code>blue</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="สีพื้นหลังและสีตัวอักษร" data-h="110">
+<body bgcolor="#F1F6F5" text="red">
+สีแดงนะ ไม่ใช่สีอื่น
+</body>
+  </script>
+
+  <h2>การกำหนดสีตัวอักษรเฉพาะส่วน <code>&lt;font color&gt;</code></h2>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;font&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;font color="รหัสสี/ชื่อสี"&gt;ข้อความ&lt;/font&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>รหัสสี เช่น <code>"#FFFFFF"</code> หรือชื่อสี เช่น <code>blue</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="สีเฉพาะส่วนของข้อความ" data-h="110">
+<body bgcolor="blue">
+<font color="red">สีแดงนะ ไม่ใช่สีอื่น</font>
+<br>
+<font color="yellow">สีเหลืองนะ ไม่ใช่สีอื่น</font>
+</body>
+  </script>
+  <div class="callout warn"><span class="lb">อย่าลืม</span>แท็ก <code>&lt;font&gt;</code> ต้องปิดด้วย <code>&lt;/font&gt;</code> ทุกครั้ง ถ้าไม่ปิด สีจะลามไปถึงข้อความที่อยู่ข้างหลัง</div>
+
+  <h2>การกำหนดตัวอักษรวิ่ง <code>&lt;marquee&gt;</code></h2>
+  <p>ทำให้ข้อความเคลื่อนไหวบนหน้าเว็บเพจได้ โดยใช้แท็ก <code>&lt;marquee&gt;</code></p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ระหว่างแท็ก <code>&lt;body&gt;…&lt;/body&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;marquee&gt;ข้อความ&lt;/marquee&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ข้อความวิ่ง" data-h="90">
+<body>
+<marquee>ตัวอักษรวิ่งนะๆ</marquee>
+</body>
+  </script>
+
+  <h3>กำหนดทิศทางการวิ่ง direction</h3>
+  <p>เพิ่มแอตทริบิวต์ <code>direction</code> ในแท็กเปิด <code>&lt;marquee&gt;</code> เพื่อเลือกว่าข้อความจะวิ่งไปทางไหน ถ้าไม่ใส่ ข้อความจะวิ่งจากขวาไปซ้าย</p>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>คำสั่ง</th><th>ผลที่ได้</th></tr></thead>
+    <tbody>
+      <tr><td><code>direction="up"</code></td><td>วิ่งจากล่างขึ้นบน</td></tr>
+      <tr><td><code>direction="down"</code></td><td>วิ่งจากบนลงล่าง</td></tr>
+      <tr><td><code>direction="left"</code></td><td>วิ่งจากขวาไปซ้าย (ค่าปกติ)</td></tr>
+      <tr><td><code>direction="right"</code></td><td>วิ่งจากซ้ายไปขวา</td></tr>
+    </tbody>
+  </table></div>
+  <script type="text/x-code" class="ex" data-title="ข้อความวิ่ง 4 ทิศทาง" data-h="150">
+<marquee direction="up">HTML อักษรวิ่งแบบ วิ่งจากล่างขึ้นบน</marquee>
+<marquee direction="down">HTML อักษรวิ่งแบบ วิ่งจากบนลงล่าง</marquee>
+<marquee direction="left">HTML อักษรวิ่งแบบ วิ่งจากขวาไปซ้าย</marquee>
+<marquee direction="right">HTML อักษรวิ่งแบบ วิ่งจากซ้ายไปขวา</marquee>
+  </script>
+  <div class="callout tip"><span class="lb">เกร็ด</span>ข้อความที่วิ่งขึ้นหรือลงต้องมีพื้นที่ให้วิ่ง เบราว์เซอร์บางตัวถ้าไม่กำหนดความสูง กรอบจะสูงแค่บรรทัดเดียว จึงเห็นข้อความแค่แวบเดียว ให้ใส่ <code>height="100"</code> ในแท็ก <code>&lt;marquee&gt;</code> ดังตัวอย่าง</div>
+  <script type="text/x-code" class="ex" data-title="วิ่งขึ้นพร้อมกำหนดความสูง" data-h="140">
+<marquee direction="up" height="100">HTML อักษรวิ่งแบบ วิ่งจากล่างขึ้นบน</marquee>
+  </script>
+
+  <h3>กำหนดรูปแบบการวิ่ง behavior</h3>
+  <p>เพิ่มแอตทริบิวต์ <code>behavior</code> เพื่อเลือกว่าข้อความจะวิ่งอย่างไรเมื่อไปถึงขอบ ถ้าไม่ใส่ ข้อความจะวิ่งแบบ scroll</p>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>คำสั่ง</th><th>ผลที่ได้</th></tr></thead>
+    <tbody>
+      <tr><td><code>behavior="alternate"</code></td><td>วิ่งกระทบขอบแล้วเด้งไปอีกทาง กลับไปกลับมา</td></tr>
+      <tr><td><code>behavior="slide"</code></td><td>วิ่งแล้วหยุดที่ขอบ</td></tr>
+      <tr><td><code>behavior="scroll"</code></td><td>วิ่งหายไปจากขอบ และปรากฏที่ขอบอีกด้าน ทำซ้ำเรื่อยๆ (ค่าปกติ)</td></tr>
+    </tbody>
+  </table></div>
+  <script type="text/x-code" class="ex" data-title="ข้อความวิ่ง 3 รูปแบบ" data-h="150">
+<marquee behavior= "alternate">HTML วิ่งกระทบขอบแล้วเด้งไปอีกทาง กลับไปกลับมา</marquee>
+<marquee behavior= "slide">HTML วิ่งแล้วหยุดที่ขอบ</marquee>
+<marquee behavior= "scroll">HTML วิ่งหายไปจากขอบ และปรากฏที่ขอบอีกด้าน ทําซ้ำเรื่อยๆ</marquee>
+  </script>
+  <div class="callout task" data-act-link="105"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u2" id="view-u2-4" data-lesson="u2-4" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 2 · บทที่ 4</span>
+    <h1>การแทรกรูปภาพ</h1>
+    <p class="lead">ชนิดของไฟล์ภาพ คำสั่งแทรกรูป ข้อความกำกับ ขนาด และกรอบรูป</p>
+  </div>
+
+  <h2>ชนิดของแฟ้มข้อมูลรูปภาพ</h2>
+  <p>รูปภาพเป็นสิ่งสำคัญอย่างมากในการสร้างเว็บเพจ ช่วยให้ผู้อ่านเข้าใจเรื่องราวมากขึ้นและทำให้เว็บเพจมีสีสันสวยงาม สิ่งที่ต้องคำนึงถึงคือ <b>ภาพควรมีขนาดเล็ก</b> เพื่อให้เรียกใช้บนเว็บเพจได้อย่างรวดเร็ว การนำภาพกราฟิกมาใช้ในเว็บเพจนิยมใช้ 3 ฟอร์แมต คือ <code>.jpg</code> <code>.gif</code> และ <code>.png</code> เพราะแต่ละแบบมีลักษณะการบีบอัดข้อมูลต่างกัน เลือกใช้ตามความเหมาะสม</p>
+  <div class="cards">
+    <div class="card u u2"><h3>.jpg (JPEG)</h3><p>Joint Photographic Experts Group นิยมใช้บนอินเทอร์เน็ต ความละเอียดสูง ใช้สีได้มากถึง 24 บิต (16 ล้านสี) เหมาะกับภาพถ่าย</p><p><b>ข้อด้อย:</b> ทำพื้นของรูปให้โปร่งใสไม่ได้</p></div>
+    <div class="card u u1"><h3>.gif (GIF)</h3><p>Graphics Interchange Format รองรับสีสูงสุดเพียง 8 บิต (256 สี) เหมาะกับโลโก้ ภาพการ์ตูน คลิปอาร์ต ความจุต่ำ ทำพื้นหลังโปร่งใสได้ และทำภาพเคลื่อนไหวได้</p></div>
+    <div class="card u u3"><h3>.png (PNG)</h3><p>Portable Network Graphics รวมจุดเด่นของ JPG และ GIF รองรับสีถึง 24 บิตเหมือน JPG ทำพื้นหลังโปร่งใสได้เหมือน GIF และมีความจุต่ำ</p></div>
+  </div>
+
+  <h2>คำสั่งแทรกรูปภาพ <code>&lt;img src&gt;</code></h2>
+  <p>ใช้คำสั่งแทรกรูปภาพในภาษา HTML เพื่อนำภาพมาแสดง สิ่งที่ต้องระวังคือ <b>ไฟล์รูปภาพต้องอยู่ในโฟลเดอร์หลักเดียวกับไฟล์คำสั่ง HTML</b></p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;img src="ชื่อรูปภาพ"&gt;</code></dd>
+    <dt>ถ้ารูปอยู่ในโฟลเดอร์ย่อย</dt><dd><code class="lg">&lt;img src="โฟลเดอร์/ชื่อรูปภาพ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="แทรกรูปแมว (รูปตัวอย่างในเว็บนี้)" data-h="190">
+<body>
+<img src="cat.svg">
+</body>
+  </script>
+  <div class="callout tip"><span class="lb">รูปตัวอย่างในเว็บนี้</span>ตัวอย่างและห้องทดลองมีรูปให้ฝึกชื่อ <code>cat.svg</code> <code>flower.svg</code> <code>school.svg</code> <code>welcome.svg</code> <code>pattern.svg</code> และ <code>avatar1.svg</code> ถึง <code>avatar5.svg</code> ถ้าจะใช้รูปของตัวเอง ให้กดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” ในห้องทดลอง แล้วใช้ชื่อไฟล์นั้นใน src</div>
+  <div class="callout tip"><span class="lb">ตั้งชื่อไฟล์รูป</span>ควรใช้ตัวอักษรภาษาอังกฤษ ไม่มีเว้นวรรค เช่น <code>cat1.jpg</code> เพื่อให้เรียกใช้ได้ถูกต้อง</div>
+
+  <h3>การแทรกข้อความกำกับภาพ (alt)</h3>
+  <p>ข้อความกำกับภาพ (Alternative text) คือข้อความอธิบายเกี่ยวกับภาพนั้น ซึ่งจะปรากฏเมื่อนำเมาส์ไปชี้ที่ภาพ</p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;img src="ชื่อรูปภาพ" alt="ข้อความกำกับภาพ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ข้อความกำกับภาพ" data-h="190">
+<img src="cat.svg" alt="แมวน้อยกำลังนั่ง">
+  </script>
+
+  <h3>การปรับขนาดภาพ (width &amp; height)</h3>
+  <p>บางครั้งภาพที่แทรกลงบนหน้าเว็บเพจอาจมีขนาดเล็กไปหรือใหญ่ไป เราปรับขนาดได้</p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;img src="ชื่อไฟล์รูปภาพ" width="ความกว้าง" height="ความสูง"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="กำหนดความกว้างและความสูงของภาพ" data-h="150">
+<img src="cat.svg" width="100" height="100">
+<img src="cat.svg" width="200" height="100">
+  </script>
+
+  <h3>การใส่กรอบหรือเส้นขอบรูปภาพ (border)</h3>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;img src="ชื่อไฟล์รูปภาพ" border="ความหนาของกรอบ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="กรอบรูปหนา 5 พิกเซล" data-h="190">
+<img src="flower.svg" width="140" border="5">
+  </script>
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u2" id="view-u2-5" data-lesson="u2-5" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 2 · บทที่ 5</span>
+    <h1>การจัดตำแหน่งรูปภาพและภาพพื้นหลัง</h1>
+    <p class="lead">จัดภาพให้เข้ากับข้อความ เว้นระยะห่าง และใช้รูปเป็นพื้นหลังของหน้าเว็บ</p>
+  </div>
+
+  <h2>การจัดตำแหน่งรูปภาพ (align)</h2>
+  <p>การนำภาพมาแสดงในเว็บเพจเป็นเพียงขั้นตอนแรกๆ ต่อไปต้องจัดภาพให้เข้ากับเนื้อหาที่มีอยู่</p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;img src="ชื่อไฟล์รูปภาพ" align="ค่าที่กำหนดให้ใช้"&gt;</code></dd>
+    <dt>bottom</dt><dd>ให้ขอบล่างภาพเสมอขอบล่างข้อความ</dd>
+    <dt>left</dt><dd>จัดภาพอยู่ด้านซ้าย</dd>
+    <dt>middle</dt><dd>ให้กึ่งกลางภาพเสมอข้อความ</dd>
+    <dt>right</dt><dd>จัดภาพอยู่ด้านขวา</dd>
+    <dt>top</dt><dd>ให้ขอบบนภาพเสมอขอบบนข้อความ</dd>
+  </dl>
+  <h3>ลองเปลี่ยนค่า align</h3>
+  <figure class="fig" data-widget="imgalign">
+    <div class="ctrl" role="radiogroup" aria-label="ค่า align ของรูป">
+      <label><input type="radio" name="alv" value="bottom" checked> bottom</label>
+      <label><input type="radio" name="alv" value="left"> left</label>
+      <label><input type="radio" name="alv" value="middle"> middle</label>
+      <label><input type="radio" name="alv" value="right"> right</label>
+      <label><input type="radio" name="alv" value="top"> top</label>
+    </div>
+    <pre class="code"><code data-out></code></pre>
+    <iframe class="pv" title="ผลลัพธ์การจัดตำแหน่งรูป" sandbox="allow-scripts" style="width:100%;height:210px;border:1.5px solid var(--line);border-radius:12px;background:#fff;margin-top:10px"></iframe>
+  </figure>
+
+  <h2>การเพิ่มระยะห่างระหว่างรูปภาพกับข้อความ (vspace &amp; hspace)</h2>
+  <p>กำหนดระยะห่างได้ 2 แบบ คือ ระยะห่างแนวตั้ง (Vertical space) ใช้แอตทริบิวต์ <code>vspace</code> กำหนดด้านบนกับด้านล่าง และระยะห่างแนวนอน (Horizontal space) ใช้ <code>hspace</code> กำหนดด้านซ้ายและขวา</p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;img src="ชื่อไฟล์รูปภาพ" vspace="ระยะห่างขอบบนล่าง" hspace="ระยะห่างขอบซ้ายขวา"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ขนาดของความห่างขอบ กำหนดเป็นพิกเซล</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="รูปชิดซ้ายพร้อมเว้นระยะห่าง" data-h="220">
+<body>
+<img src="flower.svg" width="110" align="left" hspace="20" vspace="10">
+ข้อความนี้จะไหลอยู่ด้านขวาของรูป โดยมีระยะห่างระหว่างรูปกับข้อความ ลองเปลี่ยนค่า hspace และ vspace เพื่อดูว่าระยะห่างเปลี่ยนไปอย่างไร ข้อความนี้ต้องยาวพอให้เห็นว่ามันตัดบรรทัดอ้อมรูปได้
+</body>
+  </script>
+
+  <h2>การใส่ภาพพื้นหลัง <code>background</code></h2>
+  <p>การกำหนดรูปภาพสำหรับใช้เป็นพื้นหลัง (Background) ทำให้เว็บเพจดูน่าสนใจและสวยงามขึ้น ทำได้โดยกำหนดเพิ่มเติมในแอตทริบิวต์ของแท็ก <code>&lt;body&gt;</code></p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;body background="ชื่อรูปภาพ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ภาพพื้นหลังที่ซ้ำเป็นลายกระเบื้อง" data-h="200">
+<body background="pattern.svg">
+<h2 align="center">เว็บเพจที่มีภาพพื้นหลัง</h2>
+<p align="center">รูปจะถูกวางซ้ำจนเต็มหน้า</p>
+</body>
+  </script>
+
+  <h3>การแสดงภาพพื้นหลังแบบคงที่ (bgproperties)</h3>
+  <p>เป็นการเพิ่มลูกเล่นให้ภาพพื้นหลัง โดยแสดงภาพพื้นหลังในตำแหน่งเดิมตลอด แม้เลื่อนแถบเลื่อน (Scrollbar) ขึ้นหรือลง ภาพพื้นหลังก็อยู่ที่เดิม ไม่เลื่อนตามเนื้อหา</p>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;body background="ชื่อไฟล์รูปภาพ" bgproperties="fixed"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>มีค่าเดียว คือ <code>fixed</code></dd>
+  </dl>
+  <div class="callout warn" id="bgprops-note"><span class="lb">รู้ไว้</span><code>bgproperties</code> เป็นแอตทริบิวต์ที่เริ่มต้นใช้ใน Internet Explorer รุ่นเก่า เบราว์เซอร์ปัจจุบัน เช่น Chrome ไม่รองรับแอตทริบิวต์นี้ ภาพพื้นหลังจึงเลื่อนตามหน้าตามปกติ (ทดสอบแล้ว) ถ้าอยากเห็นภาพคงที่จริง ให้เขียนเพิ่ม <code class="lg">style="background-attachment: fixed"</code> ใน <code>&lt;body&gt;</code> ซึ่งเป็นคำสั่ง CSS ที่ใช้แทนในปัจจุบัน ในวิชานี้ให้รู้จักรูปแบบเดิมไว้ก่อน</div>
+  <div class="callout task" data-act-link="106"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+<!-- ===================== หน่วยที่ 3 ===================== -->
+<section class="view col u3" id="view-u3-1" data-lesson="u3-1" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 3 · บทที่ 1</span>
+    <h1>การสร้างตารางในเว็บเพจ</h1>
+    <p class="lead">โครงสร้างตาราง หัวตาราง เส้นขอบ คำอธิบาย ระยะห่าง และขนาดของตาราง</p>
+  </div>
+
+  <h2>ตารางใช้ทำอะไร</h2>
+  <p>การใช้ตารางเหมาะสำหรับการนำเสนอข้อมูลจำนวนมาก เช่น ข้อมูลการซื้อขายหลักทรัพย์ ยอดขายสินค้าของบริษัท ข่าวสารทั่วไป หรือสรุปปริมาณสินค้าคงคลังที่ควรนำมาจัดในรูปแถวและหลัก นอกจากนี้ตารางยังช่วยจัดองค์ประกอบต่างๆ ในเว็บเพจให้อยู่ในตำแหน่งที่ต้องการได้อย่างเป็นสัดส่วนอีกด้วย</p>
+
+  <h2>โครงสร้างและคำสั่งในการสร้างตาราง</h2>
+  <p>โครงสร้างด้านล่างสร้างตารางที่มี 3 แถว และ 2 คอลัมน์ (แถวแรกเป็นหัวตาราง)</p>
+  <script type="text/x-code" class="ex" data-title="ตาราง 3 แถว 2 คอลัมน์" data-h="150">
+<table border="1">
+<caption>ตารางตัวอย่าง</caption>
+<tr>
+  <th>หัวข้อ 1</th>
+  <th>หัวข้อ 2</th>
+</tr>
+<tr>
+  <td>ข้อมูล 1</td>
+  <td>ข้อมูล 2</td>
+</tr>
+<tr>
+  <td>ข้อมูล 3</td>
+  <td>ข้อมูล 4</td>
+</tr>
+</table>
+  </script>
+  <dl class="spec">
+    <dt><code>&lt;table&gt;</code></dt><dd>กำหนดสร้างตาราง ปิดด้วย <code>&lt;/table&gt;</code></dd>
+    <dt><code>&lt;caption&gt;</code></dt><dd>กำหนดคำอธิบายตาราง ปิดด้วย <code>&lt;/caption&gt;</code> (จะมีหรือไม่มีก็ได้)</dd>
+    <dt><code>&lt;tr&gt;</code></dt><dd>กำหนดแถวของตาราง ปิดด้วย <code>&lt;/tr&gt;</code> (table row)</dd>
+    <dt><code>&lt;th&gt;</code></dt><dd>กำหนดหัวเรื่องในคอลัมน์ ปิดด้วย <code>&lt;/th&gt;</code> (จะมีหรือไม่มีก็ได้)</dd>
+    <dt><code>&lt;td&gt;</code></dt><dd>กำหนดข้อมูลในคอลัมน์ของตาราง ปิดด้วย <code>&lt;/td&gt;</code> (table data)</dd>
+  </dl>
+  <div class="callout tip"><span class="lb">จำลำดับการเขียน</span>เขียนทีละแถว: เปิด <code>&lt;tr&gt;</code> แล้วใส่ช่อง <code>&lt;td&gt;</code> เรียงจากซ้ายไปขวา ปิด <code>&lt;/tr&gt;</code> แล้วขึ้นแถวใหม่</div>
+
+  <h2>การใส่หัวเรื่อง <code>&lt;th&gt;</code> และตีเส้นตาราง (border)</h2>
+  <h3>การใส่หัวเรื่อง <code>&lt;th&gt;</code></h3>
+  <p>ตกแต่งหัวคอลัมน์ด้วย <code>&lt;th&gt;…&lt;/th&gt;</code> เพื่อเน้นข้อความส่วนหัวของคอลัมน์ <code>&lt;th&gt;</code> มีรูปแบบการใช้เหมือน <code>&lt;td&gt;</code> แต่ข้อความภายใน <code>&lt;th&gt;</code> จะเป็นตัวหนาและอยู่กึ่งกลางเซลล์อัตโนมัติ</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd><code>&lt;th&gt;</code> อยู่ภายใน <code>&lt;tr&gt;…&lt;/tr&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;tr&gt;&lt;th&gt;หัวข้อ&lt;/th&gt;&lt;/tr&gt;</code></dd>
+  </dl>
+  <h3>การใส่เส้นตาราง (border)</h3>
+  <p>การใส่เส้นให้ตารางช่วยให้ดูข้อมูลง่ายขึ้น ใส่ได้ด้วยแอตทริบิวต์ <code>border</code> ในแท็ก <code>&lt;table&gt;</code></p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;table border="ความหนาของเส้นตาราง"&gt;</code></dd>
+    <dt>ความหนา</dt><dd>มีหน่วยเป็นพิกเซล ใส่ค่าเป็นตัวเลข เช่น 2, 5, 9 ตัวอย่าง <code>&lt;table border="5"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="เส้นตารางหนา 5 พิกเซล" data-h="130">
+<table border="5">
+<tr><th>หัวข้อ 1</th><th>หัวข้อ 2</th></tr>
+<tr><td>ข้อมูล 1</td><td>ข้อมูล 2</td></tr>
+<tr><td>ข้อมูล 3</td><td>ข้อมูล 4</td></tr>
+</table>
+  </script>
+
+  <h2>การกำหนดข้อความกำกับตาราง <code>&lt;caption&gt;</code></h2>
+  <p>ข้อความกำกับช่วยให้รู้ว่าตารางนั้นแสดงข้อมูลเกี่ยวกับอะไร และกำหนดตำแหน่งแสดงข้อความกำกับได้ด้วย <code>align</code></p>
+  <dl class="spec">
+    <dt>แอตทริบิวต์</dt><dd><code>align</code></dd>
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายใน <code>&lt;table&gt;…&lt;/table&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;caption align="ตำแหน่ง"&gt;ข้อความ&lt;/caption&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd><code>top</code> กลางบน · <code>bottom</code> กลางล่าง · <code>left</code> ซ้ายบน · <code>right</code> ขวาบน</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ข้อความกำกับตาราง" data-h="140">
+<body>
+<table border="1">
+<caption align="top">ตารางการกำหนดข้อความกำกับตาราง</caption>
+<tr><th>หัวข้อ1</th><th>หัวข้อ2</th></tr>
+<tr><td>ข้อมูล1</td><td>ข้อมูล2</td></tr>
+<tr><td>ข้อมูล3</td><td>ข้อมูล4</td></tr>
+</table>
+</body>
+  </script>
+
+  <h2>ความหนาเส้นตารางและความห่างระหว่างช่องเซลล์</h2>
+  <p>ปรับขนาดเส้นตารางและกำหนดระยะห่างระหว่างช่องเซลล์ได้ ด้วย <code>border</code> และ <code>cellspacing</code> รวมทั้งเว้นระยะข้อมูลในเซลล์กับขอบเซลล์ด้วย <code>cellpadding</code></p>
+  <dl class="spec">
+    <dt>cellspacing</dt><dd>ระยะห่างระหว่างช่องเซลล์แต่ละเซลล์ · <code class="lg">&lt;table border="ค่าความหนา" cellspacing="ค่าความห่าง"&gt;</code></dd>
+    <dt>cellpadding</dt><dd>ความห่างระหว่างข้อมูลในเซลล์กับกรอบเซลล์ · <code class="lg">&lt;table cellpadding="ค่าความห่าง"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ขนาดที่กำหนดมีค่าเป็นพิกเซล เช่น 5, 7, 9</dd>
+  </dl>
+  <h3>ตัวปรับตาราง</h3>
+  <figure class="fig" data-widget="tuner">
+    <div class="ctrl">
+      <label>border <input type="range" min="0" max="10" value="2" data-p="border" aria-label="border"><output>2</output></label>
+      <label>cellspacing <input type="range" min="0" max="20" value="4" data-p="cellspacing" aria-label="cellspacing"><output>4</output></label>
+      <label>cellpadding <input type="range" min="0" max="20" value="6" data-p="cellpadding" aria-label="cellpadding"><output>6</output></label>
+    </div>
+    <pre class="code"><code data-out></code></pre>
+    <iframe class="pv" title="ผลลัพธ์ตาราง" sandbox="allow-scripts" style="width:100%;height:170px;border:1.5px solid var(--line);border-radius:12px;background:#fff;margin-top:10px"></iframe>
+  </figure>
+
+  <h2>การปรับความกว้างและความสูงของตาราง (width, height)</h2>
+  <p>ที่ผ่านมาความกว้างของตารางขึ้นอยู่กับข้อมูลในแต่ละช่อง ถ้าข้อมูลมากตารางก็ขยาย ถ้าข้อมูลน้อยตารางก็หดลง อาจทำให้ตารางดูไม่สวยงาม จึงกำหนดขนาดเองได้</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;table width="ค่าความกว้าง" height="ความสูง"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ขนาดเป็นพิกเซล เช่น 5, 7, 9 หรือเป็นเปอร์เซ็นต์ (%)</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ตารางกว้าง 60% และกว้าง 100%" data-h="250">
+<table border="1" width="60%">
+<tr><td>ข้อมูล1</td><td>ข้อมูล2</td></tr>
+<tr><td>ข้อมูล3</td><td>ข้อมูล4</td></tr>
+</table>
+<br>
+<table border="1" width="100%" height="80">
+<tr><td>ข้อมูล1</td><td>ข้อมูล2</td></tr>
+</table>
+  </script>
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u3" id="view-u3-2" data-lesson="u3-2" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 3 · บทที่ 2</span>
+    <h1>การตกแต่งตาราง</h1>
+    <p class="lead">ผสานเซลล์ ใส่สีและภาพพื้นหลัง จัดตำแหน่งข้อมูล ตัวอักษร และรูปภาพในตาราง</p>
+  </div>
+
+  <h2>การปรับขนาดช่องเซลล์ (colspan และ rowspan)</h2>
+  <p>ตารางปกติ ช่องเซลล์ 1 ช่องมีขนาด 1 แถว 1 คอลัมน์ ถ้าต้องการให้เซลล์กว้างเกิน 1 คอลัมน์ หรือสูงเกิน 1 แถว เพื่อจัดรูปแบบข้อมูลตามต้องการ ทำได้ดังนี้</p>
+  <dl class="spec">
+    <dt>colspan</dt><dd>ขยายเซลล์เกิน 1 คอลัมน์ · อยู่ภายในแท็กเปิด <code>&lt;td&gt;</code> · <code class="lg">&lt;td colspan="จำนวนคอลัมน์ที่ต้องการขยาย"&gt;</code> เช่น 1, 2, 3</dd>
+    <dt>rowspan</dt><dd>ขยายเซลล์เกิน 1 แถว · อยู่ภายในแท็กเปิด <code>&lt;td&gt;</code> · <code class="lg">&lt;td rowspan="จำนวนแถวที่ต้องการขยาย"&gt;</code> เช่น 1, 2, 3</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="colspan: เซลล์เดียวกว้าง 2 คอลัมน์" data-h="150">
+<table border="1">
+<tr><td colspan="2" align="center">ผลไม้</td></tr>
+<tr><td>กล้วย</td><td>ส้ม</td></tr>
+</table>
+  </script>
+  <script type="text/x-code" class="ex" data-title="rowspan: เซลล์เดียวสูง 2 แถว" data-h="150">
+<table border="5">
+<tr>
+  <td rowspan="2">ชื่อสัตว์</td>
+  <td>สัตว์บก</td>
+</tr>
+<tr>
+  <td>สัตว์น้ำ</td>
+</tr>
+</table>
+  </script>
+  <div class="callout warn"><span class="lb">หมายเหตุ</span>ในสไลด์เดิม ภาพตัวอย่างใต้หัวข้อ colspan เป็นโค้ดของ rowspan ในหน้านี้จึงแยกเป็นสองตัวอย่างให้ตรงกับคำสั่ง</div>
+
+  <h2>การใส่สีในช่องเซลล์ (bgcolor)</h2>
+  <p>การใส่สีให้กับตารางหรือช่องเซลล์ ทำให้ตารางดูสวยและน่าสนใจยิ่งขึ้น</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code> <code>&lt;tr&gt;</code> <code>&lt;th&gt;</code> <code>&lt;td&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>bgcolor="ชื่อสี/#รหัสสี"</code> เช่น <code>&lt;table bgcolor="pink"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ชื่อสี หรือรหัสสี</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="สีทั้งตารางและสีเฉพาะเซลล์" data-h="140">
+<table border="2" bgcolor="pink">
+<tr><td>ข้อมูล1</td><td>ข้อมูล2</td></tr>
+<tr><td>ข้อมูล3</td><td bgcolor="yellow">ข้อมูล4</td></tr>
+</table>
+  </script>
+
+  <h2>การกำหนดสีกรอบตาราง (bordercolor)</h2>
+  <p>การใส่สีเส้นกรอบตารางทำให้ตารางมีสีสันสดใสและสะดุดสายตามากยิ่งขึ้น</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;table bordercolor="ชื่อสี/#รหัสสี"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="กรอบตารางสีแดง" data-h="130">
+<table border="4" bordercolor="red">
+<tr><td>ข้อมูล1</td><td>ข้อมูล2</td></tr>
+<tr><td>ข้อมูล3</td><td>ข้อมูล4</td></tr>
+</table>
+  </script>
+
+  <h2>การใส่รูปภาพพื้นหลังตาราง (background)</h2>
+  <p>นอกจากใส่สีเป็นพื้นหลังตารางแล้ว ยังนำรูปภาพมาเป็นพื้นหลังตารางได้ รูปแบบเหมือนการใส่สีพื้นหลัง</p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code> <code>&lt;tr&gt;</code> <code>&lt;th&gt;</code> <code>&lt;td&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;table background="ชื่อไฟล์รูปภาพ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ตารางที่มีรูปเป็นพื้นหลัง" data-h="140">
+<table border="4" width="400" background="pattern.svg">
+<tr><td>ข้อมูล1</td><td align="right">ข้อมูล2</td></tr>
+<tr><td>ข้อมูล3</td><td align="right">ข้อมูล4</td></tr>
+</table>
+  </script>
+
+  <h2>การจัดตำแหน่งข้อมูลในตาราง (align)</h2>
+  <p>จัดตำแหน่งข้อมูลแนวนอนให้ชิดซ้าย ชิดขวา หรืออยู่กึ่งกลางของช่องตารางได้ด้วยแอตทริบิวต์ <code>align</code></p>
+  <dl class="spec">
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็กเปิด <code>&lt;table&gt;</code> <code>&lt;tr&gt;</code> <code>&lt;th&gt;</code> <code>&lt;td&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>align="ตำแหน่งข้อมูล"</code> เช่น <code>&lt;table align="center"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd><code>center</code> กลาง · <code>left</code> ซ้าย · <code>right</code> ขวา · <code>justify</code> เต็มช่อง</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="จัดข้อมูลชิดซ้าย กลาง ขวา" data-h="170">
+<table border="2" width="300" height="100">
+<tr align="left"><td>left</td><td>left</td></tr>
+<tr align="center"><td>center</td><td>center</td></tr>
+<tr align="right"><td>right</td><td>right</td></tr>
+</table>
+  </script>
+
+  <h2>การจัดการตัวอักษรในตาราง (size, color, face)</h2>
+  <p>ใช้แท็กคำสั่งและแอตทริบิวต์ที่ต้องการ เช่น <code>size</code> <code>color</code> <code>face</code> ภายในช่องตารางได้เหมือนในหน้าเว็บทั่วไป โดยเขียนไว้ระหว่าง <code>&lt;th&gt;…&lt;/th&gt;</code> หรือ <code>&lt;td&gt;…&lt;/td&gt;</code></p>
+  <script type="text/x-code" class="ex" data-title="ตัวอักษรหลายขนาดและสีในตาราง" data-h="170">
+<table border="4" width="350" height="100">
+<tr>
+  <td><font size="5" color="red">ขนาดตัวอักษร 5</font></td>
+  <td><font size="1" color="blue">ขนาด 1</font></td>
+</tr>
+<tr>
+  <td><font size="6" color="blue">ขนาดตัวอักษร 6</font></td>
+  <td><font face="Impact" size="3">Impact</font></td>
+</tr>
+</table>
+  </script>
+
+  <h2>การใส่รูปภาพในตาราง</h2>
+  <p>วิธีนำรูปภาพมาใส่ในช่องตารางคล้ายกับการใส่ข้อความ เพียงแต่นำแท็ก <code>&lt;img src="…"&gt;</code> ไปแทรกไว้ในตำแหน่ง <code>&lt;td&gt;…&lt;/td&gt;</code> ที่ต้องการแสดงรูปภาพ</p>
+  <dl class="spec">
+    <dt>แอตทริบิวต์</dt><dd><code>src</code></dd>
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ภายในแท็ก <code>&lt;td&gt;…&lt;/td&gt;</code> <code>&lt;th&gt;…&lt;/th&gt;</code></dd>
+    <dt>รูปแบบการใช้</dt><dd><code>&lt;img src="ชื่อไฟล์รูปภาพ"&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ตารางที่มีรูปในช่อง" data-h="190">
+<table border="1">
+<tr>
+  <td><img src="cat.svg" width="100"></td>
+  <td><img src="flower.svg" width="100"></td>
+</tr>
+</table>
+  </script>
+  <div class="callout task" data-act-link="107"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u3" id="view-u3-3" data-lesson="u3-3" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 3 · บทที่ 3</span>
+    <h1>การเชื่อมโยงเอกสารในหน้าเว็บเพจ</h1>
+    <p class="lead">ทำลิงก์ไปหน้าอื่นในเว็บเดียวกัน ไปเว็บไซต์อื่น เปิดแท็บใหม่ ใช้รูปเป็นลิงก์ และกำหนดสีลิงก์</p>
+  </div>
+
+  <h2>โครงสร้างของการสร้างเว็บไซต์</h2>
+  <p>เว็บไซต์หนึ่งมีโฮมเพจหนึ่งหน้า และมีเว็บเพจอื่นอีกหลายหน้า แต่ละหน้าเชื่อมโยงถึงกันด้วยลิงก์</p>
+  <figure class="fig">
+    <div class="sitemap u3" role="img" aria-label="ผังเว็บไซต์ index.html เชื่อมไปยัง page1.html, page2.html, page3.html">
+      <div class="node">HOME PAGE<br>index.html</div>
+      <div class="kids" style="max-width:520px">
+        <div class="node">WEB PAGE<br>page1.html</div>
+        <div class="node">WEB PAGE<br>page2.html</div>
+        <div class="node">WEB PAGE<br>page3.html</div>
+      </div>
+    </div>
+    <figcaption>การทำลิงก์เชื่อมโยงแต่ละหน้า: โฮมเพจลิงก์ไปทุกหน้า และทุกหน้าควรมีลิงก์ย้อนกลับมาโฮมเพจ</figcaption>
+  </figure>
+
+  <h2>การเชื่อมโยงเว็บเพจหน้าอื่นที่อยู่ในเว็บไซต์เดียวกัน</h2>
+  <h3>การเชื่อมโยงด้วยข้อความ</h3>
+  <div class="code" style="text-align:center;font-size:1.05rem"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="s">"ชื่อหน้าที่ต้องการจะไป"</span><span class="t">&gt;</span>ข้อความ<span class="t">&lt;/a&gt;</span></div>
+  <dl class="spec">
+    <dt>ชื่อแท็ก</dt><dd><code>href</code>, <code>name</code></dd>
+    <dt>ตำแหน่งของแท็ก</dt><dd>อยู่ในแท็กเปิด <code>&lt;a&gt;</code></dd>
+    <dt>รูปแบบใน HTML</dt><dd><code class="lg">&lt;a href="ชื่อไฟล์เว็บเพจ"&gt;ข้อความที่ปรากฏหน้าเว็บ&lt;/a&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ชื่อไฟล์เว็บเพจที่ต้องการเชื่อมโยง</dd>
+  </dl>
+  <p>ลองเขียนเว็บ 3 หน้า (index, page1, page2) เองในห้องทดลอง กดปุ่ม “เพิ่มไฟล์” เพื่อสร้างหน้าใหม่ แล้วคลิกลิงก์ในหน้าผลลัพธ์เพื่อดูว่าหน้าสลับกันอย่างไร</p>
+  <p><button class="btn small" type="button" data-go="lab">ไปห้องทดลอง</button></p>
+  <script type="text/x-code" class="ex" data-title="ลิงก์ไปหน้า page1.html" data-h="100" data-nores="1">
+<a href="page1.html">ไปหน้าที่ 1</a>
+<br>
+<a href="index.html">กลับหน้าแรก</a>
+  </script>
+
+  <h2>การเชื่อมโยงข้อมูลไปยังเว็บไซต์อื่น</h2>
+  <p>ถ้าต้องการเชื่อมโยงไปยังเว็บไซต์อื่น เช่น Google ให้ระบุ <b>URL</b> ของเว็บไซต์นั้นในแท็ก <code>&lt;a href…&gt;</code></p>
+  <dl class="spec">
+    <dt>รูปแบบใน HTML</dt><dd><code class="lg">&lt;a href="URL เว็บไซต์ที่ต้องการเชื่อมโยง"&gt;ข้อความที่ปรากฏหน้าเว็บ&lt;/a&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>ชื่อเว็บไซต์ที่ต้องการเชื่อมโยง</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ลิงก์ไปเว็บไซต์อื่น" data-h="130">
+<body>
+<b>เว็บไซต์ที่น่าสนใจ</b>
+<br>
+<a href="http://www.google.com">google</a>
+<br>
+<a href="http://www.utd.ac.th">โรงเรียนอุตรดิตถ์</a>
+</body>
+  </script>
+  <div class="callout tip"><span class="lb">ในห้องทดลอง</span>เมื่อคลิกลิงก์ไปเว็บไซต์ภายนอกในหน้าผลลัพธ์ เว็บนี้จะไม่เปิดเว็บจริง แต่จะบอกว่าลิงก์ปลายทางคืออะไรและจะเปิดในแท็บไหน เมื่อบันทึกไฟล์ไปเปิดในเบราว์เซอร์ของเครื่อง ลิงก์จึงจะทำงานจริง</div>
+
+  <h2>การเปิดหน้าเว็บเพจหน้าต่างใหม่ด้วยแอตทริบิวต์ target</h2>
+  <p>ปกติเมื่อคลิกลิงก์ เว็บเพจหน้าใหม่จะมาทับเว็บเพจหน้าเดิมตลอด กำหนดให้เปิดในหน้าต่างใหม่ได้โดยใช้ <code>target="…"</code></p>
+  <dl class="spec">
+    <dt>ตำแหน่งของแท็ก</dt><dd>อยู่ในแท็กเปิด <code>&lt;a&gt;</code></dd>
+    <dt>รูปแบบใน HTML</dt><dd><code class="lg">&lt;a href="http://www.google.com" target="ค่าที่กำหนดให้ใช้"&gt;…&lt;/a&gt;</code></dd>
+  </dl>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>ค่าของ target</th><th>ความหมาย</th></tr></thead>
+    <tbody>
+      <tr><td><code>_blank</code></td><td>เปิดหน้าเว็บเพจในหน้าต่าง Web browser ใหม่</td></tr>
+      <tr><td><code>_self</code></td><td>เปิดหน้าเว็บเพจในหน้าต่าง Web browser เดิม และ Frame เดิม</td></tr>
+      <tr><td><code>_parent</code></td><td>เปิดหน้าเว็บเพจในหน้าต่าง Web browser เดิม</td></tr>
+      <tr><td><code>_top</code></td><td>เปิดหน้าเว็บเพจในหน้าต่าง Web browser เดิมแบบเต็มหน้า และยกเลิก frame ทั้งหมด หรือจะใส่เป็นชื่อหน้าต่างที่เรากำหนด</td></tr>
+    </tbody>
+  </table></div>
+  <script type="text/x-code" class="ex" data-title="เปิดเว็บโรงเรียนในแท็บใหม่" data-h="100" data-nores="1">
+<a href="http://www.utd.ac.th" target="_blank">เว็บโรงเรียนอุตรดิตถ์</a>
+  </script>
+
+  <h2>การเชื่อมโยงด้วยรูปภาพ <code>&lt;img&gt;</code></h2>
+  <p>ใส่แท็ก <code>&lt;img&gt;</code> ไว้ระหว่าง <code>&lt;a&gt;…&lt;/a&gt;</code> แทนข้อความ ผู้ใช้จะคลิกที่รูปเพื่อไปยังลิงก์ได้</p>
+  <dl class="spec">
+    <dt>แท็ก</dt><dd><code>img</code> อยู่ในแท็กเปิด <code>&lt;a&gt;…&lt;/a&gt;</code></dd>
+    <dt>รูปแบบใน HTML</dt><dd><code class="lg">&lt;a href="ชื่อลิงก์ที่ต้องการจะเชื่อมไป"&gt;&lt;img src="ชื่อรูปภาพ.นามสกุลภาพ"&gt;&lt;/a&gt;</code></dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ใช้รูปเป็นลิงก์" data-h="190">
+<a href="page1.html"><img src="school.svg" width="160" alt="ไปหน้าที่ 1"></a>
+  </script>
+
+  <h2>การกำหนดสีของลิงก์</h2>
+  <p>ปกติถ้าไม่กำหนดสีของลิงก์ ลิงก์จะเป็นสีน้ำเงินและมีขีดเส้นใต้ เปลี่ยนสีได้เพื่อความสวยงาม และไม่ให้สีลิงก์กลืนกับสีพื้นหลัง ลิงก์มีสถานะต่างกัน 3 แบบ</p>
+  <div class="cards">
+    <div class="card u u3"><h3>link</h3><p>สีของลิงก์ที่ยังไม่เคยถูกคลิก (Hyperlink)</p></div>
+    <div class="card u u1"><h3>vlink</h3><p>สีของลิงก์ที่เคยถูกคลิกไปแล้ว (Visited Hyperlink)</p></div>
+    <div class="card u u2"><h3>alink</h3><p>สีของลิงก์ตอนที่ถูกคลิก (Active Link)</p></div>
+  </div>
+  <dl class="spec">
+    <dt>แอตทริบิวต์</dt><dd><code>link</code>, <code>vlink</code>, <code>alink</code></dd>
+    <dt>ตำแหน่งแท็ก</dt><dd>อยู่ในแท็กเปิด <code>&lt;body&gt;</code></dd>
+    <dt>รูปแบบใน HTML</dt><dd><code class="lg">&lt;body link="สี" vlink="สี" alink="สี"&gt;</code></dd>
+    <dt>ค่าที่กำหนดให้ใช้</dt><dd>สี หรือรหัสสี</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="กำหนดสีลิงก์ 3 สถานะ" data-h="150">
+<body link="red" vlink="green" alink="blue">
+<b>เว็บไซต์ที่น่าสนใจ</b><br>
+<a href="http://www.w3.org">W3C</a><br>
+<a href="http://www.wikipedia.org">Wikipedia</a><br>
+<a href="http://www.utd.ac.th">โรงเรียนอุตรดิตถ์</a>
+</body>
+  </script>
+  <p>จากโค้ดอธิบายได้ว่า <b>link=red</b> คือสีของลิงก์ที่ยังไม่ถูกคลิก · <b>vlink=green</b> คือสีของลิงก์ที่ถูกคลิกไปแล้ว · <b>alink=blue</b> คือสีของลิงก์ที่กำลังคลิก</p>
+  <div class="callout tip"><span class="lb">รู้ไว้</span>สีของลิงก์ที่เคยถูกคลิก (vlink) จะเห็นเมื่อเปิดไฟล์ในเบราว์เซอร์จริงแล้วคลิกลิงก์กลับมา ในหน้าผลลัพธ์ของเว็บนี้ลิงก์ถูกควบคุมไว้ จึงไม่เปลี่ยนเป็นสี vlink</div>
+  <div class="callout task" data-act-link="final"></div>
+
+  <div class="l-foot" data-foot></div>
+</section>
+
+<section class="view col u3" id="view-u3-4" data-lesson="u3-4" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip"><i></i>หน่วยที่ 3 · บทที่ 4 <span class="badge-extra">เนื้อหาเสริม</span></span>
+    <h1>การใส่ไฟล์เสียงและวิดีโอ</h1>
+    <p class="lead">ผลการเรียนรู้ข้อ 8 ของรายวิชา: อธิบายคำสั่งและใส่ไฟล์มัลติมีเดียลงในเว็บเพจได้</p>
+  </div>
+  <div class="callout extra"><span class="lb">เกี่ยวกับบทนี้</span>สไลด์ทั้ง 3 หน่วยยังไม่มีเนื้อหาเรื่องการใส่ไฟล์เสียงและวิดีโอ ทั้งที่เป็นผลการเรียนรู้ข้อ 8 ของหน่วยที่ 3 บทนี้จึงเขียนเพิ่มให้ครบ ครูผู้สอนปรับหรือตัดออกได้ตามแผนการสอน</div>
+
+  <h2>มัลติมีเดียในเว็บเพจ</h2>
+  <p><span class="hl">มัลติมีเดีย</span> คือสื่อที่ไม่ใช่ข้อความอย่างเดียว เช่น เสียงและวิดีโอ ในบทเรียนก่อนหน้านี้เรามีข้อความเคลื่อนไหวด้วย <code>&lt;marquee&gt;</code> และภาพเคลื่อนไหวชนิด GIF มาแล้ว บทนี้เพิ่มไฟล์เสียงและวิดีโอ</p>
+  <p>เหมือนการแทรกรูปภาพ <b>ไฟล์ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML</b> หรือระบุโฟลเดอร์ใน src ให้ถูกต้อง ชนิดไฟล์ที่เบราว์เซอร์เล่นได้ดีคือเสียง <code>.mp3</code> และวิดีโอ <code>.mp4</code></p>
+
+  <h2>ไฟล์เสียง <code>&lt;audio&gt;</code></h2>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;audio src="ชื่อไฟล์เสียง" controls&gt;&lt;/audio&gt;</code></dd>
+    <dt>controls</dt><dd>แสดงปุ่มเล่น หยุด และปรับเสียง ถ้าไม่ใส่จะไม่เห็นตัวควบคุม</dd>
+    <dt>loop</dt><dd>เล่นวนซ้ำ</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ตัวเล่นเสียง (ใช้เสียง beep.wav ที่มีให้)" data-h="90">
+<audio src="beep.wav" controls></audio>
+  </script>
+
+  <h2>ไฟล์วิดีโอ <code>&lt;video&gt;</code></h2>
+  <dl class="spec">
+    <dt>รูปแบบการใช้</dt><dd><code class="lg">&lt;video src="ชื่อไฟล์วิดีโอ" width="ความกว้าง" controls&gt;&lt;/video&gt;</code></dd>
+    <dt>width, height</dt><dd>กำหนดขนาดของตัวเล่นวิดีโอ หน่วยเป็นพิกเซล</dd>
+    <dt>controls</dt><dd>แสดงปุ่มควบคุมการเล่น</dd>
+  </dl>
+  <script type="text/x-code" class="ex" data-title="ตัวเล่นวิดีโอ (ต้องมีไฟล์ .mp4 ของตัวเอง)" data-nores="1">
+<video src="my-video.mp4" width="320" controls></video>
+  </script>
+  <div class="callout tip"><span class="lb">ลองทำ</span>เปิดห้องทดลอง กดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เลือกไฟล์วิดีโอ .mp4 สั้นๆ จากเครื่อง แล้วเขียน <code>&lt;video&gt;</code> ด้วยชื่อไฟล์นั้น ไฟล์เสียงและวิดีโอที่ใหญ่มากอาจทำให้ห้องทดลองช้า ควรเลือกไฟล์ขนาดเล็ก</div>
+  <p><button class="btn small" type="button" data-go="lab">ไปห้องทดลอง</button></p>
+
+  <div class="l-foot" data-foot></div>
+</section>
+<!-- ===================== กิจกรรม (ศูนย์รวม) ===================== -->
+<section class="view" id="view-acts" data-page="acts" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip u0"><i></i>กิจกรรม <span data-acts-count></span> ชิ้น</span>
+    <h1>กิจกรรมประกอบการเรียน</h1>
+    <p class="lead">อ่านโจทย์ให้ครบ แล้วไปเขียนโค้ดเองในห้องทดลอง</p>
+  </div>
+  <div class="callout task">
+    <p><span class="lb">วิธีทำกิจกรรม</span>ทำตามลำดับ 1) อ่านโจทย์ทีละข้อให้ครบ 2) เปิดห้องทดลอง เขียนโค้ดเองในช่องซ้าย แล้วกด “แสดงผล” ดูผลทางขวา 3) เมื่อเขียนถูกแล้ว ให้บันทึกเป็นไฟล์ .html ในเครื่องของตัวเอง ตั้งชื่อตามที่โจทย์กำหนด 4) ส่งครูตามที่ครูกำหนด</p>
+  </div>
+  <div id="acts-hub"></div>
+</section>
+
+<!-- ===================== ห้องทดลอง ===================== -->
+<section class="view" id="view-lab" data-page="lab" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip u0"><i></i>ห้องทดลอง</span>
+    <h1>ห้องทดลอง HTML</h1>
+    <p class="lead">พื้นที่ฝึกเขียนโค้ดด้วยตัวเอง พิมพ์โค้ดทางซ้าย แล้วกด “แสดงผล” เพื่อดูผลทางขวา</p>
+  </div>
+
+  <div class="lab-top">
+    <button class="btn small" type="button" id="lab-run" title="ลัด: Ctrl + Enter">แสดงผล</button>
+    <label class="btn small ghost filebtn" id="lab-upload-btn">เพิ่มรูปหรือไฟล์จากเครื่อง<input type="file" id="lab-upload" multiple accept="image/*,audio/*,video/*" aria-label="เพิ่มรูปหรือไฟล์จากเครื่อง"></label>
+    <div class="newfile" id="lab-newform">
+      <label for="lab-newname" class="sr">ชื่อไฟล์ใหม่</label>
+      <input type="text" id="lab-newname" placeholder="ชื่อไฟล์ใหม่ เช่น page1.html" maxlength="40" spellcheck="false" autocomplete="off">
+      <button class="btn small ghost" type="button" id="lab-newadd">เพิ่มไฟล์</button>
+    </div>
+    <button class="btn small ghost" type="button" id="lab-del" hidden>ลบไฟล์นี้</button>
+    <button class="btn small ghost" type="button" id="lab-reset">ล้างทั้งหมดแล้วเริ่มใหม่</button>
+  </div>
+
+  <div class="media" id="lab-media" aria-label="รูปและไฟล์ที่ใช้ได้"></div>
+
+  <div class="lab-grid">
+    <div class="panel">
+      <div class="filetabs" id="lab-tabs" role="tablist" aria-label="ไฟล์ในห้องทดลอง"></div>
+      <div class="editor">
+        <pre class="gut" id="lab-gut" aria-hidden="true">1</pre>
+        <textarea id="lab-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="โค้ด HTML" placeholder="พิมพ์โค้ด HTML ของคุณที่นี่"></textarea>
+      </div>
+    </div>
+    <div class="panel prev">
+      <div class="rb"><span class="dots" aria-hidden="true" style="display:flex"><i></i><i></i><i></i></span><span class="ti" id="lab-title">ผลลัพธ์</span><span class="mono" id="lab-curname" style="margin-left:auto"></span></div>
+      <iframe id="lab-frame" title="ผลลัพธ์ของเว็บเพจ" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+  <p style="margin-top:14px;color:var(--ink-2)" class="mono">ผลลัพธ์ทางขวาจะเปลี่ยนเมื่อกด “แสดงผล” (หรือกด Ctrl + Enter ในช่องโค้ด) เท่านั้น รูปที่เพิ่มจากเครื่องอยู่ได้ตลอดที่เปิดหน้านี้ ถ้าปิดแล้วต้องเพิ่มใหม่</p>
+</section>
+
+<!-- ===================== สรุปแท็ก ===================== -->
+<section class="view" id="view-ref" data-page="ref" tabindex="-1" hidden>
+  <div class="l-head">
+    <span class="chip u0"><i></i>สรุปแท็ก</span>
+    <h1>สรุปแท็กและแอตทริบิวต์</h1>
+    <p class="lead">รวมคำสั่งทั้งหมดที่เรียนในวิชานี้ ค้นหาจากชื่อแท็กหรือหน้าที่ แล้วคลิกแถวเพื่อไปอ่านบทเรียน</p>
+  </div>
+  <div class="ref-tools">
+    <input type="search" id="ref-q" placeholder="พิมพ์ค้นหา เช่น table, สี, รูป" aria-label="ค้นหาแท็ก">
+    <div class="filters" id="ref-filters" role="group" aria-label="กรองตามหน่วย"></div>
+  </div>
+  <div class="scroll-x">
+    <table class="tbl" id="ref-table">
+      <thead><tr><th>แท็ก / แอตทริบิวต์</th><th>หน้าที่</th><th>ตัวอย่าง</th><th>หน่วย</th></tr></thead>
+      <tbody id="ref-body"></tbody>
+    </table>
+  </div>
+  <p id="ref-empty" class="empty" hidden>ไม่พบรายการที่ค้นหา ลองพิมพ์คำสั้นลง หรือกด “ทั้งหมด”</p>
+  <div class="callout warn" style="margin-top:1.6rem"><span class="lb">แท็กที่เลิกใช้แล้ว</span>แท็กและแอตทริบิวต์ที่มี * เป็นรูปแบบเก่า เช่น <code>&lt;font&gt;</code> <code>&lt;center&gt;</code> <code>&lt;marquee&gt;</code> <code>bgcolor</code> เบราว์เซอร์ยังแสดงผลได้ แต่ปัจจุบันเว็บใหม่ใช้ CSS แทน ที่เรียนในวิชานี้เพื่อเข้าใจพื้นฐานและเห็นผลทันที</div>
+</section>
+</main>
+</div>
+<footer class="foot">
+  <div class="wrap">
+    <p><b>พัฒนาโดย :</b> นางสาวจิตราพัชญ์ อมรนพรัตนกุล</p>
+    <p>โรงเรียนอุตรดิตถ์ สังกัดสำนักงานเขตพื้นที่การศึกษามัธยมศึกษาพิษณุโลก อุตรดิตถ์</p>
+    <p><b>E-mail :</b> <a href="mailto:jittraphat@utd.ac.th">jittraphat@utd.ac.th</a></p>
+  </div>
+</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   DATA: units, lessons, activities, quizzes, tag reference, assets
+   ============================================================ */
+const SCRIPT_NONCE = (document.currentScript && document.currentScript.nonce) || '';
+const UNITS = [
+  {n:1, name:'การเริ่มต้นกับ HTML', desc:'เว็บเพจทำงานอย่างไร และเริ่มเขียน HTML ด้วยมือตัวเองครั้งแรก', lessons:['u1-1','u1-2','u1-3','u1-4']},
+  {n:2, name:'การปรับแต่งเว็บเพจ', desc:'จัดข้อความ ใส่สี และแทรกรูปภาพให้หน้าเว็บสวยขึ้น', lessons:['u2-1','u2-2','u2-3','u2-4','u2-5']},
+  {n:3, name:'เทคนิคในการสร้างเว็บ', desc:'ตาราง ลิงก์ และการเชื่อมหลายหน้าเป็นเว็บไซต์', lessons:['u3-1','u3-2','u3-3','u3-4']}
+];
+
+/* lessons */
+const LESSON_META = Object.assign(Object.create(null), {
+  'u1-1':{p:'unit1', f:'webpage.html'}, 'u1-2':{p:'unit1', f:'url-domain.html'},
+  'u1-3':{p:'unit1', f:'website.html'}, 'u1-4':{p:'unit1', f:'html-start.html'},
+  'u2-1':{p:'unit2', f:'text-basic.html'}, 'u2-2':{p:'unit2', f:'text-style.html'},
+  'u2-3':{p:'unit2', f:'color.html'}, 'u2-4':{p:'unit2', f:'image.html'}, 'u2-5':{p:'unit2', f:'image-align.html'},
+  'u3-1':{p:'unit3', f:'table.html'}, 'u3-2':{p:'unit3', f:'table-style.html'},
+  'u3-3':{p:'unit3', f:'link.html'}, 'u3-4':{p:'unit3', f:'media.html'}
+});
+
+/* order for previous / next */
+const SEQ = ['u1-1','u1-2','u1-3','u1-4','quiz-1','u2-1','u2-2','u2-3','u2-4','u2-5','quiz-2','u3-1','u3-2','u3-3','u3-4','quiz-3'];
+
+/* ------------------------------------------------------------
+   Built-in picture assets (SVG) so the lab works without outside images
+   ------------------------------------------------------------ */
+const svg = (w,h,body) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'">'+body+'</svg>';
+const face = (bg,skin,hair,shirt) => svg(120,120,
+  '<rect width="120" height="120" fill="'+bg+'"/><path d="M20 120 Q22 88 60 88 Q98 88 100 120Z" fill="'+shirt+'"/>'+
+  '<circle cx="60" cy="54" r="27" fill="'+skin+'"/><path d="M33 52 Q34 22 60 22 Q86 22 87 52 Q74 38 60 38 Q46 38 33 52Z" fill="'+hair+'"/>'+
+  '<circle cx="50" cy="56" r="3" fill="#101638"/><circle cx="70" cy="56" r="3" fill="#101638"/>'+
+  '<path d="M52 67 Q60 74 68 67" stroke="#101638" stroke-width="2.6" fill="none" stroke-linecap="round"/>');
+const ASSET_SVG = {
+  'cat.svg': svg(200,200,
+    '<rect width="200" height="200" fill="#FFE9A8"/><path d="M48 84 L58 28 L92 62Z M152 84 L142 28 L108 62Z" fill="#F29B3B"/>'+
+    '<circle cx="100" cy="118" r="64" fill="#F7B04A"/><circle cx="78" cy="108" r="9" fill="#101638"/><circle cx="122" cy="108" r="9" fill="#101638"/>'+
+    '<path d="M92 130 L108 130 L100 140Z" fill="#E0577A"/><path d="M100 140 Q90 154 78 148 M100 140 Q110 154 122 148" stroke="#101638" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+    '<path d="M58 128 H24 M60 138 L28 152 M142 128 H176 M140 138 L172 152" stroke="#101638" stroke-width="3" stroke-linecap="round"/>'),
+  'fish.svg': svg(200,200,
+    '<rect width="200" height="200" fill="#CFE8FF"/><path d="M30 100 Q80 40 140 100 Q80 160 30 100Z" fill="#FF8A3D"/><path d="M138 100 L184 66 L176 100 L184 134Z" fill="#FF6A1F"/>'+
+    '<circle cx="62" cy="92" r="7" fill="#fff"/><circle cx="60" cy="92" r="3.5" fill="#101638"/><path d="M92 70 Q100 100 92 130 M112 76 Q120 100 112 124" stroke="#FFF" stroke-width="3" fill="none" opacity=".7"/>'+
+    '<circle cx="40" cy="40" r="6" fill="none" stroke="#fff" stroke-width="2"/><circle cx="56" cy="24" r="4" fill="none" stroke="#fff" stroke-width="2"/>'),
+  'bird.svg': svg(200,200,
+    '<rect width="200" height="200" fill="#DFF5E3"/><ellipse cx="96" cy="112" rx="56" ry="46" fill="#3E7BFA"/><circle cx="142" cy="78" r="30" fill="#3E7BFA"/>'+
+    '<path d="M168 76 L194 84 L168 94Z" fill="#FFC914"/><circle cx="148" cy="72" r="6" fill="#fff"/><circle cx="150" cy="72" r="3" fill="#101638"/>'+
+    '<path d="M60 112 Q90 90 120 120 Q90 140 60 112Z" fill="#2457E6"/><path d="M42 118 L8 100 L14 136Z" fill="#2457E6"/><path d="M90 156 V180 M106 156 V180" stroke="#FFC914" stroke-width="5" stroke-linecap="round"/>'),
+  'flower.svg': svg(200,200,
+    '<rect width="200" height="200" fill="#FFF3C7"/><path d="M100 110 V190" stroke="#2E9B53" stroke-width="8" stroke-linecap="round"/><path d="M100 160 Q70 150 62 126 Q92 128 100 160Z" fill="#3DBB68"/>'+
+    '<g fill="#FF5C8A"><circle cx="100" cy="46" r="24"/><circle cx="142" cy="76" r="24"/><circle cx="126" cy="124" r="24"/><circle cx="74" cy="124" r="24"/><circle cx="58" cy="76" r="24"/></g><circle cx="100" cy="88" r="22" fill="#FFC914"/>'),
+  'school.svg': svg(240,180,
+    '<rect width="240" height="180" fill="#D6E6FF"/><rect y="140" width="240" height="40" fill="#7BCB8B"/><rect x="40" y="70" width="160" height="80" fill="#F3D9A4"/><path d="M30 74 L120 28 L210 74Z" fill="#D93832"/>'+
+    '<rect x="100" y="104" width="40" height="46" fill="#7440F0"/><g fill="#9CC4FF"><rect x="56" y="90" width="28" height="26"/><rect x="156" y="90" width="28" height="26"/></g><path d="M120 28 V8" stroke="#101638" stroke-width="3"/><path d="M120 8 H146 L138 16 L146 24 H120Z" fill="#FFC914"/>'),
+  'welcome.svg': svg(320,140,
+    '<defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#2457E6"/><stop offset="1" stop-color="#7440F0"/></linearGradient></defs>'+
+    '<rect width="320" height="140" rx="18" fill="url(#g)"/><g fill="#FFC914"><path d="M52 40 l6 14 15 2 -11 10 3 15 -13 -8 -13 8 3 -15 -11 -10 15 -2z"/><path d="M264 84 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z"/></g>'+
+    '<circle cx="160" cy="70" r="38" fill="#fff"/><circle cx="147" cy="62" r="5" fill="#101638"/><circle cx="173" cy="62" r="5" fill="#101638"/><path d="M144 78 Q160 96 176 78" stroke="#101638" stroke-width="4" fill="none" stroke-linecap="round"/>'),
+  'pattern.svg': svg(60,60,
+    '<rect width="60" height="60" fill="#FFF6D8"/><path d="M30 6 L54 30 L30 54 L6 30Z" fill="none" stroke="#F2B418" stroke-width="3"/><circle cx="30" cy="30" r="5" fill="#FF7B54"/><circle cx="0" cy="0" r="5" fill="#7440F0"/><circle cx="60" cy="0" r="5" fill="#7440F0"/><circle cx="0" cy="60" r="5" fill="#7440F0"/><circle cx="60" cy="60" r="5" fill="#7440F0"/>'),
+  'avatar1.svg': face('#DCE6FF','#F5C9A0','#3B2A20','#2457E6'),
+  'avatar2.svg': face('#FFE0DE','#E3AE82','#101638','#D93832'),
+  'avatar3.svg': face('#E8DFFF','#F9D3B0','#7A4B2A','#7440F0'),
+  'avatar4.svg': face('#D2F3ED','#C98F63','#1B1B2F','#0B8F7F'),
+  'avatar5.svg': face('#FFF0BF','#F2C29B','#A8582A','#E79A00')
+};
+const ASSET_ORDER = ['cat.svg','fish.svg','bird.svg','flower.svg','school.svg','welcome.svg','pattern.svg','avatar1.svg','avatar2.svg','avatar3.svg','avatar4.svg','avatar5.svg','beep.wav'];
+
+function makeBeep(){
+  const sr = 8000, n = (sr*0.5)|0, buf = new Uint8Array(44+n), dv = new DataView(buf.buffer);
+  const w = (o,s) => { for(let i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); };
+  w(0,'RIFF'); dv.setUint32(4,36+n,true); w(8,'WAVEfmt '); dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
+  dv.setUint32(24,sr,true); dv.setUint32(28,sr,true); dv.setUint16(32,1,true); dv.setUint16(34,8,true); w(36,'data'); dv.setUint32(40,n,true);
+  for(let i=0;i<n;i++){ const env = Math.min(1, i/200, (n-i)/900); buf[44+i] = 128 + Math.round(Math.sin(2*Math.PI*660*i/sr)*90*env); }
+  let b = ''; for(let i=0;i<buf.length;i++) b += String.fromCharCode(buf[i]);
+  return 'data:audio/wav;base64,' + btoa(b);
+}
+const ASSETS = {};   // name -> data URL (built-ins first, uploads added later)
+const UPLOADS = {};  // name -> {url, kind}
+function buildAssets(){
+  for(const k in ASSET_SVG) ASSETS[k] = 'data:image/svg+xml;utf8,' + encodeURIComponent(ASSET_SVG[k]);
+  try{ ASSETS['beep.wav'] = makeBeep(); }catch(e){}
+}
+
+/* ------------------------------------------------------------
+   Activities (read-only tasks: students write the code themselves in the lab)
+   ------------------------------------------------------------ */
+/* id     = route name (#act-101, #act-final)
+   label  = short name shown on cards, like the teacher writes it ("HTML 101")
+   home   = the lesson after which the activity appears in the unit contents
+   lessons= lessons to read again if you forget how
+   external = an online worksheet that opens in a new tab (no lab, no file to send)
+   note / blocks = extra callout and text boxes (a prompt, a poem) shown under the tasks */
+const WS_URL = 'https://www.topworksheets.com/th/%E0%B9%80%E0%B8%97%E0%B8%84%E0%B9%82%E0%B8%99%E0%B9%82%E0%B8%A5%E0%B8%A2%E0%B8%B5/%E0%B8%84%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A7%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C/%E0%B9%83%E0%B8%9A%E0%B8%81%E0%B8%B4%E0%B8%88%E0%B8%81%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%95%E0%B9%89%E0%B8%99%E0%B8%81%E0%B8%B1%E0%B8%9A-html-65387a5c70075';
+const ACTS = [
+ {id:'start', label:'ใบกิจกรรม', u:1, home:'u1-4', lessons:['u1-4'], title:'การเริ่มต้นกับ HTML',
+  goal:'ทำใบกิจกรรมเรื่องการเริ่มต้นกับ HTML บนเว็บ TopWorksheets',
+  external:{url:WS_URL, label:'เปิดใบกิจกรรม', site:'topworksheets.com'},
+  file:'', tags:[],
+  tasks:[
+   'กดปุ่ม “เปิดใบกิจกรรม” เพื่อเปิดใบกิจกรรมการเริ่มต้นกับ HTML ในแท็บใหม่',
+   'อ่านคำสั่งในใบกิจกรรมให้ครบ แล้วทำตามที่ใบกิจกรรมกำหนด'],
+  hints:[]},
+
+ {id:'101', label:'HTML 101', u:1, home:'u1-4', lessons:['u1-4'], title:'เว็บเพจหน้าแรกของฉัน',
+  goal:'เขียนเว็บเพจหน้าแรกของตัวเองเป็นครั้งแรก โดยใช้โครงสร้างพื้นฐานของ HTML',
+  file:'html101-เลขที่ห้อง.html',
+  tags:['<html>','<head>','<title>','<body>'],
+  tasks:[
+   'สร้างเว็บเพจหน้าแรกของตัวเอง ตั้งชื่อ title ของหน้าเว็บ',
+   'เขียนข้อความทักทายผู้เข้าชมเว็บ',
+   'แนะนำตัวเอง ให้มีหัวข้อ <b>ชื่อ</b> <b>ชั้น</b> <b>เลขที่</b> และ <b>ที่อยู่</b>',
+   'บันทึกเป็นไฟล์ชื่อ <b>html101-เลขที่ห้อง.html</b>'],
+  hints:['เริ่มจากโครงสร้างพื้นฐานของ HTML แล้วเขียนข้อความระหว่าง [[<body>]] กับ [[</body>]]','ถ้าข้อความต่อกันเป็นบรรทัดเดียวก็ไม่เป็นไร เพราะกิจกรรมนี้ยังไม่ต้องใช้คำสั่งขึ้นบรรทัดใหม่']},
+
+ {id:'102', label:'HTML 102', u:2, home:'u2-1', lessons:['u2-1'], title:'ประวัติส่วนตัว',
+  goal:'จัดข้อความให้อ่านง่ายด้วยการขึ้นบรรทัดใหม่และการจัดย่อหน้า เพื่อทำประวัติส่วนตัว',
+  file:'html102-เลขที่ห้อง.html',
+  tags:['<br>','<p>','<p align>'],
+  note:'กิจกรรมนี้ยังไม่ต้องใช้ [[<center>]] และ [[&nbsp;]] ให้ใช้เฉพาะ [[<br>]] [[<p>……</p>]] และ [[<p align="ตำแหน่ง">……</p>]] เท่านั้น',
+  tasks:[
+   'ตั้ง title ของหน้าเป็น <b>ประวัติของ(ชื่อเล่น)</b> เช่น ประวัติของบีม',
+   'หมวด <b>ข้อมูลส่วนตัว</b> มี ชื่อ-นามสกุล, ชื่อเล่น, ที่อยู่, คติประจำใจ, Facebook, Line, เบอร์โทรศัพท์',
+   'หมวด <b>การศึกษา</b> มี อนุบาล, ประถม, มัธยมตอนต้น',
+   'หมวด <b>ความสามารถพิเศษ</b> เขียน 3 ข้อ',
+   'หมวด <b>อาชีพที่ใฝ่ฝัน</b> เขียน 3 ข้อ',
+   'ใช้ [[<br>]] เมื่อต้องการให้ข้อความขึ้นบรรทัดใหม่ ใช้ [[<p>……</p>]] แบ่งเป็นย่อหน้า และใช้ [[<p align="ตำแหน่ง">……</p>]] จัดตำแหน่งข้อความ (left, center, right)',
+   'บันทึกเป็นไฟล์ชื่อ <b>html102-เลขที่ห้อง.html</b>'],
+  hints:['ลำดับหมวดต้องตรงตามโจทย์ แต่จะจัดกึ่งกลางหรือชิดซ้ายก็ได้ ด้วย [[<p align="…">]]','[[<br>]] ขึ้นบรรทัดใหม่ติดกัน ส่วน [[<p>]] จะเว้นบรรทัดให้อีกหนึ่งบรรทัด']},
+
+ {id:'103', label:'HTML 103', u:2, home:'u2-1', lessons:['u2-1'], title:'เรื่องมันมีอยู่ว่า',
+  goal:'ใช้ Gemini ช่วยแต่งเรื่องราวจากบทเพลง จัดตำแหน่งข้อความให้สวยงาม และปิดท้ายด้วยคำกลอน',
+  file:'html103-เลขที่ห้อง.html',
+  tags:['&nbsp;','<center>','<hr>','<br>','<p>'],
+  blocks:[
+   {title:'Prompt สำหรับ Gemini', kind:'prompt', lines:['ในฐานะครีเอเตอร์ ช่วยนำคำเหล่านี้จากบทเพลง ...... มาแต่งเป็นเรื่องราว 10 บรรทัด']},
+   {title:'คำกลอน', kind:'poem', lines:['หนึ่งชีวิต เกิดมาก นั้นต้องสู้','ต้องเรียนรู้ วิชาการ เพื่อฝึกฝน','ชีวิตเดียว ครั้งหนึ่ง ได้เป็นคน','แม้มืดมน จงผ่านไป อย่าหยุดเดิน']}],
+  tasks:[
+   'เลือกบทเพลง 1 เพลง แล้วใช้ Gemini แต่งเรื่องราว 10 บรรทัด ด้วย Prompt ในกล่อง “Prompt สำหรับ Gemini” (เติมคำจากบทเพลงที่เลือกแทนจุด ......) พร้อมตั้งชื่อเรื่อง',
+   'จัดตำแหน่งข้อความที่แสดงผลให้สวยงาม',
+   'ต้องใช้คำสั่ง [[&nbsp;]] [[<center>]] และ [[<hr>]]',
+   'ชื่อเรื่องอยู่กึ่งกลาง แล้วจึงขึ้นเนื้อเรื่อง ตามด้วยเส้นคั่น ต่อด้วย <b>คำกลอน</b> ในกล่อง “คำกลอน”',
+   'บันทึกเป็นไฟล์ชื่อ <b>html103-เลขที่ห้อง.html</b>'],
+  hints:['ใช้ [[&nbsp;]] หลายตัวติดกันเพื่อย่อหน้า เพราะ HTML จะตัดช่องว่างที่พิมพ์ซ้ำทิ้ง','คำกลอนมี 4 บรรทัด ใช้ [[<br>]] ขึ้นบรรทัดใหม่ทุกบรรทัด','ลำดับในหน้าเว็บคือ ชื่อเรื่อง แล้วเนื้อเรื่อง แล้วเส้นคั่น แล้วคำกลอน']},
+
+ {id:'104', label:'HTML 104', u:2, home:'u2-2', lessons:['u2-2'], title:'จินตนาการ',
+  goal:'เลือกเพลงที่ชอบ แล้วทำเว็บเพจที่กำหนดหัวข้อ ขนาดและรูปแบบตัวอักษร พร้อมตกแต่งตัวอักษร',
+  file:'html104-เลขที่ห้อง.html',
+  tags:['<title>','<h1>','<font size>','<font face>','<b>','<i>','<u>','<s>','<sub>','<sup>','<big>','<small>'],
+  tasks:[
+   'ให้นักเรียนเลือกเพลง 1 เพลง แล้วทำเว็บเพจตามรายละเอียดต่อไปนี้',
+   'Title bar ให้ตั้งชื่อเพลงที่นักเรียนเลือกมา',
+   'กำหนดขนาดหัวข้อให้มีขนาด [[<h1>]]',
+   'กำหนดขนาดฟอนต์ให้มีขนาด [[<font size="5">]]',
+   'กำหนดให้รูปแบบตัวอักษร [[<font face="JasmineUPC">]]',
+   'กำหนดลักษณะตัวอักษรตามตัวอย่างที่แสดงบนหน้าจอ โดยใช้ [[<b>]] [[<i>]] [[<u>]] [[<s>]] [[<sub>]] [[<sup>]] [[<big>]] [[<small>]]',
+   'บันทึกเป็นไฟล์ชื่อ <b>html104-เลขที่ห้อง.html</b>'],
+  hints:['Title bar คือชื่อบนแท็บของเบราว์เซอร์ ตั้งด้วย [[<title>]] ในส่วน [[<head>]]','เขียนชื่อฟอนต์ JasmineUPC ติดกัน ไม่มีเว้นวรรค ฟอนต์นี้ต้องมีอยู่ในเครื่องที่เปิดดู ถ้าไม่มี เบราว์เซอร์จะใช้ฟอนต์อื่นแทน และฟอนต์นี้ตัวเล็ก','ขนาดกับชนิดตัวอักษรเขียนรวมในแท็กเดียวได้ เช่น [[<font size="5" face="JasmineUPC">]] และต้องปิด [[</font>]] ทุกครั้งที่เปิด [[<font>]]','[[<sup>]] ตัวยกและ [[<sub>]] ตัวห้อย ใช้กับตัวเลขหรือคำสั้นๆ ท้ายคำ ส่วน [[<big>]] และ [[<small>]] ใช้ขยายหรือย่อคำที่ต้องการ']},
+
+ {id:'105', label:'HTML 105', u:2, home:'u2-3', lessons:['u2-3','u2-2'], title:'การใส่สี',
+  goal:'ใช้สีตัวอักษรและสีพื้นหลังทำธงชาติของประเทศที่เลือก ให้เคลื่อนไหวได้',
+  file:'html105-เลขที่ห้อง.html',
+  tags:['<title>','<h1>','<center>','<font size>','<font face>','<font color>','<body bgcolor>','<marquee>'],
+  tasks:[
+   'ให้นักเรียนลองทำ <b>ธงชาติ</b> ของประเทศอะไรก็ได้ โดยมีรายละเอียดต่อไปนี้',
+   'Title bar ให้ตั้งชื่อธงชาติที่นักเรียนเลือกมา',
+   'กำหนดขนาดหัวข้อให้มีขนาด [[<h1>]] อยู่ตรงกลาง',
+   'กำหนดขนาดฟอนต์ให้มีขนาด [[<font size="5">]]',
+   'กำหนดให้รูปแบบตัวอักษร [[<font face="JasmineUPC">]]',
+   'เขียนชื่อสีของแต่ละแถบของธงเป็นข้อความ และให้ตัวอักษรของแต่ละแถบใช้สีตรงกับชื่อสีนั้น ด้วย [[<font color>]]',
+   'ให้ธงชาติเคลื่อนไหวได้ ด้วย [[<marquee>]]',
+   'ตั้งสีพื้นหลัง (bgcolor) เป็นสีอะไรก็ได้ ขอให้เห็นสีธงชาติชัดเจน',
+   'บันทึกเป็นไฟล์ชื่อ <b>html105-เลขที่ห้อง.html</b>'],
+  hints:['ตัวอักษรสีขาวจะมองไม่เห็นบนพื้นสีขาว จึงต้องเลือกสีพื้นหลังที่ตัดกับสีของธง','เขียน [[<br>]] คั่นแต่ละบรรทัด และเปิด [[<marquee>]] ครอบทั้งหมด','จะกำหนดสีด้วยชื่อสี เช่น red หรือรหัสสี เช่น #FF0000 ก็ได้']},
+
+ {id:'106', label:'HTML 106', u:2, home:'u2-5', lessons:['u2-4','u2-5','u3-4'], title:'แทรกภาพ',
+  goal:'นำนิทานอีสปที่ได้รับมาแทรกภาพ ใส่พื้นหลัง จัดตำแหน่ง และใส่เสียงเล่านิทาน',
+  file:'html106-เลขที่ห้อง.html',
+  tags:['<img src>','<img width height>','<img border>','<img align hspace vspace>','<body text>','<body background>','<audio>'],
+  tasks:[
+   'ให้นักเรียนนำเรื่องนิทานอีสปที่ใช้สอบ (หมากับเงา หรือ เด็กเลี้ยงแกะ ตามเรื่องที่ตนเองได้รับ) มาแทรกภาพ โดยมีรายละเอียดต่อไปนี้',
+   'ภาพ <b>หมากับเงา</b> กำหนดขนาด [[width="300" height="300"]] และสีตัวอักษร [[text="#213555"]]',
+   'ภาพ <b>เด็กเลี้ยงแกะ</b> กำหนดขนาด [[width="400" height="300"]] และสีตัวอักษร [[text="#6C3428"]]',
+   'ใส่ขอบรูปภาพ [[border="30"]]',
+   'ใส่พื้นหลังตามที่กำหนดให้',
+   'จัดตำแหน่งของภาพและข้อความ และเว้นระยะห่างระหว่างภาพกับข้อความ',
+   'ใส่เสียงเล่านิทานตามนิทานที่ตนเองได้รับ',
+   'บันทึกเป็นไฟล์ชื่อ <b>html106-เลขที่ห้อง.html</b>'],
+  hints:['ไฟล์รูป พื้นหลัง และเสียงที่ครูให้ ต้องอยู่ในโฟลเดอร์เดียวกับไฟล์ HTML และเขียนชื่อไฟล์ให้ตรงทุกตัวอักษร ในห้องทดลองกดปุ่ม “เพิ่มรูปหรือไฟล์จากเครื่อง” เพื่อนำไฟล์มาใช้','สีตัวอักษรของทั้งหน้ากำหนดที่ [[<body text="#213555">]] อย่าลืมเครื่องหมาย # หน้ารหัสสี','ถ้าอยากให้ข้อความไหลอยู่ข้างรูป ให้ใส่ [[align="left"]] หรือ [[align="right"]] ที่แท็ก [[<img>]] และเว้นระยะด้วย [[hspace]] [[vspace]]','เสียงใช้ [[<audio src="ชื่อไฟล์เสียง" controls>]]']},
+
+ {id:'107', label:'HTML 107', u:3, home:'u3-2', lessons:['u3-1','u3-2'], title:'การใส่ภาพและใส่สีในตาราง',
+  goal:'สร้างตารางข้อมูลนักเรียนจากการสำรวจเพื่อน 5 คน แล้วใส่ภาพและสีในตาราง',
+  file:'html107-เลขที่ห้อง.html',
+  tags:['<table border>','<caption>','<tr>','<th>','<td>','<img>','<td bgcolor>'],
+  tasks:[
+   'สร้างตารางแสดงข้อมูลนักเรียนที่มี 5 คอลัมน์ ได้แก่ <b>ลำดับ</b> <b>รูปภาพ</b> <b>ชื่อ-นามสกุล</b> <b>ระดับชั้น</b> <b>สีที่ชอบ</b>',
+   'สำรวจข้อมูลโดยสอบถามเพื่อน <b>5 คน</b> (ผู้ชาย 4 หญิง 1 หรือ ผู้ชาย 3 หญิง 2)',
+   'นำข้อมูลมาลงในตารางให้ครบถ้วน (หัวตาราง 1 แถว + ข้อมูล 5 แถว)',
+   'ใส่ภาพของเพื่อนแต่ละคนด้วย [[<img>]] (ใช้ avatar1–5 ในเว็บนี้ หรือรูปจากเครื่อง)',
+   'ลงสีช่อง <b>สีที่ชอบ</b> ด้วย [[bgcolor]] ให้เป็นสีตามที่เพื่อนชอบ',
+   'บันทึกเป็นไฟล์ชื่อ <b>html107-เลขที่ห้อง.html</b>'],
+  hints:['เขียนทีละแถว: เปิด [[<tr>]] ใส่ช่อง [[<td>]] ให้ครบทุกคอลัมน์ แล้วปิด [[</tr>]]','ถ้าตารางไม่มีเส้น แสดงว่าลืม [[border="1"]] ที่ [[<table>]]','กำหนด [[width]] ของรูปให้เท่ากันทุกรูป ตารางจะเรียบร้อย และถ้าสีพื้นเข้มมาก ให้เปลี่ยนสีตัวอักษรด้วย [[<font color>]]']},
+
+ {id:'final', label:'FINAL', u:3, home:'u3-3', lessons:['u3-3'], title:'เว็บไซต์ 3 หน้าพร้อมลิงก์',
+  goal:'สร้างเว็บไซต์เล็กๆ 3 หน้า ที่เชื่อมโยงถึงกันและเชื่อมไปเว็บโรงเรียน',
+  file:'index.html, page1.html, page2.html',
+  tags:['<a href>','<a target>','<img>','<a><img></a>'],
+  tasks:[
+   'สร้างเว็บไซต์ 3 หน้า ได้แก่ <b>หน้าแรก</b> (index.html) <b>หน้า 1</b> (page1.html) และ <b>หน้า 2</b> (page2.html)',
+   '<b>หน้า 1: ประวัติส่วนตัว</b> มี ชื่อ-นามสกุล, ชั้น, เลขที่, อาชีพที่ใฝ่ฝัน และมีลิงก์ข้อความ “หน้าแรก” กลับไปหน้าแรก',
+   '<b>หน้า 2: ติดต่อฉัน</b> มี ที่อยู่, เบอร์โทรศัพท์, facebook, ig และมีลิงก์ข้อความ “หน้าแรก” กลับไปหน้าแรก',
+   '<b>หน้าแรก</b> มีรูปภาพต้อนรับ และลิงก์ไปยัง หน้า 1 หน้า 2 และเว็บไซต์โรงเรียน <b>http://www.utd.ac.th</b> ที่เปิดในหน้าต่างใหม่ด้วย [[target="_blank"]]',
+   'บันทึกทั้ง 3 ไฟล์ไว้ในโฟลเดอร์เดียวกัน แล้วเปิด index.html ทดลองคลิกลิงก์ทุกจุด'],
+  hints:['ลิงก์ไปไฟล์ในโฟลเดอร์เดียวกัน ใส่แค่ชื่อไฟล์ เช่น [[<a href="page1.html">]]','ในห้องทดลอง กด “เพิ่มไฟล์” เพื่อสร้าง page1.html และ page2.html เมื่อคลิกลิงก์ในหน้าผลลัพธ์ เว็บจะสลับไปไฟล์นั้นให้ ส่วนลิงก์ไปเว็บภายนอกจะแจ้งปลายทางเฉยๆ','อย่าลืมรูปต้อนรับ ลองใช้ welcome.svg']}
+];
+const ACT_BY_ID = Object.create(null); ACTS.forEach(a => ACT_BY_ID[a.id] = a);
+const actName = a => a.label + ' : ' + a.title;                      // "HTML 101 : เว็บเพจหน้าแรกของฉัน"
+const actChip = a => a.external ? 'ใบกิจกรรมออนไลน์' : 'กิจกรรม ' + a.label;
+
+/* ------------------------------------------------------------
+   Quizzes (o = options, a = index of correct, w = why)
+   ------------------------------------------------------------ */
+const QUIZ = {
+ 1:[
+  {q:'เว็บเพจ (Web Page) หมายถึงอะไร',o:['โปรแกรมที่ใช้เปิดดูเว็บ','เอกสารที่ใช้ในการเผยแพร่ข้อมูลข่าวสาร','เครื่องคอมพิวเตอร์ที่เก็บเว็บไซต์ไว้','กลุ่มของเว็บเพจทั้งหมดรวมกัน'],a:1,w:'เว็บเพจคือเอกสารหนึ่งหน้าที่เผยแพร่ข้อมูล ส่วนกลุ่มของเว็บเพจเรียกว่าเว็บไซต์'},
+  {q:'หน้าแรกของเว็บไซต์ที่เหมือนหน้าปกนิตยสาร เรียกว่าอะไร',o:['โฮมเพจ (Home Page)','เว็บเซิร์ฟเวอร์','เซิร์ชเอนจิน','เว็บเบราว์เซอร์'],a:0,w:'โฮมเพจคือหน้าแรกของเว็บไซต์ ชื่อไฟล์มักเป็น index.html'},
+  {q:'โปรแกรมที่แปลคำสั่ง HTML แล้วแสดงเป็นเว็บเพจบนหน้าจอของเรา คือข้อใด',o:['Web server','Search engine','Web browser','FTP'],a:2,w:'Web browser เช่น Chrome, Edge, Firefox ทำหน้าที่แปลคำสั่ง HTML ส่วน Web server เป็นเครื่องที่เก็บเว็บเพจ'},
+  {q:'จาก URL http://www.dtac.co.th/index.html ส่วนใดคือ “โปรโตคอล”',o:['www.dtac.co.th','index.html','http://','co.th'],a:2,w:'http:// คือโปรโตคอล วิธีที่ใช้คุยกัน ส่วน www.dtac.co.th คือโดเมนเนม และ index.html คือเว็บเพจ'},
+  {q:'โดเมนเนม utd.ac.th ส่วน “ac” บอกว่าเป็นองค์กรประเภทใด',o:['องค์กรธุรกิจ','หน่วยงานรัฐบาล','องค์กรที่ไม่แสวงหากำไร','สถาบันการศึกษา'],a:3,w:'ac ย่อจาก Academic คือสถาบันการศึกษา ส่วน co คือธุรกิจ go คือรัฐบาล or คือองค์กรอื่นที่ไม่แสวงหากำไร'},
+  {q:'ข้อใดเป็นลำดับ 3 ขั้นตอนแรกของการสร้างเว็บไซต์ที่ถูกต้อง',o:['สร้างเว็บเพจ → วางแผน → อัพโหลด','วางแผน → กำหนดโครงสร้างของเว็บ → กำหนดการเชื่อมโยงระหว่างเว็บเพจ','อัพโหลด → จดโดเมนเนม → วางแผน','ออกแบบหน้าเว็บ → วางแผน → สร้างเว็บเพจ'],a:1,w:'ต้องวางแผนก่อน แล้วค่อยวางโครงสร้าง กำหนดการเชื่อมโยง ออกแบบหน้า สร้างหน้า จดโดเมน และอัพโหลดเป็นขั้นสุดท้าย'},
+  {q:'ส่วนใดของเอกสาร HTML ที่เนื้อหาจะแสดงให้เห็นบนหน้าเว็บ',o:['อยู่ใน head','อยู่ใน body','อยู่ใน title','อยู่ใน meta'],a:1,w:'body คือส่วนที่แสดงผลบนหน้าเว็บ ส่วน head เก็บข้อมูลของเอกสาร เช่น title ที่ขึ้นบน Title bar'},
+  {q:'เหตุใดจึงใส่ <meta charset="utf-8"> ไว้ใน head',o:['เพื่อให้ภาษาไทยแสดงผลถูกต้อง','เพื่อเปลี่ยนสีพื้นหลังของหน้า','เพื่อใส่ชื่อบน Title bar','เพื่อให้ตัวอักษรมีขนาดใหญ่ขึ้น'],a:0,w:'ถ้าไม่กำหนด charset เบราว์เซอร์อาจอ่านภาษาไทยผิด ทำให้ข้อความเป็นอักขระแปลกๆ'}
+ ],
+ 2:[
+  {q:'แท็กใดใช้ขึ้นบรรทัดใหม่โดยไม่ต้องมีแท็กปิด',o:['<br>','<p>…</p>','<hr>…</hr>','<center>'],a:0,w:'<br> ตัดคำขึ้นบรรทัดใหม่ ใช้ได้เลยไม่ต้องปิด ส่วน <p> เป็นการขึ้นย่อหน้าใหม่'},
+  {q:'HTML จะตัดช่องว่างที่พิมพ์ซ้ำกันทิ้ง ถ้าต้องการเว้นวรรคหลายช่อง ต้องใช้อะไร',o:['<space>','&nbsp;','<br><br>','<gap>'],a:1,w:'&nbsp; (non-breaking space) เพิ่มช่องว่างได้ทีละหนึ่งช่อง'},
+  {q:'หัวเรื่องแท็กใดมีตัวอักษรใหญ่ที่สุด',o:['<h6>','<h3>','<head>','<h1>'],a:3,w:'<h1> ใหญ่ที่สุด และเล็กลงตามลำดับจนถึง <h6>'},
+  {q:'<font size="n"> ค่า n ที่กำหนดได้อยู่ในช่วงใด',o:['1 ถึง 7','0 ถึง 10','1 ถึง 100','8 ถึง 72'],a:0,w:'ขนาดตัวอักษรแบบ font size มี 7 ระดับ คือ 1 ถึง 7'},
+  {q:'ถ้าต้องการให้ข้อความเป็นตัวหนาและตัวเอียง ใช้แท็กคู่ใดตามลำดับ',o:['<u> และ <s>','<b> และ <i>','<big> และ <small>','<sub> และ <sup>'],a:1,w:'<b> ตัวหนา (Bold) <i> ตัวเอียง (Italic) <u> ขีดเส้นใต้ <s> ขีดฆ่า'},
+  {q:'รหัสสีเลขฐาน 16 ของสีแดงสดคือข้อใด',o:['#00FF00','#0000FF','#FFFF00','#FF0000'],a:3,w:'รหัสสีเรียงเป็น R G B สีแดงสดคือ R เต็ม (FF) ส่วน G และ B เป็น 00 และต้องมี # นำหน้า'},
+  {q:'แท็กใดทำให้ข้อความเคลื่อนไหววิ่งบนหน้าเว็บ',o:['<move>','<run>','<marquee>','<scroll>'],a:2,w:'<marquee>…</marquee> ทำให้ข้อความวิ่ง เป็นแท็กรุ่นเก่า แต่ยังใช้ได้'},
+  {q:'รูปภาพชนิดใดรองรับภาพเคลื่อนไหว และมีสีได้สูงสุดเพียง 256 สี',o:['JPG','GIF','PNG','BMP'],a:1,w:'GIF รองรับภาพเคลื่อนไหวแต่มีสีได้ 8 บิต (256 สี) ส่วน JPG เหมาะกับภาพถ่าย'},
+  {q:'แอตทริบิวต์ alt ในแท็ก <img> ใช้ทำอะไร',o:['เปลี่ยนขนาดรูป','ใส่กรอบรูป','ใส่ข้อความกำกับภาพ','จัดตำแหน่งรูป'],a:2,w:'alt คือข้อความกำกับภาพ แสดงเมื่อรูปไม่ขึ้น และช่วยให้โปรแกรมอ่านหน้าจอบอกว่ารูปคืออะไร'},
+  {q:'<img src="cat.svg" align="left"> ผลคือข้อใด',o:['รูปอยู่ชิดซ้าย ข้อความไหลอยู่ด้านขวาของรูป','รูปอยู่ชิดขวา ข้อความอยู่ด้านซ้าย','รูปอยู่กึ่งกลางหน้า','รูปถูกซ่อน'],a:0,w:'align="left" จัดรูปชิดซ้าย และข้อความจะไหลมาล้อมอยู่ด้านขวา'},
+  {q:'<body background="pattern.svg" bgproperties="fixed"> ทำให้เกิดอะไร',o:['ภาพพื้นหลังซ้ำเป็นแนวนอนเท่านั้น','ภาพพื้นหลังถูกซ่อน','ภาพพื้นหลังอยู่ที่เดิม แม้เลื่อนหน้าขึ้นลง','ภาพพื้นหลังหมุนได้'],a:2,w:'fixed ตรึงภาพพื้นหลังไว้ที่เดิม (แอตทริบิวต์รุ่นเก่า ปัจจุบันใช้ CSS)'}
+ ],
+ 3:[
+  {q:'แท็ก <tr> ในตารางหมายถึงอะไร',o:['หนึ่งแถวของตาราง','หนึ่งเซลล์ข้อมูล','หัวเรื่องของคอลัมน์','คำอธิบายตาราง'],a:0,w:'tr ย่อจาก table row คือแถว ส่วน td คือข้อมูลในช่อง และ th คือหัวเรื่อง'},
+  {q:'<th> ต่างจาก <td> อย่างไร',o:['<th> ไม่แสดงผล','<th> ใช้เป็นหัวเรื่อง ตัวหนา และอยู่กึ่งกลางเซลล์อัตโนมัติ','<th> ใช้สร้างแถวใหม่','<th> ใช้ใส่รูปเท่านั้น'],a:1,w:'th (table header) ใช้เป็นหัวเรื่อง ข้อความจะหนาและอยู่กึ่งกลาง'},
+  {q:'ต้องการให้ตารางมีเส้นขอบ ควรใช้คำสั่งใด',o:['<table line="1">','<table frame>','<table border="1">','<table edge="1">'],a:2,w:'border กำหนดความหนาของเส้นตาราง หน่วยเป็นพิกเซล ถ้าไม่ใส่ ตารางจะไม่มีเส้น'},
+  {q:'cellpadding ใช้กำหนดอะไร',o:['ระยะห่างระหว่างเซลล์แต่ละช่อง','ระยะห่างระหว่างข้อมูลกับกรอบเซลล์','ความหนาของเส้นขอบตาราง','ความกว้างของตาราง'],a:1,w:'cellpadding คือระยะระหว่างข้อมูลกับกรอบในเซลล์ ส่วน cellspacing คือระยะห่างระหว่างเซลล์'},
+  {q:'ต้องการให้เซลล์เดียวกว้างเท่ากับ 2 คอลัมน์ ใช้ข้อใด',o:['<td rowspan="2">','<td colspan="2">','<td width="2">','<td cols="2">'],a:1,w:'colspan ขยายเซลล์ข้ามคอลัมน์ ส่วน rowspan ขยายเซลล์ข้ามแถว'},
+  {q:'ลิงก์ไปยังไฟล์ page1.html ที่อยู่โฟลเดอร์เดียวกัน เขียนอย่างไร',o:['<a src="page1.html">ไปหน้า 1</a>','<link href="page1.html">ไปหน้า 1</link>','<a href="page1.html">ไปหน้า 1</a>','<a name="page1.html">ไปหน้า 1</a>'],a:2,w:'ลิงก์ใช้แท็ก <a> และแอตทริบิวต์ href ที่ระบุปลายทาง'},
+  {q:'ต้องการให้ลิงก์เปิดในหน้าต่างหรือแท็บใหม่ ต้องใส่อะไรในแท็ก <a>',o:['target="_blank"','target="_self"','open="new"','window="blank"'],a:0,w:'target="_blank" เปิดในหน้าต่างใหม่ ส่วน _self เปิดในหน้าเดิม'},
+  {q:'<body link="red" vlink="green" alink="blue"> ค่า vlink คือสีของลิงก์แบบใด',o:['ลิงก์ที่ยังไม่เคยคลิก','ลิงก์ที่เคยคลิกไปแล้ว','ลิงก์ที่กำลังถูกคลิก','ลิงก์ที่เสีย'],a:1,w:'link คือยังไม่คลิก vlink (visited) คือเคยคลิกแล้ว alink (active) คือกำลังคลิก'},
+  {q:'ต้องการให้ผู้ใช้คลิกที่รูปภาพเพื่อไปยังอีกหน้า ควรเขียนอย่างไร',o:['<img href="page1.html">','<a href="page1.html"><img src="pic.svg"></a>','<img><a>page1.html</a>','<a src="pic.svg" href="page1.html">'],a:1,w:'ใส่ <img> ไว้ระหว่าง <a> และ </a> แทนข้อความ ผู้ใช้จะคลิกที่รูปได้'},
+  {q:'เหตุใดจึงต้องใส่ controls ใน <audio src="..." controls>',o:['เพื่อให้แสดงปุ่มเล่น หยุด และปรับเสียง','เพื่อให้เล่นวนซ้ำ','เพื่อให้เสียงดังขึ้น','เพื่อแปลงไฟล์เป็น mp3'],a:0,w:'ถ้าไม่ใส่ controls จะไม่เห็นตัวควบคุมการเล่น ส่วนเล่นวนซ้ำใช้ loop'}
+ ]
+};
+
+/* ------------------------------------------------------------
+   Tag reference: [name, what it does, example, unit, lesson, deprecated?]
+   ------------------------------------------------------------ */
+const TAGS = [
+ ['<!DOCTYPE html>','ประกาศว่าเอกสารนี้ใช้ HTML5 อยู่บรรทัดแรกสุด','<!DOCTYPE html>',1,'u1-4'],
+ ['<html>…</html>','แท็กครอบเนื้อหาทั้งเอกสาร','<html> … </html>',1,'u1-4'],
+ ['<head>…</head>','ส่วนหัวของเอกสาร ใส่ข้อมูลเกี่ยวกับเอกสาร','<head> … </head>',1,'u1-4'],
+ ['<title>…</title>','ข้อความที่ขึ้นบน Title bar ของเบราว์เซอร์','<title>หน้าแรกของผม</title>',1,'u1-4'],
+ ['<meta charset>','กำหนดการเข้ารหัส เพื่อให้ภาษาไทยแสดงถูกต้อง','<meta charset="utf-8">',1,'u1-4'],
+ ['<body>…</body>','ส่วนเนื้อหาที่แสดงบนหน้าเว็บ','<body> … </body>',1,'u1-4'],
+ ['<br>','ตัดคำขึ้นบรรทัดใหม่ ไม่ต้องปิด','บรรทัดที่ 1<br>บรรทัดที่ 2',2,'u2-1'],
+ ['<p>…</p>','ขึ้นย่อหน้าใหม่ (เว้นบรรทัด)','<p>ย่อหน้า</p>',2,'u2-1'],
+ ['align (ใน <p>)','จัดตำแหน่งข้อความ: left, center, right, justify','<p align="center">',2,'u2-1',true],
+ ['&nbsp;','เพิ่มช่องว่างทีละช่อง','&nbsp;&nbsp;&nbsp;ย่อหน้า',2,'u2-1'],
+ ['<center>…</center>','จัดข้อความให้อยู่กึ่งกลาง','<center>ชื่อเรื่อง</center>',2,'u2-1',true],
+ ['<pre>…</pre>','แสดงข้อความตามรูปแบบที่พิมพ์ รวมช่องว่างและบรรทัด','<pre>  ข้อความ</pre>',2,'u2-1'],
+ ['<hr>','เส้นคั่นแนวนอน','<hr>',2,'u2-1'],
+ ['<h1>…<h6>','หัวเรื่อง 6 ระดับ h1 ใหญ่สุด h6 เล็กสุด','<h1>หัวเรื่อง</h1>',2,'u2-2'],
+ ['<b> / <strong>','ตัวหนา / ข้อความสำคัญมาก','<b>ตัวหนา</b>',2,'u2-2'],
+ ['<i> / <em>','ตัวเอียง / เน้นข้อความ','<i>ตัวเอียง</i>',2,'u2-2'],
+ ['<u>','ขีดเส้นใต้','<u>เส้นใต้</u>',2,'u2-2'],
+ ['<s>','ขีดฆ่า','<s>ขีดฆ่า</s>',2,'u2-2'],
+ ['<big> / <small>','ตัวอักษรขนาดใหญ่ / เล็ก','<big>ใหญ่</big>',2,'u2-2',true],
+ ['<sup> / <sub>','ตัวยก / ตัวห้อย','x<sup>2</sup>',2,'u2-2'],
+ ['<tt>, <code>, <kbd>, <samp>','ข้อความแบบพิมพ์ดีด, โค้ด, แป้นพิมพ์, ตัวอย่าง','<code>x = 1</code>',2,'u2-2'],
+ ['<cite>, <dfn>, <address>','ข้อความอ้างอิง, คำนิยาม, ชื่อและที่อยู่','<address>ที่อยู่</address>',2,'u2-2'],
+ ['<font size>','ขนาดตัวอักษร 1 ถึง 7','<font size="5">',2,'u2-2',true],
+ ['<font face>','ชนิดตัวอักษร (ชื่อฟอนต์) เช่น Angsana New, Impact, JasmineUPC','<font face="JasmineUPC">',2,'u2-2',true],
+ ['<font color>','สีตัวอักษรเฉพาะส่วน','<font color="red">',2,'u2-3',true],
+ ['bgcolor, text (ใน <body>)','สีพื้นหลังหน้า และสีตัวอักษรทั้งหน้า','<body bgcolor="#FFF" text="red">',2,'u2-3',true],
+ ['<marquee>','ข้อความวิ่ง','<marquee>วิ่ง</marquee>',2,'u2-3',true],
+ ['<marquee direction>','ทิศทางที่ข้อความวิ่ง: up, down, left, right','<marquee direction="up">',2,'u2-3',true],
+ ['<marquee behavior>','รูปแบบการวิ่ง: scroll, slide, alternate','<marquee behavior="alternate">',2,'u2-3',true],
+ ['<img src>','แทรกรูปภาพ','<img src="cat.svg">',2,'u2-4'],
+ ['alt','ข้อความกำกับภาพ','<img src="cat.svg" alt="แมว">',2,'u2-4'],
+ ['width, height','ปรับขนาดรูป หน่วยพิกเซล','<img src="cat.svg" width="100">',2,'u2-4'],
+ ['border (ใน <img>)','กรอบรอบรูป','<img border="2">',2,'u2-4',true],
+ ['align (ใน <img>)','จัดตำแหน่งรูป: left, right, top, middle, bottom','<img align="left">',2,'u2-5',true],
+ ['vspace, hspace','ระยะห่างรูปกับข้อความ บนล่าง / ซ้ายขวา','<img hspace="20" vspace="10">',2,'u2-5',true],
+ ['background (ใน <body>)','ภาพพื้นหลังของหน้า','<body background="pattern.svg">',2,'u2-5',true],
+ ['bgproperties="fixed"','ตรึงภาพพื้นหลังไม่ให้เลื่อน','<body bgproperties="fixed">',2,'u2-5',true],
+ ['<table>…</table>','สร้างตาราง','<table border="1">',3,'u3-1'],
+ ['<caption>','คำอธิบายตาราง (align: top, bottom, left, right)','<caption>ชื่อตาราง</caption>',3,'u3-1'],
+ ['<tr>…</tr>','แถวของตาราง','<tr> … </tr>',3,'u3-1'],
+ ['<th>…</th>','หัวเรื่องของคอลัมน์ ตัวหนา อยู่กึ่งกลาง','<th>ชื่อ</th>',3,'u3-1'],
+ ['<td>…</td>','ข้อมูลในเซลล์','<td>ข้อมูล</td>',3,'u3-1'],
+ ['border (ใน <table>)','ความหนาเส้นตาราง','<table border="2">',3,'u3-1',true],
+ ['cellspacing, cellpadding','ระยะห่างระหว่างเซลล์ / ระหว่างข้อมูลกับกรอบ','<table cellspacing="4" cellpadding="6">',3,'u3-1',true],
+ ['width, height (ใน <table>)','ความกว้าง ความสูงของตาราง พิกเซลหรือ %','<table width="60%">',3,'u3-1',true],
+ ['colspan, rowspan','ขยายเซลล์ข้ามคอลัมน์ / ข้ามแถว','<td colspan="2">',3,'u3-2'],
+ ['bgcolor (ใน ตาราง)','สีพื้นของตารางหรือเซลล์','<td bgcolor="yellow">',3,'u3-2',true],
+ ['bordercolor','สีกรอบตาราง','<table bordercolor="red">',3,'u3-2',true],
+ ['background (ในตาราง)','รูปภาพพื้นหลังตาราง','<table background="pattern.svg">',3,'u3-2',true],
+ ['align (ในตาราง)','จัดตำแหน่งข้อมูลในเซลล์ left, center, right','<td align="center">',3,'u3-2',true],
+ ['<a href>','ลิงก์ไปหน้าอื่นหรือเว็บไซต์อื่น','<a href="page1.html">',3,'u3-3'],
+ ['target','ที่เปิดลิงก์: _blank, _self, _parent, _top','<a href="…" target="_blank">',3,'u3-3'],
+ ['<a><img></a>','ใช้รูปภาพเป็นลิงก์','<a href="page1.html"><img src="…"></a>',3,'u3-3'],
+ ['link, vlink, alink','สีลิงก์ปกติ / เคยคลิก / กำลังคลิก','<body link="red" vlink="green" alink="blue">',3,'u3-3',true],
+ ['<audio>','ตัวเล่นเสียง (controls แสดงปุ่มเล่น)','<audio src="beep.wav" controls>',3,'u3-4'],
+ ['<video>','ตัวเล่นวิดีโอ','<video src="a.mp4" controls>',3,'u3-4']
+];
+
+/* ============================================================
+   CORE: helpers, storage, theme, router, toc, progress, generated pages
+   ============================================================ */
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const mk  = s => String(s).replace(/\[\[([\s\S]+?)\]\]/g, (m, x) => '<code>' + esc(x) + '</code>');
+const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+/* ---------- storage (always works in memory, saved when the browser allows) ---------- */
+const NS = 'w22292:';
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(NS+k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(NS+k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+};
+const S = store.get('state', null) || {};
+S.theme = S.theme === 'dark' ? 'dark' : 'light'; S.done = S.done || {}; S.quiz = S.quiz || {};
+/* the activity list was renumbered (HTML 101-107, FINAL): forget old activity ticks, keep quiz scores */
+if(S.v !== 4){ Object.keys(S.done).forEach(k => { if(/^act-/.test(k)) delete S.done[k]; }); S.v = 4; }
+const saveState = () => store.set('state', S);
+
+/* ---------- toast ---------- */
+let toastT = 0;
+function toast(msg, ms){
+  const t = $('#toast'); if(!t) return;
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), ms || 3600);
+}
+/* ---------- syntax highlight for HTML source ---------- */
+function hlTag(t){
+  const m = /^<(\/?)([A-Za-z][\w:-]*)([\s\S]*?)(\/?)>$/.exec(t);
+  if(!m) return esc(t);
+  let attrs = '', last = 0;
+  const re = /(\s+)([^\s=\/>"']+)(?:(\s*=\s*)("[^"]*"|'[^']*'|[^\s"'>]+))?/g;
+  let a;
+  while((a = re.exec(m[3]))){
+    attrs += esc(m[3].slice(last, a.index)) + esc(a[1]) + '<span class="a">' + esc(a[2]) + '</span>';
+    if(a[3] != null) attrs += esc(a[3]) + '<span class="s">' + esc(a[4] || '') + '</span>';
+    last = re.lastIndex;
+  }
+  attrs += esc(m[3].slice(last));
+  return '<span class="t">&lt;' + m[1] + esc(m[2]) + '</span>' + attrs + '<span class="t">' + m[4] + '&gt;</span>';
+}
+function hl(src){
+  const re = /<!--[\s\S]*?-->|<![A-Za-z][^>]*>|<\/?[A-Za-z][^>]*>|&[A-Za-z#0-9]+;/g;
+  let out = '', last = 0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    const t = m[0];
+    if(t.startsWith('<!')) out += '<span class="c">' + esc(t) + '</span>';
+    else if(t[0] === '&') out += '<span class="e">' + esc(t) + '</span>';
+    else out += hlTag(t);
+    last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+
+/* ---------- names, units, validity ---------- */
+const lessonTitle = id => { const h = $('#view-'+id+' h1'); return h ? h.textContent.trim() : id; };
+const lessonLead  = id => { const p = $('#view-'+id+' .lead'); return p ? p.textContent.trim() : ''; };
+function unitOf(tok){
+  let m;
+  if(LESSON_META[tok]) return +tok[1];
+  if((m = /^(?:unit|quiz)-(\d)$/.exec(tok))) return +m[1];
+  if((m = /^act-([a-z0-9]+)$/.exec(tok)) && ACT_BY_ID[m[1]]) return ACT_BY_ID[m[1]].u;
+  return 0;
+}
+function valid(tok){
+  return !!(LESSON_META[tok] || /^(home|acts|lab|ref)$/.test(tok) || /^(unit|quiz)-[123]$/.test(tok) || (/^act-[a-z0-9]+$/.test(tok) && ACT_BY_ID[tok.slice(4)]));
+}
+function nameOf(tok){
+  let m;
+  if(LESSON_META[tok]) return lessonTitle(tok);
+  if((m = /^quiz-(\d)$/.exec(tok))) return 'แบบทดสอบท้ายหน่วยที่ ' + m[1];
+  if((m = /^unit-(\d)$/.exec(tok))) return 'หน่วยที่ ' + m[1] + ' ' + UNITS[m[1]-1].name;
+  if((m = /^act-([a-z0-9]+)$/.exec(tok))) return actName(ACT_BY_ID[m[1]]);
+  return ({home:'หน้าแรก', acts:'กิจกรรม', lab:'ห้องทดลอง', ref:'สรุปแท็ก'})[tok] || tok;
+}
+/* ---------- theme (light by default, dark when the switch is on) ---------- */
+function applyTheme(t){
+  const dark = t === 'dark', r = document.documentElement;
+  if(dark) r.setAttribute('data-theme', 'dark'); else r.removeAttribute('data-theme');
+  const sw = $('#theme-sw'); if(sw) sw.setAttribute('aria-checked', String(dark));
+  S.theme = dark ? 'dark' : 'light'; saveState();
+}
+
+/* ---------- progress ---------- */
+const TOTAL = ACTS.length + 3;   // every activity + 3 unit quizzes
+const counts = k => /^(act-[a-z0-9]+|quiz-\d)$/.test(k) && valid(k);
+/* progress of one unit: its activities + its quiz */
+function unitProg(n){
+  const keys = ACTS.filter(a => a.u === n).map(a => 'act-' + a.id).concat('quiz-' + n);
+  return {done: keys.filter(isDone).length, total: keys.length};
+}
+const isDone = k => !!S.done[k];
+function setDone(k, v){
+  if(v === false) delete S.done[k]; else S.done[k] = 1;
+  saveState(); updateProgress();
+}
+function updateProgress(){
+  const n = Object.keys(S.done).filter(counts).length;
+  const pct = Math.round(n / TOTAL * 100);
+  const ring = $('#ring');
+  ring.style.setProperty('--p', pct);
+  ring.firstElementChild.textContent = pct;
+  ring.title = 'ความคืบหน้าของฉัน ' + pct + '%'; ring.setAttribute('aria-label', ring.title);
+  $$('[data-key]').forEach(a => a.classList.toggle('done', isDone(a.dataset.key)));
+  $$('[data-mark]').forEach(b => {
+    const on = isDone(b.dataset.mark);
+    b.setAttribute('aria-pressed', String(on));
+    b.textContent = on ? '✓ ทำเสร็จแล้ว' : 'ทำเครื่องหมายว่าทำเสร็จแล้ว';
+  });
+  UNITS.forEach(u => {
+    const p = unitProg(u.n);
+    $$('[data-uprog="'+u.n+'"]').forEach(e => { e.textContent = p.done + '/' + p.total; });
+    $$('[data-ubar="'+u.n+'"]').forEach(e => { e.style.setProperty('--w', Math.round(p.done / p.total * 100) + '%'); });
+    $$('[data-ulbl="'+u.n+'"]').forEach(e => { e.textContent = 'ทำแล้ว ' + p.done + ' จาก ' + p.total + ' ชิ้น'; });
+  });
+}
+
+/* ---------- table of contents (sidebar + mobile) ---------- */
+/* the lesson an activity sits under; falls back to the last lesson of its unit */
+const homeOf = a => { const L = UNITS[a.u-1].lessons; return L.indexOf(a.home) >= 0 ? a.home : L[L.length-1]; };
+function tocHTML(){
+  const a = (tok, cls, inner) => '<a class="u'+unitOf(tok)+' '+cls+'" href="#'+tok+'" data-go="'+tok+'" data-key="'+tok+'">'+inner+'<span class="tick" aria-hidden="true">✓</span></a>';
+  let h = '';
+  UNITS.forEach(u => {
+    h += '<a class="uh u'+u.n+'" href="#unit-'+u.n+'" data-go="unit-'+u.n+'"><i class="dot"></i><span>หน่วยที่ '+u.n+' '+esc(u.name)+'</span><em data-uprog="'+u.n+'"></em></a>';
+    u.lessons.forEach((id, i) => {
+      h += a(id, 'ls', '<i class="no">'+(i+1)+'</i><span>'+esc(lessonTitle(id))+'</span>');
+      ACTS.filter(x => x.u === u.n && homeOf(x) === id).forEach(x => {
+        h += a('act-'+x.id, 'as', '<i class="bx"></i><span><b class="lbx">'+esc(x.label)+'</b>'+esc(x.title)+'</span>');
+      });
+    });
+    h += a('quiz-'+u.n, 'qs', '<i class="bx qz"></i><span>แบบทดสอบท้ายหน่วย</span>');
+  });
+  h += '<h4 class="u0"><i></i>เครื่องมือ</h4>' +
+    '<a class="u0 ls" href="#lab" data-go="lab"><i class="no">&lt;/&gt;</i><span>ห้องทดลอง</span></a>' +
+    '<a class="u0 ls" href="#ref" data-go="ref"><i class="no">#</i><span>สรุปแท็ก</span></a>' +
+    '<a class="u0 ls" href="#acts" data-go="acts"><i class="no">+</i><span>กิจกรรมทั้งหมด</span></a>';
+  return h;
+}
+
+/* ---------- generated pages ---------- */
+const gen = () => $('#gen');
+function makeView(tok, cls, html){
+  const s = document.createElement('section');
+  s.className = 'view ' + cls; s.id = 'view-' + tok; s.tabIndex = -1; s.hidden = true; s.innerHTML = html;
+  gen().appendChild(s); return s;
+}
+function card(tok, label, title, small){
+  return '<button type="button" class="acard u'+unitOf(tok)+'" data-go="'+tok+'" data-key="'+tok+'"><span class="code-id">'+esc(label)+'</span><b>'+esc(title)+'</b><small>'+esc(small)+'</small><span class="done-mark" aria-hidden="true">✓</span></button>';
+}
+function footHTML(tok){
+  const i = SEQ.indexOf(tok), prev = SEQ[i-1], next = SEQ[i+1];
+  const left = prev ? '<button class="btn ghost" type="button" data-go="'+prev+'">ก่อนหน้า: '+esc(nameOf(prev))+'</button>'
+                    : '<button class="btn ghost" type="button" data-go="home">หน้าแรก</button>';
+  const right= next ? '<button class="btn" type="button" data-go="'+next+'">ถัดไป: '+esc(nameOf(next))+'</button>'
+                    : '<button class="btn" type="button" data-go="home">กลับหน้าแรก</button>';
+  return left + '<span class="sp"></span>' + right;
+}
+const actCard = a => card('act-'+a.id, a.label, a.title, a.goal);
+const actBtn  = a => '<button type="button" class="tact" data-go="act-'+a.id+'" data-key="act-'+a.id+'"><span class="code-id">'+esc(a.label)+'</span><b>'+esc(a.title)+'</b><small>'+esc(a.goal)+'</small><span class="done-mark" aria-hidden="true">✓</span></button>';
+/* tags a lesson introduces, shown on its card in the unit contents (closing parts like …</html> are dropped) */
+const tagsOf = id => TAGS.filter(t => t[4] === id).map(t => t[0].replace(/…<\/[^>]+>$/, ''));
+function unitHTML(n){
+  const u = UNITS[n-1], acts = ACTS.filter(a => a.u === n), p = unitProg(n);
+  const node = (id, i) => {
+    const tg = tagsOf(id), shown = tg.slice(0, 5), mine = acts.filter(a => homeOf(a) === id);
+    return '<li class="tn"><span class="no" aria-hidden="true">'+(i+1)+'</span>' +
+      '<button type="button" class="tcard" data-go="'+id+'"><span class="lbl">บทที่ '+(i+1)+(id === 'u3-4' ? ' (เนื้อหาเสริม)' : '')+'</span><b>'+esc(lessonTitle(id))+'</b><small>'+esc(lessonLead(id))+'</small>' +
+      (shown.length ? '<span class="tags" role="list" aria-label="แท็กที่เรียนในบทนี้">' + shown.map(t => '<span role="listitem">'+esc(t)+'</span>').join('') + (tg.length > shown.length ? '<span class="more" role="listitem">อีก '+(tg.length - shown.length)+'</span>' : '') + '</span>' : '') +
+      '</button>' +
+      (mine.length ? '<ul class="tacts" aria-label="กิจกรรมหลังบทที่ '+(i+1)+'">' + mine.map(a => '<li>'+actBtn(a)+'</li>').join('') + '</ul>' : '') +
+      '</li>';
+  };
+  return '<div class="uhero"><span class="big" aria-hidden="true">'+n+'</span>' +
+      '<span class="chip"><i></i>หน่วยที่ '+n+'</span><h1>'+esc(u.name)+'</h1><p class="lead">'+esc(u.desc)+'</p>' +
+      '<ul class="uh-stats"><li><b>'+u.lessons.length+'</b> บทเรียน</li><li><b>'+acts.length+'</b> กิจกรรม</li><li><b>1</b> แบบทดสอบ</li></ul>' +
+      '<div class="uh-prog"><span class="uh-bar" aria-hidden="true"><i data-ubar="'+n+'"></i></span><span data-ulbl="'+n+'">ทำแล้ว '+p.done+' จาก '+p.total+' ชิ้น</span></div>' +
+      '<div class="uh-cta"><button class="btn" type="button" data-go="'+u.lessons[0]+'">เริ่มบทแรก</button><button class="btn ghost" type="button" data-go="lab">ไปห้องทดลอง</button></div>' +
+    '</div>' +
+    '<h2 class="sr">เส้นทางการเรียนของหน่วยที่ '+n+'</h2>' +
+    '<ol class="trail">' + u.lessons.map(node).join('') +
+      '<li class="tn end"><span class="no" aria-hidden="true">?</span>' +
+        '<button type="button" class="tcard quiz" data-go="quiz-'+n+'" data-key="quiz-'+n+'"><span class="lbl">ทดสอบความเข้าใจ</span><b>แบบทดสอบท้ายหน่วยที่ '+n+'</b><small>'+QUIZ[n].length+' ข้อ เลือกคำตอบแล้วเฉลยทันที</small><span class="done-mark" aria-hidden="true">✓</span></button></li>' +
+    '</ol>';
+}
+function listJoin(a){ return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' และ ' + a[a.length-1]; }
+function actHTML(a){
+  const i = ACTS.indexOf(a), prev = ACTS[i-1], next = ACTS[i+1];
+  const nm = x => x.external ? x.title : actName(x);
+  const ex = a.external;
+  const lessons = (a.lessons || []).map(id => '<a href="#'+id+'" data-go="'+id+'">'+esc(lessonTitle(id))+'</a>');
+  return '<div class="l-head"><span class="chip"><i></i>'+esc(actChip(a))+' ของหน่วยที่ '+a.u+'</span><h1>'+esc(nm(a))+'</h1><p class="lead">'+esc(a.goal)+'</p></div>' +
+    '<div class="act-cta">' + (ex ? '' : '<button class="btn" type="button" data-go="lab">ไปห้องทดลอง</button>') +
+    '<button class="btn ghost" type="button" data-mark="act-'+a.id+'" aria-pressed="false">ทำเครื่องหมายว่าทำเสร็จแล้ว</button></div>' +
+    (ex ? '<div class="extcard"><div class="ext-top"><span class="dots" aria-hidden="true" style="display:flex"><i></i><i></i><i></i></span><span class="ext-site">'+esc(ex.site)+'</span></div>' +
+          '<div class="ext-body"><b>'+esc(a.title)+'</b><p>ใบกิจกรรมนี้อยู่บนเว็บไซต์ภายนอก จะเปิดในแท็บใหม่ ทำเสร็จแล้วกลับมาทำเครื่องหมายที่หน้านี้</p>' +
+          '<p><a class="btn" href="'+esc(ex.url)+'" target="_blank" rel="noopener noreferrer">'+esc(ex.label)+' (แท็บใหม่)</a></p>' +
+          '<label class="ext-alt">ถ้าปุ่มไม่เปิด ให้คัดลอกที่อยู่นี้ไปวางในแถบที่อยู่ของเบราว์เซอร์<input class="urlbox" type="text" readonly value="'+esc(ex.url)+'" aria-label="ที่อยู่ของใบกิจกรรม"></label></div></div>' : '') +
+    (a.note ? '<div class="callout warn"><span class="lb">หมายเหตุ</span>'+mk(a.note)+'</div>' : '') +
+    '<h2>โจทย์</h2><ol class="task-list">' + a.tasks.map(t => '<li><span>'+mk(t)+'</span></li>').join('') + '</ol>' +
+    (a.blocks || []).map(b => '<figure class="qblock '+b.kind+'"><figcaption>'+esc(b.title)+'</figcaption><div>' + b.lines.map(l => '<p>'+esc(l)+'</p>').join('') + '</div></figure>').join('') +
+    (a.file ? '<h2>ไฟล์ที่ต้องส่ง</h2><p>' + a.file.split(', ').map(f => '<span class="fname">'+esc(f)+'</span>').join(' ') + '</p>' +
+      (/เลขที่ห้อง/.test(a.file) ? '<p class="fnote">ให้แทนคำว่า “เลขที่ห้อง” ด้วยเลขที่และห้องของตัวเองตามที่ครูกำหนด</p>' : '') : '') +
+    (a.tags.length ? '<h2>แท็กที่ใช้ในกิจกรรมนี้</h2><div class="tagrow">' + a.tags.map(t => '<span class="tg">'+esc(t)+'</span>').join('') + '</div>' : '') +
+    (lessons.length ? '<p>ลืมวิธีใช้ ให้กลับไปอ่านบทเรียน ' + listJoin(lessons) + '</p>' : '') +
+    (a.hints.length ? '<h2>คำแนะนำ</h2>' + a.hints.map((h,k) => '<details class="hint"><summary>คำแนะนำข้อ '+(k+1)+'</summary><p>'+mk(h)+'</p></details>').join('') : '') +
+    '<div class="l-foot">' +
+      (prev ? '<button class="btn ghost" type="button" data-go="act-'+prev.id+'">ก่อนหน้า: '+esc(prev.label)+'</button>' : '<button class="btn ghost" type="button" data-go="acts">กิจกรรมทั้งหมด</button>') +
+      '<span class="sp"></span>' +
+      (next ? '<button class="btn" type="button" data-go="act-'+next.id+'">ถัดไป: '+esc(next.label)+'</button>' : '<button class="btn" type="button" data-go="acts">กิจกรรมทั้งหมด</button>') +
+    '</div>';
+}
+function quizHTML(n){
+  return '<div class="l-head"><span class="chip"><i></i>หน่วยที่ '+n+'</span><h1>แบบทดสอบท้ายหน่วยที่ '+n+'</h1><p class="lead">เลือกคำตอบทีละข้อ เฉลยจะขึ้นทันที ทำซ้ำได้ไม่จำกัด ลำดับตัวเลือกจะสลับทุกครั้ง</p></div>' +
+    '<div class="qbox"></div><div class="qres" role="status"></div><div class="l-foot" data-foot></div>';
+}
+function renderQuiz(view, n){
+  const box = $('.qbox', view), res = $('.qres', view);
+  box.innerHTML = ''; res.innerHTML = '';
+  const total = QUIZ[n].length; let answered = 0, right = 0;
+  QUIZ[n].forEach((q, qi) => {
+    const idx = shuffle(q.o.map((_, i) => i));
+    const c = document.createElement('div'); c.className = 'q';
+    const h = document.createElement('h4'); h.textContent = (qi+1) + '. ' + q.q; c.appendChild(h);
+    const opts = document.createElement('div'); opts.className = 'opts'; opts.setAttribute('role','group'); opts.setAttribute('aria-label','ตัวเลือกของข้อ '+(qi+1));
+    const btns = idx.map(oi => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = q.o[oi]; b.dataset.oi = oi;
+      b.addEventListener('click', () => {
+        if(c.dataset.locked) return; c.dataset.locked = '1';
+        const ok = oi === q.a; answered++; if(ok) right++;
+        btns.forEach(x => { x.disabled = true; if(+x.dataset.oi === q.a) x.classList.add('ok'); });
+        if(!ok) b.classList.add('no');
+        const w = document.createElement('p'); w.className = 'why';
+        w.innerHTML = '<b>' + (ok ? 'ถูกต้อง ' : 'ยังไม่ใช่ ') + '</b>';
+        w.appendChild(document.createTextNode(q.w)); c.appendChild(w);
+        if(answered === total) finish();
+      });
+      opts.appendChild(b); return b;
+    });
+    c.appendChild(opts); box.appendChild(c);
+  });
+  function finish(){
+    const best = Math.max(right, S.quiz[n] || 0); S.quiz[n] = best; saveState(); setDone('quiz-'+n);
+    res.innerHTML = '<p class="score">ได้ ' + right + ' จาก ' + total + ' ข้อ' + (right === total ? ' ครบทุกข้อ' : right >= total*0.6 ? ' ผ่านเกณฑ์' : ' ลองทบทวนบทเรียนแล้วทำอีกครั้ง') + '</p>' +
+      '<p class="mono" style="color:var(--ink-2)">คะแนนสูงสุดของเครื่องนี้ ' + best + ' จาก ' + total + ' ข้อ</p>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:12px"><button class="btn ghost" type="button" data-again>ทำอีกครั้ง</button></div>';
+    $('[data-again]', res).addEventListener('click', () => { renderQuiz(view, n); view.scrollIntoView({block:'start'}); });
+    res.scrollIntoView({block:'nearest'});
+  }
+}
+function ensureView(tok){
+  let v = $('#view-' + tok);
+  if(v) return v;
+  let m;
+  if((m = /^unit-(\d)$/.exec(tok))) v = makeView(tok, 'col u'+m[1], unitHTML(+m[1]));
+  else if((m = /^act-([a-z0-9]+)$/.exec(tok))){ const a = ACT_BY_ID[m[1]]; v = makeView(tok, 'col u'+a.u, actHTML(a)); }
+  else if((m = /^quiz-(\d)$/.exec(tok))){ v = makeView(tok, 'col u'+m[1], quizHTML(+m[1])); $('[data-foot]', v).innerHTML = footHTML(tok); renderQuiz(v, +m[1]); }
+  if(v) updateProgress();
+  return v;
+}
+function buildActsHub(){
+  $('#acts-hub').innerHTML = UNITS.map(u =>
+    '<h2>หน่วยที่ '+u.n+' '+esc(u.name)+'</h2><div class="acts-grid">' +
+    ACTS.filter(a => a.u === u.n).map(actCard).join('') + '</div>').join('');
+}
+function fillActLinks(root){
+  $$('[data-act-link]', root).forEach(el => {
+    const a = ACT_BY_ID[el.dataset.actLink]; if(!a) return;
+    const ex = a.external;
+    el.innerHTML = '<span class="lb">'+esc(actChip(a))+'</span><b>'+esc(a.external ? a.title : actName(a))+'</b><br>'+esc(a.goal) +
+      '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">' +
+      (ex ? '<a class="btn small" href="'+esc(ex.url)+'" target="_blank" rel="noopener noreferrer">'+esc(ex.label)+' (แท็บใหม่)</a><button class="btn small ghost" type="button" data-go="act-'+a.id+'">ดูรายละเอียด</button>'
+          : '<button class="btn small" type="button" data-go="act-'+a.id+'">อ่านโจทย์</button><button class="btn small ghost" type="button" data-go="lab">ไปห้องทดลอง</button>') +
+      '</div>';
+  });
+}
+
+/* ---------- router ---------- */
+let curTok = null;
+const shownOnce = new Set();
+function tabFor(tok){ const u = unitOf(tok); if(!u) return tok; return /^act-/.test(tok) ? 'acts' : 'unit-' + u; }
+function render(tok){
+  if(!valid(tok)) tok = 'home';
+  if(tok === curTok) return;
+  const el = ensureView(tok) || $('#view-home');
+  curTok = tok;
+  $$('.view').forEach(v => { v.hidden = (v !== el); });
+  const side = !!unitOf(tok);
+  $('#shell').classList.toggle('has-side', side);
+  $('#mtoc').hidden = !side;
+  $$('.tab').forEach(t => { if(t.dataset.tab === tabFor(tok)) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  $$('.toc a').forEach(a => { if(a.dataset.go === tok) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+  document.title = (tok === 'home' ? '' : nameOf(tok) + ' · ') + 'การสร้างเว็บเพจด้วย HTML';
+  if(!shownOnce.has(tok)){ shownOnce.add(tok); onFirstShow(tok, el); }
+  onShow(tok, el);
+  window.scrollTo({top: 0, behavior: 'instant'});
+  try{ el.focus({preventScroll: true}); }catch(e){}
+  const cur = $('.side a[aria-current]'); if(cur && cur.scrollIntoView) { try{ cur.scrollIntoView({block:'nearest'}); }catch(e){} }
+}
+function go(tok){
+  try{ if(location.hash.slice(1) !== tok) location.hash = tok; }catch(e){}
+  render(tok);
+}
+
+/* ---------- event delegation ---------- */
+document.addEventListener('click', e => {
+  const t = e.target; if(!t || !t.closest) return;
+  let x;
+  if((x = t.closest('#theme-sw'))){ applyTheme(S.theme === 'dark' ? 'light' : 'dark'); return; }
+  if((x = t.closest('[data-go]'))){ e.preventDefault(); go(x.dataset.go); const m = $('#mtoc'); if(m) m.open = false; return; }
+  if((x = t.closest('[data-mark]'))){ setDone(x.dataset.mark, !isDone(x.dataset.mark)); return; }
+});
+document.addEventListener('focusin', e => { if(e.target && e.target.classList && e.target.classList.contains('urlbox')) e.target.select(); });
+addEventListener('hashchange', () => render(location.hash.slice(1) || 'home'));
+
+/* ============================================================
+   PREVIEW DOCUMENTS, EXAMPLE CARDS, LAB
+   ============================================================ */
+/* The preview frame runs with scripts allowed but WITHOUT same-origin, so it cannot touch this page.
+   A tiny script inside it reports link clicks and scroll position back with postMessage. */
+const FRAME_JS = "(function(){var Y=__Y__;function post(m){try{parent.postMessage(m,'*')}catch(e){}}" +
+  "document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href');if(h==null)return;e.preventDefault();" +
+  "if(h.charAt(0)==='#'){var i=h.slice(1);try{i=decodeURIComponent(i)}catch(x){}var t=i?(document.getElementById(i)||document.getElementsByName(i)[0]):null;if(t)t.scrollIntoView();else if(!i)scrollTo(0,0);return}" +
+  "post({t:'link',href:h,target:a.getAttribute('target')})},true);" +
+  "var st;addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(function(){post({t:'scroll',y:window.pageYOffset})},120)});" +
+  "if(Y)addEventListener('load',function(){scrollTo(0,Y)})})();";
+const baseHead = y => '<meta charset="utf-8"><base target="_blank"><style>body{font-family:"Noto Sans Thai","Sarabun",Tahoma,Thonburi,"Leelawadee UI",sans-serif;font-size:16px;line-height:1.6}</style>' +
+  '<script' + (SCRIPT_NONCE ? ' nonce="' + SCRIPT_NONCE + '"' : '') + '>' + FRAME_JS.replace('__Y__', String(Math.round(+y || 0))) + '<' + '/script>';
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const allAssets = () => { const m = Object.assign({}, ASSETS); for(const k in UPLOADS) m[k] = UPLOADS[k].url; return m; };
+
+function inlineAssets(s, assets){
+  const low = s.toLowerCase();
+  for(const n in assets){
+    if(low.indexOf(n.toLowerCase()) < 0) continue;
+    const re = new RegExp('(["\'])(?:\\./)?' + escRe(n) + '\\1', 'gi');
+    s = s.replace(re, (m, q) => q + assets[n] + q);
+  }
+  return s;
+}
+function buildDoc(src, assets, y){
+  let s = inlineAssets(src, assets || allAssets());
+  const head = baseHead(y);
+  if(/<html[\s>]/i.test(s)){
+    if(/<head(\s[^>]*)?>/i.test(s)) s = s.replace(/<head(\s[^>]*)?>/i, m => m + head);
+    else s = s.replace(/<html(\s[^>]*)?>/i, m => m + '<head>' + head + '</head>');
+    if(!/^\s*<!doctype/i.test(s)) s = '<!DOCTYPE html>' + s;
+    return s;
+  }
+  return '<!DOCTYPE html><html><head>' + head + '</head>' + (/<body[\s>]/i.test(s) ? s : '<body>' + s + '</body>') + '</html>';
+}
+const parseDoc = src => new DOMParser().parseFromString(src, 'text/html');
+
+const FRAMES = new Set();
+addEventListener('message', e => {
+  for(const fr of FRAMES){
+    if(fr.contentWindow && fr.contentWindow === e.source){
+      const d = e.data;
+      if(!d || typeof d !== 'object') return;
+      if(d.t === 'scroll') fr._y = +d.y || 0;
+      else if(d.t === 'link' && typeof d.href === 'string' && fr._onLink) fr._onLink(d.href, typeof d.target === 'string' ? d.target : null);
+      return;
+    }
+  }
+});
+function setFrame(fr, src, onLink, keepScroll){
+  FRAMES.add(fr); fr._onLink = onLink;
+  if(!keepScroll) fr._y = 0;
+  fr.setAttribute('sandbox', 'allow-scripts');
+  fr.srcdoc = buildDoc(src, null, fr._y || 0);
+}
+function externalNote(href, target){
+  const t = (target || '').toLowerCase();
+  const how = t === '_blank' ? 'เปิดในหน้าต่างหรือแท็บใหม่ (target="_blank")' : t ? 'เปิดแบบ target="' + target + '"' : 'เปิดทับหน้าเดิม เพราะไม่ได้ใส่ target';
+  return 'ลิงก์นี้ไปที่ ' + href + ' และจะ' + how + ' เมื่อสร้างเป็นไฟล์ .html แล้วเปิดในเบราว์เซอร์ของเครื่องจริง ในเว็บนี้จะไม่เปิดเว็บจริง';
+}
+
+/* ---------- example cards inside lessons ----------
+   Examples are for reading only: the code cannot be selected, copied or sent anywhere.
+   Only the result (right side) can be clicked. */
+const PROTECTED = 'pre, code, .ex';
+function inProtected(n){
+  const el = n && n.nodeType === 1 ? n : n && n.parentElement;
+  return !!(el && el.closest && el.closest(PROTECTED) && !el.closest('#view-lab'));
+}
+function protectCode(){
+  ['contextmenu','dragstart','selectstart'].forEach(ev => document.addEventListener(ev, e => { if(inProtected(e.target)) e.preventDefault(); }));
+  ['copy','cut'].forEach(ev => document.addEventListener(ev, e => {
+    const ae = document.activeElement;
+    if(ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName)) return;
+    const sel = window.getSelection ? window.getSelection() : null;
+    if(!sel || sel.isCollapsed || !e.clipboardData) return;
+    const box = document.createElement('div'); let edge = false;
+    for(let i = 0; i < sel.rangeCount; i++){
+      const r = sel.getRangeAt(i);
+      if(inProtected(r.startContainer) || inProtected(r.endContainer)) edge = true;
+      box.appendChild(r.cloneContents());
+    }
+    const hit = box.querySelectorAll(PROTECTED);
+    if(!hit.length && !edge) return;
+    hit.forEach(n => n.remove());
+    e.clipboardData.setData('text/plain', edge ? '' : box.textContent);
+    e.preventDefault();
+  }));
+}
+function buildExamples(){
+  $$('script.ex').forEach(sc => {
+    const code = sc.textContent.replace(/^\n+/, '').replace(/\s+$/, '');
+    const nores = sc.hasAttribute('data-nores');
+    const w = document.createElement('div'); w.className = 'ex'; w._code = code;
+    if(Math.max.apply(null, code.split('\n').map(l => l.length)) > 44) w.classList.add('stack');
+    w.innerHTML = '<div class="ex-top"><b></b></div>' +
+      '<div class="ex-body' + (nores ? ' nores' : '') + '"><pre class="code" tabindex="0"><code></code></pre>' +
+      (nores ? '' : '<div class="ex-result"><div class="rb"><i></i><i></i><i></i>ผลลัพธ์</div><iframe title="ผลลัพธ์ของตัวอย่าง" sandbox="allow-same-origin"></iframe></div>') + '</div>';
+    $('b', w).textContent = sc.dataset.title || 'ตัวอย่าง';
+    $('code', w).innerHTML = hl(code);
+    const fr = $('iframe', w); if(fr) fr.style.setProperty('--h', (sc.dataset.h || 190) + 'px');
+    sc.replaceWith(w);
+  });
+  protectCode();
+}
+function renderExamples(view){
+  $$('.ex', view).forEach(w => {
+    const fr = $('iframe', w);
+    if(!fr || w._done) return;
+    w._done = true;
+    setFrame(fr, w._code, (href, target) => toast(/^https?:/i.test(href) ? externalNote(href, target) : 'ในตัวอย่างนี้ลิงก์ไปไฟล์ ' + href + ' จะไม่เปิดจริง ลองทำในห้องทดลองหรือบันทึกไฟล์ไว้เปิดเอง', 5200), false);
+  });
+}
+
+/* ---------- lab: a blank place to practise writing ---------- */
+const lab = {files:{}, order:[], cur:'', n:0, loaded:false, shown:'', stale:false};   // shown = file whose result is on the right
+const kindOf = n => /\.(svg|png|jpe?g|gif|webp|bmp)$/i.test(n) ? 'image' : /\.(wav|mp3|ogg|m4a|aac)$/i.test(n) ? 'audio' : /\.(mp4|webm|mov|m4v)$/i.test(n) ? 'video' : 'file';
+const MAX_FILES = 8;
+
+function readDraft(){
+  const d = store.get('lab', null);
+  return d && d.files && typeof d.files === 'object' && typeof d.cur === 'string' && Object.keys(d.files).length ? d : null;
+}
+function saveDraft(){ store.set('lab', {files: Object.assign({}, lab.files), cur: lab.cur}); }
+function loadLab(){
+  const d = readDraft() || {files: {'index.html': ''}, cur: 'index.html'};
+  lab.files = {}; Object.keys(d.files).forEach(k => { lab.files[k] = String(d.files[k]); });
+  lab.order = Object.keys(lab.files);
+  lab.cur = lab.files[d.cur] != null ? d.cur : lab.order[0];
+  lab.loaded = true;
+  refreshLab(); clearPreview();
+}
+function refreshLab(){
+  $('#lab-del').hidden = lab.order.length < 2;
+  renderTabs(); loadEditor(); renderMedia();
+}
+
+function renderTabs(){
+  const t = $('#lab-tabs'); t.innerHTML = '';
+  lab.order.forEach(n => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ft'; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected', String(n === lab.cur)); b.textContent = n;
+    b.addEventListener('click', () => switchFile(n));
+    t.appendChild(b);
+  });
+}
+function switchFile(n){
+  if(lab.files[n] == null) return;
+  lab.cur = n; saveDraft(); renderTabs(); loadEditor();
+}
+function loadEditor(){
+  const ta = $('#lab-code'); ta.value = lab.files[lab.cur]; lab.n = 0; gutter();
+  ta.scrollTop = 0; $('#lab-gut').scrollTop = 0;
+}
+function gutter(){
+  const ta = $('#lab-code'), n = ta.value.split('\n').length;
+  if(n === lab.n) return; lab.n = n;
+  let s = ''; for(let i = 1; i <= n; i++) s += i + '\n';
+  $('#lab-gut').textContent = s.replace(/\n$/, '');
+}
+
+/* The result on the right changes only when the student presses "แสดงผล" (or Ctrl+Enter),
+   like saving a file and refreshing the browser. Typing never touches it. */
+let svT = 0;
+function scheduleSave(){ clearTimeout(svT); svT = setTimeout(saveDraft, 500); }
+function labState(){
+  const el = $('#lab-curname');
+  if(!lab.shown){ el.textContent = 'ยังไม่ได้แสดงผล'; el.classList.remove('stale'); return; }
+  el.textContent = lab.shown + (lab.stale ? ' · แก้แล้ว กด “แสดงผล”' : '');
+  el.classList.toggle('stale', lab.stale);
+}
+function runLab(){
+  saveDraft();
+  const src = lab.files[lab.cur] || '';
+  const same = lab.shown === lab.cur;
+  $('#lab-title').textContent = (parseDoc(src).title || '').trim() || lab.cur;
+  lab.shown = lab.cur; lab.stale = false;
+  setFrame($('#lab-frame'), src, labLink, same);
+  labState();
+}
+function clearPreview(){
+  lab.shown = ''; lab.stale = false;
+  $('#lab-title').textContent = 'ผลลัพธ์';
+  setFrame($('#lab-frame'), '', labLink, false);
+  labState();
+}
+function labLink(href, target){
+  const name = href.replace(/^\.\//, '');
+  if(lab.files[name] != null){ switchFile(name); runLab(); return; }
+  if(/^(https?:)?\/\//i.test(href)){ toast(externalNote(href, target), 5600); return; }
+  if(/^(mailto|tel):/i.test(href)){ toast('ลิงก์นี้จะเปิดโปรแกรม ' + href.split(':')[0] + ' ในเครื่องจริง ', 4200); return; }
+  toast('ไม่พบไฟล์ “' + href + '” ในห้องทดลอง เพิ่มไฟล์ชื่อนี้ด้วยปุ่ม “เพิ่มไฟล์” และตรวจตัวพิมพ์เล็กใหญ่กับ .html ให้ตรงกัน', 5600);
+}
+
+/* ---------- files you can use (names only: students type the tags themselves) ---------- */
+function renderMedia(){
+  const box = $('#lab-media'); box.innerHTML = '<b style="font-size:.92rem">ไฟล์ที่ใช้ได้ พิมพ์ชื่อไฟล์ให้ตรงใน src</b>';
+  const names = ASSET_ORDER.slice().concat(Object.keys(UPLOADS));
+  names.forEach(n => {
+    const up = n in UPLOADS, url = up ? UPLOADS[n].url : ASSETS[n], k = kindOf(n);
+    const b = document.createElement('span'); b.className = 'm' + (up ? ' up' : ''); b.title = n;
+    if(k === 'image'){ const i = document.createElement('img'); i.src = url; i.alt = ''; b.appendChild(i); }
+    else { const s = document.createElement('span'); s.textContent = k === 'audio' ? '♪' : k === 'video' ? '▶' : '•'; s.setAttribute('aria-hidden','true'); b.appendChild(s); }
+    const t = document.createElement('span'); t.textContent = n; b.appendChild(t);
+    box.appendChild(b);
+  });
+}
+
+function confirmTwice(btn, action){
+  const label = btn.textContent;
+  btn.addEventListener('click', () => {
+    if(btn.dataset.armed){ clearTimeout(+btn.dataset.armed); delete btn.dataset.armed; btn.textContent = label; action(); return; }
+    btn.textContent = 'กดอีกครั้งเพื่อยืนยัน';
+    btn.dataset.armed = String(setTimeout(() => { delete btn.dataset.armed; btn.textContent = label; }, 3500));
+  });
+}
+
+function cleanName(raw){
+  let n = String(raw || '').trim().replace(/\s+/g, ' ');
+  if(!n) return '';
+  if(/[\\/:*?"<>|]/.test(n)) return null;
+  if(!/\.html?$/i.test(n)) n += '.html';
+  return n;
+}
+function initLab(){
+  const ta = $('#lab-code');
+  ta.addEventListener('input', () => { lab.files[lab.cur] = ta.value; gutter(); scheduleSave(); if(lab.shown && !lab.stale){ lab.stale = true; labState(); } });
+  ta.addEventListener('keydown', ev => { if(ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)){ ev.preventDefault(); runLab(); } });
+  $('#lab-run').addEventListener('click', runLab);
+  ta.addEventListener('scroll', () => { $('#lab-gut').scrollTop = ta.scrollTop; });
+  const addFile = () => {
+    const inp = $('#lab-newname'), n = cleanName(inp.value);
+    if(n === ''){ toast('พิมพ์ชื่อไฟล์ก่อน เช่น page1.html'); return; }
+    if(n === null){ toast('ชื่อไฟล์ห้ามมีอักขระ \\ / : * ? " < > |'); return; }
+    if(lab.files[n] != null){ toast('มีไฟล์ชื่อ ' + n + ' อยู่แล้ว'); return; }
+    if(lab.order.length >= MAX_FILES){ toast('เพิ่มไฟล์ได้สูงสุด ' + MAX_FILES + ' ไฟล์'); return; }
+    lab.files[n] = ''; lab.order.push(n); lab.cur = n; inp.value = '';
+    saveDraft(); refreshLab(); ta.focus();
+  };
+  $('#lab-newadd').addEventListener('click', addFile);
+  $('#lab-newname').addEventListener('keydown', ev => { if(ev.key === 'Enter'){ ev.preventDefault(); addFile(); } });
+  confirmTwice($('#lab-del'), () => {
+    if(lab.order.length < 2) return;
+    const n = lab.cur; delete lab.files[n]; lab.order = lab.order.filter(x => x !== n); lab.cur = lab.order[0];
+    saveDraft(); refreshLab(); if(lab.shown === n) clearPreview(); toast('ลบไฟล์ ' + n + ' แล้ว');
+  });
+  confirmTwice($('#lab-reset'), () => {
+    lab.files = {'index.html': ''}; lab.order = ['index.html']; lab.cur = 'index.html';
+    saveDraft(); refreshLab(); clearPreview(); toast('ล้างห้องทดลองแล้ว เริ่มเขียนใหม่ได้เลย');
+  });
+  $('#lab-upload').addEventListener('change', ev => {
+    Array.from(ev.target.files || []).forEach(f => {
+      if(f.size > 15 * 1024 * 1024){ toast('ไฟล์ ' + f.name + ' ใหญ่เกิน 15 MB เลือกไฟล์ที่เล็กลง'); return; }
+      const r = new FileReader();
+      r.onload = () => { UPLOADS[f.name] = {url: r.result, kind: kindOf(f.name)}; renderMedia(); toast('เพิ่มไฟล์ ' + f.name + ' แล้ว เขียนชื่อนี้ใน src แล้วกด “แสดงผล”'); };
+      r.onerror = () => toast('อ่านไฟล์ ' + f.name + ' ไม่ได้');
+      r.readAsDataURL(f);
+    });
+    ev.target.value = '';
+  });
+}
+
+/* ============================================================
+   WIDGETS, REFERENCE, HOME DEMO, START-UP
+   ============================================================ */
+const DEMO_START = '<h2 align="center">สวัสดี HTML!</h2>\n<p>ฉันชื่อ <font color="red">ใส่ชื่อของคุณ</font></p>\n<marquee>แก้ข้อความตรงนี้ แล้วดูผลทางด้านล่าง</marquee>';
+const NAMED = [['black','#000000'],['silver','#C0C0C0'],['gray','#808080'],['white','#FFFFFF'],['maroon','#800000'],['red','#FF0000'],['purple','#800080'],['fuchsia','#FF00FF'],
+               ['green','#008000'],['lime','#00FF00'],['olive','#808000'],['yellow','#FFFF00'],['navy','#000080'],['blue','#0000FF'],['teal','#008080'],['aqua','#00FFFF']];
+
+function initWidgets(){
+  /* click a part, read its note */
+  $$('[data-pick]').forEach(f => {
+    const note = $('.urlnote', f), btns = $$('[data-note]', f);
+    btns.forEach(b => {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => { btns.forEach(x => x.setAttribute('aria-pressed', String(x === b))); note.textContent = b.dataset.note; });
+    });
+  });
+
+  /* RGB mixer */
+  const mx = $('[data-widget=mixer]');
+  if(mx){
+    const ins = $$('input[data-ch]', mx), out = $('[data-out]', mx);
+    const h2 = n => n.toString(16).toUpperCase().padStart(2, '0');
+    const upd = () => {
+      const v = ins.map(i => +i.value);
+      ins.forEach((i, k) => { i.nextElementSibling.textContent = h2(v[k]); });
+      const hex = '#' + v.map(h2).join('');
+      out.textContent = hex; out.style.background = hex;
+      out.style.color = (0.299*v[0] + 0.587*v[1] + 0.114*v[2]) > 150 ? '#101638' : '#FFFFFF';
+    };
+    ins.forEach(i => i.addEventListener('input', upd)); upd();
+  }
+
+  /* 16 named colours */
+  const nc = $('#named-colors');
+  if(nc){
+    nc.innerHTML = NAMED.map(c => '<button type="button" class="sw" data-c="'+c[0]+'"><i style="background:'+c[1]+'"></i><span>'+c[0]+'</span></button>').join('');
+    nc.addEventListener('click', e => {
+      const b = e.target.closest('.sw'); if(!b) return;
+      const c = NAMED.find(x => x[0] === b.dataset.c);
+      $('#named-note').textContent = 'สี ' + c[0] + ' มีรหัสสี ' + c[1] + ' เขียนได้ทั้ง color="' + c[0] + '" และ color="' + c[1] + '"';
+    });
+  }
+
+  /* image align */
+  const ia = $('[data-widget=imgalign]');
+  if(ia){
+    const code = $('[data-out]', ia), fr = $('iframe.pv', ia);
+    const text = 'ข้อความตัวอย่างสำหรับดูว่ารูปภาพอยู่ในตำแหน่งไหนของข้อความ ลองสลับค่า align แล้วสังเกตว่าข้อความอยู่ด้านบน กลาง ล่าง หรือไหลล้อมรูปภาพอย่างไร ข้อความตัวอย่างสำหรับดูว่ารูปภาพอยู่ในตำแหน่งไหนของข้อความ';
+    const upd = () => {
+      const v = $('input[name=alv]:checked', ia).value, tag = '<img src="flower.svg" width="90" align="' + v + '">';
+      code.innerHTML = hl(tag + '\n' + text.slice(0, 40) + '...');
+      setFrame(fr, tag + text, () => {}, false);
+    };
+    $$('input[name=alv]', ia).forEach(r => r.addEventListener('change', upd)); upd();
+  }
+
+  /* table tuner */
+  const tu = $('[data-widget=tuner]');
+  if(tu){
+    const code = $('[data-out]', tu), fr = $('iframe.pv', tu);
+    const upd = () => {
+      const p = {};
+      $$('input[data-p]', tu).forEach(i => { p[i.dataset.p] = i.value; i.nextElementSibling.textContent = i.value; });
+      const t = '<table border="' + p.border + '" cellspacing="' + p.cellspacing + '" cellpadding="' + p.cellpadding + '">\n<tr><th>หัวข้อ 1</th><th>หัวข้อ 2</th></tr>\n<tr><td>ข้อมูล 1</td><td>ข้อมูล 2</td></tr>\n<tr><td>ข้อมูล 3</td><td>ข้อมูล 4</td></tr>\n</table>';
+      code.innerHTML = hl(t); setFrame(fr, t, () => {}, false);
+    };
+    $$('input[data-p]', tu).forEach(i => i.addEventListener('input', upd)); upd();
+  }
+}
+
+/* ---------- tag reference ---------- */
+function buildRef(){
+  let unit = 0, q = '';
+  const fl = $('#ref-filters');
+  fl.innerHTML = [['0','ทั้งหมด'],['1','หน่วยที่ 1'],['2','หน่วยที่ 2'],['3','หน่วยที่ 3']].map(f => '<button type="button" class="pill" data-u="'+f[0]+'" aria-pressed="'+(f[0]==='0')+'">'+f[1]+'</button>').join('');
+  const body = $('#ref-body');
+  const draw = () => {
+    const rows = TAGS.filter(r => (!unit || r[3] === unit) && (!q || (r[0]+' '+r[1]+' '+r[2]).toLowerCase().indexOf(q) >= 0));
+    body.innerHTML = rows.map(r =>
+      '<tr class="refrow" tabindex="0" role="link" data-go="'+r[4]+'"><td>'+esc(r[0])+(r[5] ? '<span title="รูปแบบเก่า" aria-label="รูปแบบเก่า"> *</span>' : '')+'</td><td>'+esc(r[1])+'</td><td class="mono">'+esc(r[2])+'</td><td><span class="chip u'+r[3]+'" style="padding:0 12px"><i></i>'+r[3]+'</span></td></tr>').join('');
+    $('#ref-empty').hidden = rows.length > 0;
+  };
+  fl.addEventListener('click', e => {
+    const b = e.target.closest('.pill'); if(!b) return;
+    unit = +b.dataset.u; $$('.pill', fl).forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw();
+  });
+  $('#ref-q').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); draw(); });
+  body.addEventListener('keydown', e => {
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const r = e.target.closest && e.target.closest('.refrow'); if(!r) return;
+    e.preventDefault(); go(r.dataset.go);
+  });
+  draw();
+}
+
+/* ---------- home demo ---------- */
+function initHomeDemo(){
+  const ta = $('#demo-code'), fr = $('#demo-frame'); let t = 0;
+  ta.value = DEMO_START;
+  const run = () => setFrame(fr, ta.value, () => toast('ลิงก์ในตัวอย่างนี้ไม่เปิดจริง ลองในห้องทดลอง'), true);
+  ta.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 250); });
+  run();
+}
+
+/* ---------- page hooks ---------- */
+function onFirstShow(tok, el){
+  if(LESSON_META[tok]) renderExamples(el);
+}
+function onShow(tok, el){
+  if(tok === 'lab' && !lab.loaded) loadLab();
+}
+
+/* ---------- start ---------- */
+function init(){
+  buildAssets();
+  buildExamples();
+  fillActLinks(document);
+  $$('[data-foot]').forEach(el => { const s = el.closest('[data-lesson]'); if(s) el.innerHTML = footHTML(s.dataset.lesson); });
+  const toc = tocHTML(); $('#side').innerHTML = toc; $('#mtoc-body').innerHTML = toc;
+  buildActsHub();
+  $$('[data-acts-count]').forEach(e => { e.textContent = ACTS.length; });
+  buildRef();
+  initWidgets();
+  initLab();
+  initHomeDemo();
+  applyTheme(S.theme);
+  updateProgress();
+  render(location.hash.slice(1) || 'home');
+  updateProgress();
+}
+init();
+
+</script>
