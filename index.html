@@ -388,6 +388,30 @@ details.acc summary{cursor:pointer;padding:10px 0;font-weight:600}
 .act-cta{display:flex;flex-wrap:wrap;gap:12px;margin:1rem 0}
 .fnote{margin:.2rem 0 0;color:var(--ink-2);font-size:.95rem}
 .muted-note{margin:.2rem 0 1rem;color:var(--ink-2);font-size:.92rem}
+/* headings of a lesson */
+.col h2[id],.col h3[id]{scroll-margin-top:calc(var(--hh) + 16px)}
+.outline{margin:0 0 1.8rem;padding:14px 20px 12px;background:var(--surface);border:1.5px solid var(--line);border-left:6px solid var(--u);border-radius:14px}
+.outline .ol-t{display:block;font:600 1rem/1.4 var(--f-display);margin-bottom:6px}
+.outline ol{list-style:none;margin:0;padding:0}
+.outline ul{list-style:none;margin:0 0 4px;padding:0 0 0 34px}
+.outline li{break-inside:avoid}
+.outline button{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:4px 8px;color:var(--ink);font:inherit;font-size:.98rem;line-height:1.5;cursor:pointer}
+.outline button:hover{background:var(--u-soft)}
+.outline button i{flex:none;width:22px;height:22px;border-radius:50%;background:var(--u-soft);display:grid;place-items:center;font:600 .74rem var(--f-code);font-style:normal;margin-top:.1em}
+.outline ul button{color:var(--ink-2);font-size:.92rem;padding:2px 8px}
+.outline ul button::before{content:"–";color:var(--u);flex:none}
+@media (min-width:860px){.outline ol{columns:2;column-gap:28px}}
+.subtoc{margin:2px 0 6px 20px;padding-left:12px;border-left:2px solid var(--u-soft);display:flex;flex-direction:column}
+.subtoc button{background:none;border:0;border-radius:8px;text-align:left;padding:3px 8px;font:inherit;font-size:.86rem;line-height:1.45;color:var(--ink-2);cursor:pointer}
+.subtoc button.h3{padding-left:20px;font-size:.82rem}
+.subtoc button:hover{background:var(--surface-2);color:var(--ink)}
+.subtoc button[aria-current="location"]{background:var(--u-soft);color:var(--ink);font-weight:600}
+.tcard .secs{display:flex;flex-direction:column;gap:1px;margin-top:10px;padding-left:2px}
+.tcard .secs span{position:relative;padding-left:14px;font-size:.92rem;line-height:1.55;color:var(--ink)}
+.tcard .secs span::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:2px;background:var(--u)}
+.tcard .secs .more{color:var(--ink-2)}
+.tcard .secs .more::before{display:none}
+.tcard .secs .more{padding-left:14px}
 .qblock{margin:1rem 0;background:var(--surface);border:2px solid var(--edge);border-left:8px solid var(--u);border-radius:14px;padding:10px 20px 14px}
 .qblock figcaption{font:600 .88rem var(--f-code);color:var(--u);margin-bottom:2px}
 .qblock p{margin:.2em 0}
@@ -1673,7 +1697,7 @@ Mali       95
 <section class="view col u3" id="view-u3-4" data-lesson="u3-4" tabindex="-1" hidden>
   <div class="l-head">
     <span class="chip"><i></i>หน่วยที่ 3 · บทที่ 4 <span class="badge-extra">เนื้อหาเสริม</span></span>
-    <h1>การใส่ไฟล์เสียงและวิดีโอ</h1>
+    <h1>การแทรกไฟล์เสียงและวิดีโอ</h1>
     <p class="lead">ผลการเรียนรู้ข้อ 8 ของรายวิชา: อธิบายคำสั่งและใส่ไฟล์มัลติมีเดียลงในเว็บเพจได้</p>
   </div>
   <div class="callout extra"><span class="lb">เกี่ยวกับบทนี้</span>เนื้อหาเรื่องไฟล์เสียงมาจากสไลด์ของวิชา ส่วนเรื่องวิดีโอเป็นเนื้อหาเสริมที่เขียนเพิ่มให้ครบผลการเรียนรู้ข้อ 8 ของหน่วยที่ 3</div>
@@ -2305,6 +2329,68 @@ function tocHTML(){
   return h;
 }
 
+/* ---------- headings of a lesson: in-page outline, sidebar sub-list, unit cards ---------- */
+/* h2 / h3 of the lesson text; headings inside boxes (cards, callouts, examples, spec lists) are left out */
+const headsOf = el => $$('h2:not(.sr), h3', el).filter(h => !h.closest('.card, .callout, .ex, .spec, .qblock'));
+function prepHeads(id){
+  const el = $('#view-'+id); if(!el) return [];
+  const hs = headsOf(el);
+  hs.forEach((h, i) => { if(!h.id){ h.id = 'sec-'+id+'-'+(i+1); h.tabIndex = -1; } });
+  return hs;
+}
+/* [{h2, kids:[h3…]}] */
+function groupHeads(hs){
+  const g = [];
+  hs.forEach(h => { if(h.tagName === 'H2' || !g.length) g.push({h, kids: []}); else g[g.length-1].kids.push(h); });
+  return g;
+}
+const headText = h => h.textContent.replace(/\s+/g, ' ').trim();
+/* keeps the <code> wrappers of the heading, so tag names stay protected from copying like everywhere else */
+const headHTML = h => h.innerHTML.replace(/\s+/g, ' ').trim();
+function outlineHTML(id){
+  const g = groupHeads(prepHeads(id)); if(g.length < 2) return '';
+  const btn = (h, n) => '<button type="button" data-jump="'+h.id+'">'+(n ? '<i>'+n+'</i>' : '')+'<span>'+headHTML(h)+'</span></button>';
+  return '<nav class="outline" aria-label="หัวข้อในบทนี้"><b class="ol-t">หัวข้อในบทนี้</b><ol>' +
+    g.map((x, i) => '<li>'+btn(x.h, i+1)+(x.kids.length ? '<ul>'+x.kids.map(k => '<li>'+btn(k)+'</li>').join('')+'</ul>' : '')+'</li>').join('') +
+    '</ol></nav>';
+}
+function subTocHTML(id){
+  const g = groupHeads(prepHeads(id)); if(!g.length) return '';
+  const btn = (h, cls) => '<button type="button" class="'+cls+'" data-jump="'+h.id+'">'+headHTML(h)+'</button>';
+  return '<div class="subtoc u'+unitOf(id)+'" role="group" aria-label="หัวข้อในบทนี้">' + g.map(x => btn(x.h, 'h2') + x.kids.map(k => btn(k, 'h3')).join('')).join('') + '</div>';
+}
+function jumpTo(h){
+  try{ h.scrollIntoView({block: 'start'}); }catch(e){ h.scrollIntoView(); }
+  try{ h.focus({preventScroll: true}); }catch(e){}
+  spy();
+}
+/* sidebar: list the headings under the lesson being read, mark the one on screen */
+function syncSub(tok){
+  $$('#side .subtoc').forEach(x => x.remove());
+  if(!LESSON_META[tok]) return;
+  const a = $('#side a[data-go="'+tok+'"]'); if(!a) return;
+  const html = subTocHTML(tok); if(html) a.insertAdjacentHTML('afterend', html);
+  spy();
+}
+/* keep the current sidebar item, and the headings listed under it, in view inside the sidebar */
+function revealInSide(){
+  const side = $('#side'), cur = $('#side a[aria-current]');
+  if(!side || !cur || side.scrollHeight <= side.clientHeight) return;
+  const sub = cur.nextElementSibling && cur.nextElementSibling.classList.contains('subtoc') ? cur.nextElementSibling : null;
+  const sr = side.getBoundingClientRect(), top = cur.getBoundingClientRect().top, bottom = (sub || cur).getBoundingClientRect().bottom;
+  if(top < sr.top + 4 || bottom > sr.bottom - 4) side.scrollTop = Math.max(0, side.scrollTop + top - sr.top - 60);
+}
+let spyRaf = 0;
+function spy(){
+  spyRaf = 0;
+  const tok = curTok; if(!tok || !LESSON_META[tok]) return;
+  const lim = (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hh'), 10) || 104) + 40;
+  let cur = null;
+  headsOf($('#view-'+tok)).forEach(h => { if(h.getBoundingClientRect().top <= lim) cur = h.id; });
+  $$('#side .subtoc button').forEach(b => { if(b.dataset.jump === cur) b.setAttribute('aria-current','location'); else b.removeAttribute('aria-current'); });
+}
+addEventListener('scroll', () => { if(!spyRaf) spyRaf = requestAnimationFrame(spy); }, {passive: true});
+
 /* ---------- generated pages ---------- */
 const gen = () => $('#gen');
 function makeView(tok, cls, html){
@@ -2331,8 +2417,10 @@ function unitHTML(n){
   const u = UNITS[n-1], acts = ACTS.filter(a => a.u === n), p = unitProg(n);
   const node = (id, i) => {
     const tg = tagsOf(id), shown = tg.slice(0, 5), mine = acts.filter(a => homeOf(a) === id);
+    const secs = groupHeads(prepHeads(id)).map(x => headHTML(x.h));
     return '<li class="tn"><span class="no" aria-hidden="true">'+(i+1)+'</span>' +
       '<button type="button" class="tcard" data-go="'+id+'"><span class="lbl">บทที่ '+(i+1)+(id === 'u3-4' ? ' (เนื้อหาเสริม)' : '')+'</span><b>'+esc(lessonTitle(id))+'</b><small>'+esc(lessonLead(id))+'</small>' +
+      (secs.length ? '<span class="secs" role="list" aria-label="หัวข้อในบทนี้">' + secs.slice(0, 6).map(t => '<span role="listitem">'+t+'</span>').join('') + (secs.length > 6 ? '<span class="more" role="listitem">และอีก '+(secs.length - 6)+' หัวข้อ</span>' : '') + '</span>' : '') +
       (shown.length ? '<span class="tags" role="list" aria-label="แท็กที่เรียนในบทนี้">' + shown.map(t => '<span role="listitem">'+esc(t)+'</span>').join('') + (tg.length > shown.length ? '<span class="more" role="listitem">อีก '+(tg.length - shown.length)+'</span>' : '') + '</span>' : '') +
       '</button>' +
       (mine.length ? '<ul class="tacts" aria-label="กิจกรรมหลังบทที่ '+(i+1)+'">' + mine.map(a => '<li>'+actBtn(a)+'</li>').join('') + '</ul>' : '') +
@@ -2470,9 +2558,11 @@ function render(tok){
   document.title = (tok === 'home' ? '' : nameOf(tok) + ' · ') + 'การสร้างเว็บเพจด้วย HTML';
   if(!shownOnce.has(tok)){ shownOnce.add(tok); onFirstShow(tok, el); }
   onShow(tok, el);
+  syncSub(tok);
   window.scrollTo({top: 0, behavior: 'instant'});
   try{ el.focus({preventScroll: true}); }catch(e){}
-  const cur = $('.side a[aria-current]'); if(cur && cur.scrollIntoView) { try{ cur.scrollIntoView({block:'nearest'}); }catch(e){} }
+  spy();
+  revealInSide();
 }
 function go(tok){
   try{ if(location.hash.slice(1) !== tok) location.hash = tok; }catch(e){}
@@ -2485,6 +2575,7 @@ document.addEventListener('click', e => {
   let x;
   if((x = t.closest('#theme-sw'))){ applyTheme(S.theme === 'dark' ? 'light' : 'dark'); return; }
   if((x = t.closest('[data-go]'))){ e.preventDefault(); go(x.dataset.go); const m = $('#mtoc'); if(m) m.open = false; return; }
+  if((x = t.closest('[data-jump]'))){ const h = document.getElementById(x.dataset.jump); if(h) jumpTo(h); return; }
   if((x = t.closest('[data-mark]'))){ setDone(x.dataset.mark, !isDone(x.dataset.mark)); return; }
 });
 document.addEventListener('focusin', e => { if(e.target && e.target.classList && e.target.classList.contains('urlbox')) e.target.select(); });
@@ -2869,7 +2960,11 @@ function initHomeDemo(){
 
 /* ---------- page hooks ---------- */
 function onFirstShow(tok, el){
-  if(LESSON_META[tok]) renderExamples(el);
+  if(LESSON_META[tok]){
+    renderExamples(el);
+    const head = $('.l-head', el);
+    if(head && !$('.outline', el)) head.insertAdjacentHTML('afterend', outlineHTML(tok));
+  }
 }
 function onShow(tok, el){
   if(tok === 'lab' && !lab.loaded) loadLab();
